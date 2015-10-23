@@ -16,21 +16,31 @@
 
 package ch.docksnet.app;
 
-public class MainClass {
+public final class MainClass {
 
     {
+        // class initializer
         method1();
     }
 
     static {
+        // static class initializer
         staticMethod();
-        staticVar2 = "Hallo";
+        staticField2 = "";
     }
 
-    private static String staticVar1 = staticMethod2();
-    private static String staticVar2;
+    // field is coupled to a method, in terms of cohesion
+    public static String staticField1 = staticMethod2();
 
-    private int var1;
+    private static String staticField2;
+
+    private int field1;
+
+    private int field2 = createInt();
+
+    private int createInt() {
+        return 0;
+    }
 
     public static void staticMethod() {
         staticMethod2();
@@ -49,7 +59,16 @@ public class MainClass {
     }
 
     private void method2() {
-        var1 = 4;
+        field1 = 4;
     }
+
+}
+
+/*
+ * This class must be ignored in the diagram
+ */
+class SiblingClass {
+
+    public static String siblingStaticField = MainClass.staticField1;
 
 }

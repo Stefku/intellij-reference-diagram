@@ -18,20 +18,25 @@ package ch.docksnet.rgraph;
 
 import java.util.Set;
 
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.impl.source.PsiMethodImpl;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * @author u215942 (Stefan Zeller)
+ * @author Stefan Zeller
  */
 public class PsiUtils {
 
     public static final String NO_PARENT_METHOD_FOUND = "[No parent method found!]";
+    public static final String STATIC_CLASS_INITIALIZER_NAME = "[static initializer]";
+    public static final String CLASS_INITIALIZER_NAME = "[initializer]";
 
     @Nullable
     public static PsiClass getClassFromHierarchy(PsiElement psiElement) {
@@ -49,11 +54,10 @@ public class PsiUtils {
     public static String getParentName(PsiElement psiElement) {
         PsiElement parent = psiElement.getParent();
         if (parent == null) {
-            // when called from fields (static and non-static)
             return NO_PARENT_METHOD_FOUND;
         }
         if (parent instanceof PsiMethodImpl) {
-            return ((PsiMethodImpl) parent).getName();
+            return createMethodName((PsiMethodImpl) parent);
         } else if (parent instanceof PsiClassInitializer) {
             return resolveClassInitializerName((PsiClassInitializer) parent);
         } else if (parent instanceof PsiField) {
@@ -65,7 +69,7 @@ public class PsiUtils {
 
     private static String resolveClassInitializerName(PsiClassInitializer classInitializer) {
         Set<ReferenceElement.Modifier> modifiers = ReferenceElement.resolveModifiers(classInitializer);
-        String name = ReferenceElement.resolveClassInitializerName(modifiers);
+        String name = resolveClassInitializerName(modifiers);
         return name;
     }
 
@@ -78,6 +82,26 @@ public class PsiUtils {
             return ((PsiClassImpl) parent).getName();
         } else {
             return getClassName(parent);
+        }
+    }
+
+    public static String createMethodName(PsiMethod psiMethod) {
+        PsiType[] parameterTypes = psiMethod.getHierarchicalMethodSignature().getParameterTypes();
+        String[] nameArray = new String[parameterTypes.length];
+        for (int i = 0; i < parameterTypes.length; i++) {
+            nameArray[i] = parameterTypes[i].getPresentableText();
+        }
+        String parameters = StringUtil.join(nameArray, ",");
+        return psiMethod.getName() + "(" + parameters + ")";
+    }
+
+    public static String resolveClassInitializerName(Set<ReferenceElement.Modifier> modifiers) {
+        if (modifiers.size() == 1 && modifiers.contains(ReferenceElement.Modifier.STATIC)) {
+            return STATIC_CLASS_INITIALIZER_NAME;
+        } else if (modifiers.isEmpty()) {
+            return CLASS_INITIALIZER_NAME;
+        } else {
+            throw new IllegalStateException("Unsupported modifier of ClassInitializer: " + modifiers);
         }
     }
 

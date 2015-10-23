@@ -30,11 +30,9 @@ import com.intellij.psi.impl.source.PsiMethodImpl;
 import com.intellij.psi.util.PsiUtil;
 
 /**
- * @author u215942 (Stefan Zeller)
+ * @author Stefan Zeller
  */
 public class ReferenceElement {
-    public static final String STATIC_CLASS_INITIALIZER = "[static initializer]";
-    public static final String CLASS_INITIALIZER = "[initializer]";
     private final PsiElement psiElement;
     private final String name;
     private final Type type;
@@ -56,7 +54,7 @@ public class ReferenceElement {
             this.members = new ArrayList<>();
             this.callers = Collections.emptyList();
         } else if (psiElement instanceof PsiMethodImpl) {
-            this.name = ((PsiMethodImpl) psiElement).getName();
+            this.name = PsiUtils.createMethodName((PsiMethodImpl) psiElement);
             this.type = Type.Method;
             this.modifiers = resolveModifiers((PsiMethodImpl) psiElement);
             this.members = Collections.EMPTY_LIST;
@@ -65,7 +63,7 @@ public class ReferenceElement {
             this.type = Type.ClassInitializer;
             this.members = Collections.EMPTY_LIST;
             this.modifiers = resolveModifiers((PsiClassInitializer) psiElement);
-            this.name = resolveClassInitializerName(modifiers);
+            this.name = PsiUtils.resolveClassInitializerName(modifiers);
             this.callers = Collections.emptyList();
         } else if (psiElement instanceof PsiField) {
             this.type = Type.Field;
@@ -107,16 +105,6 @@ public class ReferenceElement {
 
     private static boolean hasModifier(PsiField psiField, String modifier) {
         return PsiUtil.findModifierInList(psiField.getModifierList(), modifier) != null;
-    }
-
-    public static String resolveClassInitializerName(Set<Modifier> modifiers) {
-        if (modifiers.size() == 1 && modifiers.contains(Modifier.STATIC)) {
-            return STATIC_CLASS_INITIALIZER;
-        } else if (modifiers.isEmpty()) {
-            return CLASS_INITIALIZER;
-        } else {
-            throw new IllegalStateException("Unsupported modifier of ClassInitializer: " + modifiers);
-        }
     }
 
     public static Set<Modifier> resolveModifiers(PsiClassInitializer psiClassInitializer) {

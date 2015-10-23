@@ -17,7 +17,7 @@
 package ch.docksnet.utils;
 
 /**
- * @author u215942 (Stefan Zeller)
+ * @author Stefan Zeller
  */
 public class PreConditionUtil {
 

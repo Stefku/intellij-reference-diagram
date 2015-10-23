@@ -22,7 +22,7 @@ import java.util.Map;
 import com.intellij.psi.PsiElement;
 
 /**
- * @author u215942 (Stefan Zeller)
+ * @author Stefan Zeller
  */
 public class ReferenceElementFactory {
 
