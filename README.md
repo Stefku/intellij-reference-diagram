@@ -9,9 +9,10 @@ This plugin is in a early state.
 
 ## Example
 
-![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/master/test/ExampleDiagram_ch.docksnet.app.MainClass.png)
+This example shows three cohesive clusters in MainClass (source is showed below). 
+A blue line indicates a method call, where a green line means that a field is coupled to a method in terms of cohesion. 
 
-A blue line indicates a method call, where a green line means that a field is coupled to a method in terms of cohesion.
+![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/master/test/ExampleDiagram_ch.docksnet.app.MainClass.png)
 
 ```java
 public final class MainClass {
@@ -34,6 +35,7 @@ public final class MainClass {
 
     private int field1;
 
+    // field is coupled to a method, in terms of cohesion
     private int field2 = createInt();
 
     private int createInt() {
