@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+import ch.docksnet.utils.IncrementableSet;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
@@ -40,6 +42,8 @@ public class ReferenceElement {
 
     private final List<ReferenceElement> callees;
     private final List<ReferenceElement> callers;
+
+    private final IncrementableSet<ReferenceElement> calleeCount = new IncrementableSet<>();
 
     private final List<ReferenceElement> members;
 
@@ -217,8 +221,15 @@ public class ReferenceElement {
     }
 
     public void addCallee(ReferenceElement element) {
-        callees.add(element);
-        element.addCaller(this);
+        calleeCount.increment(element);
+        if (!callees.contains(element)) {
+            callees.add(element);
+            element.addCaller(this);
+        }
+    }
+
+    public long getCalleeCount(ReferenceElement element) {
+        return calleeCount.get(element);
     }
 
     private void addCaller(ReferenceElement element) {
@@ -236,6 +247,23 @@ public class ReferenceElement {
         return Collections.unmodifiableList(members);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final ReferenceElement other = (ReferenceElement) obj;
+        return Objects.equals(this.name, other.name)
+                && Objects.equals(this.type, other.type);
+    }
 
     @Override
     public String toString() {

@@ -60,7 +60,7 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<ReferenceEleme
 
     @Override
     public String getPresentableName() {
-        return "Method Call Graph";
+        return "Method Reference Diagram";
     }
 
     @NotNull

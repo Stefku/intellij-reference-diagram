@@ -16,6 +16,7 @@
 
 package ch.docksnet.rgraph;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramRelationshipInfo;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -65,20 +66,35 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
 
         DiagramRelationshipInfo r;
 
-        for (ReferenceElement callerMethod : classElement.getMembers()) {
+        for (final ReferenceElement callerMethod : classElement.getMembers()) {
             ReferenceNode caller = new ReferenceNode(callerMethod);
-            for (ReferenceElement calleeMethod : callerMethod.getCallees()) {
+            for (final ReferenceElement calleeMethod : callerMethod.getCallees()) {
                 ReferenceNode callee = new ReferenceNode(calleeMethod);
-
-                if (caller.getIdentifyingElement().getType() == ReferenceElement.Type.Field) {
-                    r = ReferenceDiagramRelationships.SOFT;
-                } else {
-                    r = ReferenceDiagramRelationships.STRONG;
-                }
-
+                r = resolveEdgeType(caller, calleeMethod);
                 myEdges.add(new ReferenceEdge(caller, callee, r));
             }
         }
+    }
+
+    public DiagramRelationshipInfo resolveEdgeType(final ReferenceNode
+            caller, final ReferenceElement calleeMethod) {
+        final DiagramRelationshipInfo r;
+        if (caller.getIdentifyingElement().getType() == ReferenceElement.Type.Field) {
+            r = ReferenceDiagramRelationships.SOFT;
+        } else {
+            r = new DiagramRelationshipInfoAdapter("STRONG") {
+                @Override
+                public Shape getStartArrow() {
+                    return STANDARD;
+                }
+
+                @Override
+                public String getLabel() {
+                    return caller.getIdentifyingElement().getCalleeCount(calleeMethod) + "";
+                }
+            };
+        }
+        return r;
     }
 
     public void wireUpDependencies(ReferenceElement referenceElement) {
