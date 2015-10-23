@@ -20,11 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.intellij.psi.PsiClassInitializer;
-import com.intellij.psi.PsiField;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramRelationshipInfo;
@@ -32,12 +27,17 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassInitializer;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Stefan Zeller
@@ -55,49 +55,46 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
         collectFields(classElement, psiClass);
         collectMethods(classElement, psiClass);
 
-
-        final PsiFile psiFile = psiClass.getContainingFile();
-
         for (ReferenceElement referenceElement : classElement.getMembers()) {
-            if (referenceElement.getType().equals(ReferenceElement.Type.Method)) {
-                PsiMethod psiMethod = (PsiMethod) referenceElement.getPsiElement();
-
-                Collection<PsiReference> all = ReferencesSearch.search(psiMethod, GlobalSearchScope.fileScope(psiFile)).findAll();
-
-                for (PsiReference psiReference : all) {
-                    PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
-                    String className = PsiUtils.getClassName(referenceExpression);
-                    String callerName = PsiUtils.getParentName(referenceExpression);
-                    if (className.equals(psiClass.getName())) {
-                        ReferenceElement caller = ReferenceElementFactory.getElement(callerName);
-                        caller.addCallee(referenceElement);
-                    }
-                }
-
-            } else if (referenceElement.getType().equals(ReferenceElement.Type.Field)) {
-                PsiField psiField = (PsiField) referenceElement.getPsiElement();
-
-                Collection<PsiReference> all = ReferencesSearch.search(psiField, GlobalSearchScope.fileScope(psiFile)).findAll();
-
-                for (PsiReference psiReference : all) {
-                    PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
-                    String className = PsiUtils.getClassName(referenceExpression);
-                    String callerName = PsiUtils.getParentName(referenceExpression);
-                    if (className.equals(psiClass.getName())) {
-                        ReferenceElement caller = ReferenceElementFactory.getElement(callerName);
-                        caller.addCallee(referenceElement);
-                    }
-                }
+            if (referenceElement.getType().equals(ReferenceElement.Type.Method) || referenceElement.getType
+                    ().equals(ReferenceElement.Type.Field)) {
+                wireUpDependencies(referenceElement);
             }
         }
 
-        DiagramRelationshipInfo r = ReferenceDiagramRelationships.STRONG;
+        DiagramRelationshipInfo r;
 
         for (ReferenceElement callerMethod : classElement.getMembers()) {
             ReferenceNode caller = new ReferenceNode(callerMethod);
             for (ReferenceElement calleeMethod : callerMethod.getCallees()) {
                 ReferenceNode callee = new ReferenceNode(calleeMethod);
+
+                if (caller.getIdentifyingElement().getType() == ReferenceElement.Type.Field) {
+                    r = ReferenceDiagramRelationships.SOFT;
+                } else {
+                    r = ReferenceDiagramRelationships.STRONG;
+                }
+
                 myEdges.add(new ReferenceEdge(caller, callee, r));
+            }
+        }
+    }
+
+    public void wireUpDependencies(ReferenceElement referenceElement) {
+        PsiElement psiElement = referenceElement.getPsiElement();
+        PsiFile psiFile = psiElement.getContainingFile();
+        Collection<PsiReference> all = ReferencesSearch.search(psiElement, GlobalSearchScope.fileScope
+                (psiFile)).findAll();
+
+        String containingClassName = ((PsiClass) psiElement.getContext()).getName();
+
+        for (PsiReference psiReference : all) {
+            PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
+            String className = PsiUtils.getClassName(referenceExpression);
+            String callerName = PsiUtils.getParentName(referenceExpression);
+            if (className.equals(containingClassName)) {
+                ReferenceElement caller = ReferenceElementFactory.getElement(callerName);
+                caller.addCallee(referenceElement);
             }
         }
     }
@@ -168,7 +165,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
 
     @Override
     public void dispose() {
-
     }
 
 }

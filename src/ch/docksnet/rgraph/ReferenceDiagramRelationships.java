@@ -16,31 +16,34 @@
 
 package ch.docksnet.rgraph;
 
+import java.awt.*;
+
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.diagram.presentation.DiagramLineType;
-
-import java.awt.*;
 
 /**
  * @author Stefan Zeller
  */
 public interface ReferenceDiagramRelationships {
-  DiagramRelationshipInfo STRONG = new DiagramRelationshipInfoAdapter("STRONG") {
-    @Override
-    public Shape getStartArrow() {
-      return STANDARD;
-    }
-  };
-  DiagramRelationshipInfo SOFT = new DiagramRelationshipInfoAdapter("SOFT") {
-    @Override
-    public Shape getStartArrow() {
-      return STANDARD;
-    }
 
-    @Override
-    public DiagramLineType getLineType() {
-      return DiagramLineType.DASHED;
-    }
-  };
+    DiagramRelationshipInfo STRONG = new DiagramRelationshipInfoAdapter("STRONG") {
+        @Override
+        public Shape getStartArrow() {
+            return STANDARD;
+        }
+    };
+
+    DiagramRelationshipInfo SOFT = new DiagramRelationshipInfoAdapter("SOFT") {
+        @Override
+        public Shape getStartArrow() {
+            return NONE;
+        }
+
+        @Override
+        public DiagramLineType getLineType() {
+            return DiagramLineType.DASHED;
+        }
+    };
+
 }
