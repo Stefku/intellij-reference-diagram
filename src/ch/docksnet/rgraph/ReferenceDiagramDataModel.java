@@ -51,18 +51,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
     public ReferenceDiagramDataModel(Project project, ReferenceElement classElement) {
         super(project, ReferenceDiagramProvider.getInstance());
 
-        PsiClass psiClass = (PsiClass) classElement.getPsiElement();
-
-        collectClassInitializers(classElement, psiClass);
-        collectFields(classElement, psiClass);
-        collectMethods(classElement, psiClass);
-
-        for (ReferenceElement referenceElement : classElement.getMembers()) {
-            if (referenceElement.getType().equals(ReferenceElement.Type.Method) || referenceElement.getType
-                    ().equals(ReferenceElement.Type.Field)) {
-                wireUpDependencies(referenceElement);
-            }
-        }
+        prepareReferenceElements(classElement);
 
         DiagramRelationshipInfo r;
 
@@ -76,7 +65,22 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
         }
     }
 
-    public DiagramRelationshipInfo resolveEdgeType(final ReferenceNode
+    public void prepareReferenceElements(ReferenceElement classElement) {
+        PsiClass psiClass = (PsiClass) classElement.getPsiElement();
+
+        collectClassInitializers(classElement, psiClass);
+        collectFields(classElement, psiClass);
+        collectMethods(classElement, psiClass);
+
+        for (ReferenceElement referenceElement : classElement.getMembers()) {
+            if (referenceElement.getType().equals(ReferenceElement.Type.Method) || referenceElement.getType
+                    ().equals(ReferenceElement.Type.Field)) {
+                wireUpDependencies(referenceElement);
+            }
+        }
+    }
+
+    private DiagramRelationshipInfo resolveEdgeType(final ReferenceNode
             caller, final ReferenceElement calleeMethod) {
         final DiagramRelationshipInfo r;
         if (caller.getIdentifyingElement().getType() == ReferenceElement.Type.Field) {
@@ -97,7 +101,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
         return r;
     }
 
-    public void wireUpDependencies(ReferenceElement referenceElement) {
+    private void wireUpDependencies(ReferenceElement referenceElement) {
         PsiElement psiElement = referenceElement.getPsiElement();
         PsiFile psiFile = psiElement.getContainingFile();
         Collection<PsiReference> all = ReferencesSearch.search(psiElement, GlobalSearchScope.fileScope
@@ -116,7 +120,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
         }
     }
 
-    public void collectMethods(ReferenceElement classElement, PsiClass psiClass) {
+    private void collectMethods(ReferenceElement classElement, PsiClass psiClass) {
         for (PsiMethod psiMethod : psiClass.getMethods()) {
             ReferenceElement element = ReferenceElementFactory.createInstance(psiMethod);
             myNodes.add(new ReferenceNode(element));
@@ -124,7 +128,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
         }
     }
 
-    public void collectFields(ReferenceElement classElement, PsiClass psiClass) {
+    private void collectFields(ReferenceElement classElement, PsiClass psiClass) {
         for (PsiField psiField : psiClass.getFields()) {
             ReferenceElement element = ReferenceElementFactory.createInstance(psiField);
             myNodes.add(new ReferenceNode(element));
@@ -132,7 +136,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
         }
     }
 
-    public void collectClassInitializers(ReferenceElement classElement, PsiClass psiClass) {
+    private void collectClassInitializers(ReferenceElement classElement, PsiClass psiClass) {
         for (PsiClassInitializer psiClassInitializer : psiClass.getInitializers()) {
             ReferenceElement element = ReferenceElementFactory.createInstance(psiClassInitializer);
             myNodes.add(new ReferenceNode(element));

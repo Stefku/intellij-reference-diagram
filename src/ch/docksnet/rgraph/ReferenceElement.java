@@ -18,18 +18,17 @@ package ch.docksnet.rgraph;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import ch.docksnet.utils.IncrementableSet;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.impl.source.PsiMethodImpl;
-import com.intellij.psi.util.PsiUtil;
 
 /**
  * @author Stefan Zeller
@@ -54,154 +53,30 @@ public class ReferenceElement {
             // TODO to constructor?
             this.name = ((PsiClassImpl) psiElement).getName();
             this.type = Type.Class;
-            this.modifiers = resolveModifiers((PsiClassImpl) psiElement);
+            this.modifiers = PsiUtils.resolveModifiers((PsiClassImpl) psiElement);
             this.members = new ArrayList<>();
             this.callers = Collections.emptyList();
         } else if (psiElement instanceof PsiMethodImpl) {
             this.name = PsiUtils.createMethodName((PsiMethodImpl) psiElement);
             this.type = Type.Method;
-            this.modifiers = resolveModifiers((PsiMethodImpl) psiElement);
+            this.modifiers = PsiUtils.resolveModifiers((PsiMethodImpl) psiElement);
             this.members = Collections.EMPTY_LIST;
             this.callers = new ArrayList<>();
         } else if (psiElement instanceof PsiClassInitializer) {
             this.type = Type.ClassInitializer;
             this.members = Collections.EMPTY_LIST;
-            this.modifiers = resolveModifiers((PsiClassInitializer) psiElement);
+            this.modifiers = PsiUtils.resolveModifiers((PsiClassInitializer) psiElement);
             this.name = PsiUtils.resolveClassInitializerName(modifiers);
             this.callers = Collections.emptyList();
         } else if (psiElement instanceof PsiField) {
             this.type = Type.Field;
             this.members = Collections.EMPTY_LIST;
-            this.modifiers = resolveModifiers((PsiField) psiElement);
+            this.modifiers = PsiUtils.resolveModifiers((PsiField) psiElement);
             this.name = ((PsiField) psiElement).getName();
             this.callers = new ArrayList<>();
         } else {
             throw new IllegalStateException("Unsupported type of PsiElement: " + psiElement);
         }
-    }
-
-    private Set<Modifier> resolveModifiers(PsiField psiField) {
-        Set<Modifier> result = new HashSet<>();
-
-        if (hasModifier(psiField, "public")) {
-            result.add(Modifier.PUBLIC);
-        }
-
-        if (hasModifier(psiField, "private")) {
-            result.add(Modifier.PRIVATE);
-        }
-
-        if (hasModifier(psiField, "protected")) {
-            result.add(Modifier.PROTECTED);
-        }
-
-        if (hasModifier(psiField, "static")) {
-            result.add(Modifier.STATIC);
-        }
-
-        if (hasModifier(psiField, "final")) {
-            result.add(Modifier.FINAL);
-        }
-        ;
-
-        return Collections.unmodifiableSet(result);
-    }
-
-    private static boolean hasModifier(PsiField psiField, String modifier) {
-        return PsiUtil.findModifierInList(psiField.getModifierList(), modifier) != null;
-    }
-
-    public static Set<Modifier> resolveModifiers(PsiClassInitializer psiClassInitializer) {
-        Set<Modifier> result = new HashSet<>();
-
-        if (hasModifier(psiClassInitializer, "public")) {
-            result.add(Modifier.PUBLIC);
-        }
-
-        if (hasModifier(psiClassInitializer, "private")) {
-            result.add(Modifier.PRIVATE);
-        }
-
-        if (hasModifier(psiClassInitializer, "protected")) {
-            result.add(Modifier.PROTECTED);
-        }
-
-        if (hasModifier(psiClassInitializer, "static")) {
-            result.add(Modifier.STATIC);
-        }
-
-        if (hasModifier(psiClassInitializer, "final")) {
-            result.add(Modifier.FINAL);
-        }
-        ;
-
-        return Collections.unmodifiableSet(result);
-    }
-
-    private static boolean hasModifier(PsiClassInitializer classInitializer, String modifier) {
-        return PsiUtil.findModifierInList(classInitializer.getModifierList(), modifier) != null;
-    }
-
-    private Set<Modifier> resolveModifiers(PsiClassImpl psiClass) {
-        Set<Modifier> result = new HashSet<>();
-
-        if (hasModifier(psiClass, "public")) {
-            result.add(Modifier.PUBLIC);
-        }
-
-        if (hasModifier(psiClass, "private")) {
-            result.add(Modifier.PRIVATE);
-        }
-
-        if (hasModifier(psiClass, "protected")) {
-            result.add(Modifier.PROTECTED);
-        }
-
-        if (hasModifier(psiClass, "static")) {
-            result.add(Modifier.STATIC);
-        }
-
-        if (hasModifier(psiClass, "final")) {
-            result.add(Modifier.FINAL);
-        }
-        ;
-
-        return Collections.unmodifiableSet(result);
-    }
-
-    private boolean hasModifier(PsiClassImpl psiClass, String modifier) {
-        return PsiUtil.findModifierInList(psiClass.getModifierList(), modifier) != null;
-    }
-
-    private Set<Modifier> resolveModifiers(PsiMethodImpl psiMethod) {
-        Set<Modifier> result = new HashSet<>();
-
-        if (hasModifier(psiMethod, "public")) {
-            result.add(Modifier.PUBLIC);
-        }
-
-        if (hasModifier(psiMethod, "private")) {
-            result.add(Modifier.PRIVATE);
-        }
-
-        if (hasModifier(psiMethod, "protected")) {
-            result.add(Modifier.PROTECTED);
-        }
-
-        if (hasModifier(psiMethod, "static")) {
-            result.add(Modifier.STATIC);
-        }
-
-        if (hasModifier(psiMethod, "final")) {
-            result.add(Modifier.FINAL);
-        }
-        ;
-
-        return Collections.unmodifiableSet(result);
-    }
-
-    private boolean hasModifier(PsiMethodImpl psiMethod, String modifier) {
-        return PsiUtil.findModifierInList(psiMethod.getModifierList(), modifier) != null;
     }
 
     public String getName() {
@@ -247,6 +122,11 @@ public class ReferenceElement {
         return Collections.unmodifiableList(members);
     }
 
+    public String getModifierAsString() {
+        String result = StringUtil.join(modifiers, " ");
+        return result.toLowerCase();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(name, type);
@@ -278,7 +158,7 @@ public class ReferenceElement {
     }
 
     public enum Modifier {
-        PUBLIC, PRIVATE, PROTECTED, STATIC, FINAL
+        PUBLIC, PRIVATE, PROTECTED, STATIC, FINAL, ABSTRACT
     }
 
 }

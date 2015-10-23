@@ -16,6 +16,8 @@
 
 package ch.docksnet.rgraph;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.intellij.openapi.util.text.StringUtil;
@@ -24,6 +26,7 @@ import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiModifierListOwner;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.impl.source.PsiMethodImpl;
@@ -68,7 +71,7 @@ public class PsiUtils {
     }
 
     private static String resolveClassInitializerName(PsiClassInitializer classInitializer) {
-        Set<ReferenceElement.Modifier> modifiers = ReferenceElement.resolveModifiers(classInitializer);
+        Set<ReferenceElement.Modifier> modifiers = resolveModifiers(classInitializer);
         String name = resolveClassInitializerName(modifiers);
         return name;
     }
@@ -105,4 +108,33 @@ public class PsiUtils {
         }
     }
 
+    public static Set<ReferenceElement.Modifier> resolveModifiers(PsiModifierListOwner modifierListOwner) {
+        Set<ReferenceElement.Modifier> result = new HashSet<>();
+
+        if (modifierListOwner.hasModifierProperty("public")) {
+            result.add(ReferenceElement.Modifier.PUBLIC);
+        }
+
+        if (modifierListOwner.hasModifierProperty("private")) {
+            result.add(ReferenceElement.Modifier.PRIVATE);
+        }
+
+        if (modifierListOwner.hasModifierProperty("protected")) {
+            result.add(ReferenceElement.Modifier.PROTECTED);
+        }
+
+        if (modifierListOwner.hasModifierProperty("static")) {
+            result.add(ReferenceElement.Modifier.STATIC);
+        }
+
+        if (modifierListOwner.hasModifierProperty("final")) {
+            result.add(ReferenceElement.Modifier.FINAL);
+        }
+
+        if (modifierListOwner.hasModifierProperty("abstract")) {
+            result.add(ReferenceElement.Modifier.ABSTRACT);
+        }
+
+        return Collections.unmodifiableSet(result);
+    }
 }

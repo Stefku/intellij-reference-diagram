@@ -53,7 +53,7 @@ public class ReferenceNode extends DiagramNodeBase<ReferenceElement> {
             case ClassInitializer:
                 return AllIcons.Nodes.ClassInitializer;
         }
-        return AllIcons.Nodes.EmptyNode;
+        throw new IllegalStateException("unknown type: " + referenceElement.getType());
     }
 
     @NotNull
@@ -63,22 +63,8 @@ public class ReferenceNode extends DiagramNodeBase<ReferenceElement> {
     }
 
     @Override
-    public boolean canNavigate() {
-        return true;
-    }
-
-    @Override
     public boolean canNavigateToSource() {
         return true;
     }
 
-    @Override
-    public void navigate(boolean requestFocus) {
-        super.navigate(requestFocus);
-    }
-
-    @Override
-    protected String getFQN() {
-        return super.getFQN();
-    }
 }
