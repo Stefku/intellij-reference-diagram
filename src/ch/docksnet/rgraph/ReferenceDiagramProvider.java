@@ -39,7 +39,7 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<ReferenceEleme
     public static final String ID = "ReferenceDiagramProvider";
     private DiagramElementManager<ReferenceElement> myElementManager = new ReferenceDiagramElementManager();
     private DiagramVfsResolver<ReferenceElement> myVfsResolver = new ReferenceDiagramVfsResolver();
-    private DiagramExtras<ReferenceElement> myExtras = new DiagramExtras<>();
+    private ReferenceDiagramExtras myExtras = new ReferenceDiagramExtras();
     private DiagramColorManager myColorManager = new ReferenceDiagramColorManager();
 
     @Pattern("[a-zA-Z0-9_-]*")

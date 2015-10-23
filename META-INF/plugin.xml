@@ -46,7 +46,6 @@
   </project-components>
 
   <actions>
-    <!-- Add your actions here -->
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
