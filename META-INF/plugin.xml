@@ -17,7 +17,7 @@
 <idea-plugin version="2">
   <id>ch.docksnet.rgraph</id>
   <name>Java Method Reference Diagram</name>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
   <vendor email="stefan.zeller@docksnet.ch">Stefan Zeller</vendor>
   <depends>com.intellij.diagram</depends>
   <description><![CDATA[
@@ -32,6 +32,7 @@
 
   <change-notes><![CDATA[
         <ul>
+	        <li>Version 1.1.0: show modifiers and the count of reference from one element to another</li>
             <li>Version 1.0.1: Goto source (F4) is possible</li>
         </ul>
       ]]>
