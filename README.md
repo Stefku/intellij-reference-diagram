@@ -15,7 +15,7 @@ A blue line indicates a method call, where a green line means that a field is co
 ![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/master/test/ExampleDiagram_ch.docksnet.app.MainClass.png)
 
 ```java
-public final class MainClass {
+public abstract class MainClass {
 
     {
         // class initializer
@@ -33,9 +33,8 @@ public final class MainClass {
 
     private static String staticField2;
 
-    private int field1;
+    int field1;
 
-    // field is coupled to a method, in terms of cohesion
     private int field2 = createInt();
 
     private int createInt() {
@@ -50,16 +49,30 @@ public final class MainClass {
         return null;
     }
 
-    public void method1() {
+    public final void method1() {
         method2();
     }
 
-    public void method1(int a) {
+    protected void method1(int a) {
+        method2();
+        method2();
         method2();
     }
 
-    private void method2() {
+    void method2() {
         field1 = 4;
+        field1 = 1;
+    }
+
+    abstract void abstractMethod();
+
+    private void recursiveMethod() {
+        recursiveMethod();
+    }
+
+    class InnerClass {
+        // TODO what about inner classes?
+        String innerField = staticMethod2();
     }
 
 }
