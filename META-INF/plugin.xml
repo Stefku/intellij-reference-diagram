@@ -16,12 +16,12 @@
 
 <idea-plugin version="2">
   <id>ch.docksnet.rgraph</id>
-  <name>Java Method Reference Diagramm</name>
+  <name>Java Method Reference Diagram</name>
   <version>1.0</version>
   <vendor email="stefan.zeller@docksnet.ch">Stefan Zeller</vendor>
   <depends>com.intellij.diagram</depends>
   <description><![CDATA[
-      Java Method Reference Diagramm<br>
+      Java Method Reference Diagram<br>
       This plugins shows a diagram of a java class with two purposes
       <ul>
         <li>A usage graph of methods, fields and class initializer blocks</li>
