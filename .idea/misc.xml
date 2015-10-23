@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EclipseCodeFormatter">
+    <option name="defaultSettings" value="true" />
+    <option name="formatter" value="ECLIPSE" />
+    <option name="id" value="1370954343826" />
+    <option name="importOrderConfigFilePath" value="$PROJECT_DIR$/../../../../settings/eclipse-code-formatter/eclipse.importorder" />
+    <option name="importOrderFromFile" value="true" />
+    <option name="name" value="default" />
+    <option name="pathToConfigFileJava" value="$PROJECT_DIR$/../../../../settings/eclipse-code-formatter/eclipse-sbb-formatter.xml" />
+    <option name="selectedJavaProfile" value="sbb_formatter_profile" />
+  </component>
+  <component name="EntryPointsManager">
+    <entry_points version="2.0" />
+  </component>
+  <component name="IdProvider" IDEtalkID="8EBDEB830F2806379D856F21D180D95D" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="IntelliJ IDEA IU-141.1010.3" project-jdk-type="IDEA JDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>
