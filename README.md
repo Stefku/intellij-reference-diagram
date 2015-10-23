@@ -7,6 +7,56 @@ which is probably slighty different from a graph of dependencies.
 
 This plugin is in a early state.
 
-## TODO
-- distinguish overloaded methods
-- toggle dependency and orphaned groups mode
+## Example
+
+![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/master/test/ExampleDiagram_ch.docksnet.app.MainClass.png)
+
+```java
+public final class MainClass {
+
+    {
+        // class initializer
+        method1();
+    }
+
+    static {
+        // static class initializer
+        staticMethod();
+        staticField2 = "";
+    }
+
+    // field is coupled to a method, in terms of cohesion
+    public static String staticField1 = staticMethod2();
+
+    private static String staticField2;
+
+    private int field1;
+
+    private int field2 = createInt();
+
+    private int createInt() {
+        return 0;
+    }
+
+    public static void staticMethod() {
+        staticMethod2();
+    }
+
+    private static String staticMethod2() {
+        return null;
+    }
+
+    public void method1() {
+        method2();
+    }
+
+    public void method1(int a) {
+        method2();
+    }
+
+    private void method2() {
+        field1 = 4;
+    }
+
+}
+```
