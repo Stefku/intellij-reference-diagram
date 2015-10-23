@@ -11,6 +11,8 @@ This plugin is in a early state.
 
 ![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/master/test/ExampleDiagram_ch.docksnet.app.MainClass.png)
 
+A blue line indicates a method call, where a green line means that a field is coupled to a method in terms of cohesion.
+
 ```java
 public final class MainClass {
 
