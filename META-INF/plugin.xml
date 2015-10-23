@@ -16,15 +16,24 @@
 
 <idea-plugin version="2">
   <id>ch.docksnet.rgraph</id>
-  <name>Java Reference Diagramm</name>
+  <name>Java Method Reference Diagramm</name>
   <version>1.0</version>
   <vendor email="stefan.zeller@docksnet.ch">Stefan Zeller</vendor>
   <depends>com.intellij.diagram</depends>
   <description><![CDATA[
-      Java Reference Diagramm<br>
+      Java Method Reference Diagramm<br>
+      This plugins shows a diagram of a java class with two purposes
+      <ul>
+        <li>A usage graph of methods, fields and class initializer blocks</li>
+        <li>Visual information about orphaned groups, meaning independent clusters of methods and fields</li>
+      </ul>
+      See https://github.com/Stefku/intellij-reference-diagram<br>
       ]]></description>
 
   <change-notes><![CDATA[
+        <ul>
+            <li>Version 1.0: Goto source (F4) is possible</li>
+        </ul>
       ]]>
   </change-notes>
 
