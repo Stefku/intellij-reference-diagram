@@ -212,14 +212,6 @@ public class ReferenceElement {
         return type;
     }
 
-    public Set<Modifier> getModifiers() {
-        return modifiers;
-    }
-
-    public List<ReferenceElement> getCallers() {
-        return callers;
-    }
-
     public List<ReferenceElement> getCallees() {
         return callees;
     }
@@ -242,6 +234,15 @@ public class ReferenceElement {
 
     public List<ReferenceElement> getMembers() {
         return Collections.unmodifiableList(members);
+    }
+
+
+    @Override
+    public String toString() {
+        return "ReferenceElement{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                '}';
     }
 
     public enum Type {

@@ -79,10 +79,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
                 myEdges.add(new ReferenceEdge(caller, callee, r));
             }
         }
-
-        project.data
-
-        CommonDataKeys.NAVIGATABLE_ARRAY.
     }
 
     public void wireUpDependencies(ReferenceElement referenceElement) {

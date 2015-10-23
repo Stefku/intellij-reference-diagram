@@ -46,7 +46,6 @@
   </project-components>
 
   <actions>
-	  <action class="ch.docksnet.rgraph.MyAction" id="myAction"/>
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
