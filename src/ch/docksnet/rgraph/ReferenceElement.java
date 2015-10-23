@@ -52,13 +52,13 @@ public class ReferenceElement {
             // TODO to constructor?
             this.name = ((PsiClassImpl) psiElement).getName();
             this.type = Type.Class;
-            this.modifiers = resolveModifiers((PsiClassImpl)psiElement);
+            this.modifiers = resolveModifiers((PsiClassImpl) psiElement);
             this.members = new ArrayList<>();
             this.callers = Collections.emptyList();
         } else if (psiElement instanceof PsiMethodImpl) {
             this.name = ((PsiMethodImpl) psiElement).getName();
             this.type = Type.Method;
-            this.modifiers = resolveModifiers((PsiMethodImpl)psiElement);
+            this.modifiers = resolveModifiers((PsiMethodImpl) psiElement);
             this.members = Collections.EMPTY_LIST;
             this.callers = new ArrayList<>();
         } else if (psiElement instanceof PsiClassInitializer) {
@@ -99,7 +99,8 @@ public class ReferenceElement {
 
         if (hasModifier(psiField, "final")) {
             result.add(Modifier.FINAL);
-        };
+        }
+        ;
 
         return Collections.unmodifiableSet(result);
     }
@@ -139,7 +140,8 @@ public class ReferenceElement {
 
         if (hasModifier(psiClassInitializer, "final")) {
             result.add(Modifier.FINAL);
-        };
+        }
+        ;
 
         return Collections.unmodifiableSet(result);
     }
@@ -169,7 +171,8 @@ public class ReferenceElement {
 
         if (hasModifier(psiClass, "final")) {
             result.add(Modifier.FINAL);
-        };
+        }
+        ;
 
         return Collections.unmodifiableSet(result);
     }
@@ -199,7 +202,8 @@ public class ReferenceElement {
 
         if (hasModifier(psiMethod, "final")) {
             result.add(Modifier.FINAL);
-        };
+        }
+        ;
 
         return Collections.unmodifiableSet(result);
     }

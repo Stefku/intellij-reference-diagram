@@ -17,11 +17,6 @@
 package ch.docksnet.rgraph;
 
 import ch.docksnet.utils.PreConditionUtil;
-import com.intellij.psi.PsiClass;
-import org.intellij.lang.annotations.Pattern;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import com.intellij.diagram.BaseDiagramProvider;
 import com.intellij.diagram.DiagramColorManager;
 import com.intellij.diagram.DiagramElementManager;
@@ -31,6 +26,10 @@ import com.intellij.diagram.DiagramVfsResolver;
 import com.intellij.diagram.extras.DiagramExtras;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiClass;
+import org.intellij.lang.annotations.Pattern;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Stefan Zeller
@@ -71,9 +70,10 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<ReferenceEleme
     }
 
     @Override
-    public ReferenceDiagramDataModel createDataModel(@NotNull Project project, @Nullable ReferenceElement referenceElement, @Nullable VirtualFile virtualFile, DiagramPresentationModel model) {
-        PreConditionUtil.assertTrue(referenceElement.getPsiElement() instanceof PsiClass, "referenceElement.psiElement must be a " +
-                "PsiClass");
+    public ReferenceDiagramDataModel createDataModel(@NotNull Project project, @Nullable ReferenceElement
+            referenceElement, @Nullable VirtualFile virtualFile, DiagramPresentationModel model) {
+        PreConditionUtil.assertTrue(referenceElement.getPsiElement() instanceof PsiClass, "referenceElement" +
+                ".psiElement must be a PsiClass");
         return new ReferenceDiagramDataModel(project, referenceElement);
     }
 

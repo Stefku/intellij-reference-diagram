@@ -18,14 +18,13 @@ package ch.docksnet.rgraph;
 
 import java.util.Set;
 
-import com.intellij.psi.PsiClassInitializer;
-import com.intellij.psi.PsiField;
-import org.jetbrains.annotations.Nullable;
-
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
 import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.impl.source.PsiMethodImpl;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author u215942 (Stefan Zeller)

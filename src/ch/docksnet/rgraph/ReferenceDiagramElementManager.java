@@ -16,8 +16,6 @@
 
 package ch.docksnet.rgraph;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.intellij.diagram.AbstractDiagramElementManager;
 import com.intellij.diagram.presentation.DiagramState;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -25,6 +23,7 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.ui.SimpleColoredText;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Stefan Zeller
@@ -76,4 +75,5 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
     public String getNodeTooltip(ReferenceElement referenceElement) {
         return null;
     }
+
 }
