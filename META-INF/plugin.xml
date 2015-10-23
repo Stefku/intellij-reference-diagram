@@ -25,7 +25,7 @@
       This plugins shows a diagram of a java class with two purposes
       <ul>
         <li>A usage graph of methods, fields and class initializer blocks</li>
-        <li>Visual information about orphaned groups, meaning independent clusters of methods and fields</li>
+        <li>Visual information about orphaned groups, meaning independent clusters of methods and fields that are candidates for refactoring to separate classes</li>
       </ul>
       See <a href="https://github.com/Stefku/intellij-reference-diagram">https://github.com/Stefku/intellij-reference-diagram</a><br>
       ]]></description>
