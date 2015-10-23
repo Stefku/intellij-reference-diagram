@@ -62,4 +62,23 @@ public class ReferenceNode extends DiagramNodeBase<ReferenceElement> {
         return referenceElement;
     }
 
+    @Override
+    public boolean canNavigate() {
+        return true;
+    }
+
+    @Override
+    public boolean canNavigateToSource() {
+        return true;
+    }
+
+    @Override
+    public void navigate(boolean requestFocus) {
+        super.navigate(requestFocus);
+    }
+
+    @Override
+    protected String getFQN() {
+        return super.getFQN();
+    }
 }
