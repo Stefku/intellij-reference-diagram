@@ -10,7 +10,8 @@ This plugin is available in IntelliJ Plugin Registry: [https://plugins.jetbrains
 ## Example
 
 This example shows three cohesive clusters in MainClass (source is showed below). 
-A blue line indicates a method call, where a green line means that a field is coupled to a method in terms of cohesion. 
+A blue line indicates a method call, where a green line means that a field is coupled to a method in terms of cohesion.
+The numbers on the edges indicating the number of references.
 
 ![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/master/test/ExampleDiagram_ch.docksnet.app.MainClass.png)
 
