@@ -32,7 +32,7 @@
 
   <change-notes><![CDATA[
         <ul>
-        	<li><a href="https://github.com/Stefku/intellij-reference-diagram/issues?utf8=✓&q=milestone%3A1.1.1+">Version 1.1.1</a>: Searching in diagram is now working CTRL+F12 / CTRL+F</li>
+        	<li><a href="https://github.com/Stefku/intellij-reference-diagram/issues?q=milestone%3A1.1.1+is%3Aclosed">Version 1.1.1</a>: Bug fixes. E.g. searching in diagram is now working CTRL+F12 / CTRL+F.</li>
 	        <li>Version 1.1.0: show modifiers and the count of reference from one element to another</li>
             <li>Version 1.0.1: Goto source (F4) is possible</li>
         </ul>
