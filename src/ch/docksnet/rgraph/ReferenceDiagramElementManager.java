@@ -74,7 +74,12 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
     @Nullable
     @Override
     public SimpleColoredText getItemName(Object o, DiagramState state) {
-        return null;
+        if (o instanceof ReferenceElement) {
+            return new SimpleColoredText(((ReferenceElement) o).getName(), DEFAULT_TEXT_ATTR);
+        } else {
+            return null;
+        }
+
     }
 
     @Override
