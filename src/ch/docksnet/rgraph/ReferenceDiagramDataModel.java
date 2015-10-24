@@ -110,6 +110,9 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
         String containingClassName = ((PsiClass) psiElement.getContext()).getName();
 
         for (PsiReference psiReference : all) {
+            if (!(psiReference instanceof PsiReferenceExpression)) {
+                continue;
+            }
             PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
             String className = PsiUtils.getClassName(referenceExpression);
             String callerName = PsiUtils.getParentName(referenceExpression);
