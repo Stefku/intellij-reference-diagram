@@ -7,6 +7,9 @@ which is probably slighty different from a graph of dependencies.
 
 This plugin is available in IntelliJ Plugin Registry: [https://plugins.jetbrains.com/plugin/7996](https://plugins.jetbrains.com/plugin/7996)
 
+## Known Issues
+- Diagram is not updated when underlying class is refactored
+
 ## Example
 
 This example shows three cohesive clusters in MainClass (source is showed below). 
