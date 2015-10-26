@@ -122,11 +122,6 @@ public class ReferenceElement {
         return Collections.unmodifiableList(members);
     }
 
-    public String getModifierAsString() {
-        String result = StringUtil.join(modifiers, " ");
-        return result.toLowerCase();
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(name, type);

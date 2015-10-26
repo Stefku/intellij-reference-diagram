@@ -43,17 +43,7 @@ public class ReferenceNode extends DiagramNodeBase<ReferenceElement> {
 
     @Override
     public Icon getIcon() {
-        switch (referenceElement.getType()) {
-            case Class:
-                return AllIcons.Nodes.Class;
-            case Method:
-                return AllIcons.Nodes.Method;
-            case Field:
-                return AllIcons.Nodes.Field;
-            case ClassInitializer:
-                return AllIcons.Nodes.ClassInitializer;
-        }
-        throw new IllegalStateException("unknown type: " + referenceElement.getType());
+        return referenceElement.getPsiElement().getIcon(1);
     }
 
     @NotNull
