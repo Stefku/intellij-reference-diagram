@@ -18,7 +18,7 @@
   <id>ch.docksnet.rgraph</id>
   <name>Java Method Reference Diagram</name>
   <version>1.2.0</version>
-  <vendor email="stefan.zeller@docksnet.ch">Stefan Zeller</vendor>
+  <vendor email="stefku@docksnet.ch">Stefan Zeller</vendor>
   <depends>com.intellij.diagram</depends>
   <description><![CDATA[
       Java Method Reference Diagram<br>
