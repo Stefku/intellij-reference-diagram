@@ -45,6 +45,10 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
         PsiElement psiElement = CommonDataKeys.PSI_FILE.getData(context).findElementAt(CommonDataKeys.EDITOR
                 .getData(context).getCaretModel().getOffset());
 
+        if (psiElement == null) {
+            return null;
+        }
+
         PsiClass psiClass = PsiUtils.getClassFromHierarchy(psiElement);
 
         if (psiClass == null) {
