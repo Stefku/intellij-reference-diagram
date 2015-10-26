@@ -28,4 +28,8 @@ public class ReferenceEdge extends DiagramEdgeBase<ReferenceElement> {
         super(source, target, relationship);
     }
 
+    enum Type {
+        FIELD_TO_METHOD, REFERENCE
+    }
+
 }

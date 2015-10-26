@@ -16,15 +16,11 @@
 
 package ch.docksnet.rgraph;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
+import com.intellij.diagram.presentation.DiagramLineType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -40,6 +36,11 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Stefan Zeller
@@ -81,23 +82,47 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
     }
 
     private DiagramRelationshipInfo resolveEdgeType(final ReferenceNode
-            caller, final ReferenceElement calleeMethod) {
+                                                            caller, final ReferenceElement calleeMethod) {
         final DiagramRelationshipInfo r;
         if (caller.getIdentifyingElement().getType() == ReferenceElement.Type.Field) {
-            r = ReferenceDiagramRelationships.SOFT;
+            r = createEdgeFromField();
         } else {
-            r = new DiagramRelationshipInfoAdapter("STRONG") {
-                @Override
-                public Shape getStartArrow() {
-                    return STANDARD;
-                }
-
-                @Override
-                public String getLabel() {
-                    return caller.getIdentifyingElement().getCalleeCount(calleeMethod) + "";
-                }
-            };
+            r = createEdgeFromNonField(caller, calleeMethod);
         }
+        return r;
+    }
+
+    @NotNull
+    private DiagramRelationshipInfo createEdgeFromNonField(final ReferenceNode caller, final ReferenceElement calleeMethod) {
+        DiagramRelationshipInfo r;
+        r = new DiagramRelationshipInfoAdapter(ReferenceEdge.Type.REFERENCE.name()) {
+            @Override
+            public Shape getStartArrow() {
+                return STANDARD;
+            }
+
+            @Override
+            public String getLabel() {
+                return caller.getIdentifyingElement().getCalleeCount(calleeMethod) + "";
+            }
+        };
+        return r;
+    }
+
+    @NotNull
+    private DiagramRelationshipInfo createEdgeFromField() {
+        DiagramRelationshipInfo r;
+        r = new DiagramRelationshipInfoAdapter(ReferenceEdge.Type.FIELD_TO_METHOD.name()) {
+            @Override
+            public Shape getStartArrow() {
+                return DELTA_SMALL;
+            }
+
+            @Override
+            public DiagramLineType getLineType() {
+                return DiagramLineType.DASHED;
+            }
+        };
         return r;
     }
 
