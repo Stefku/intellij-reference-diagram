@@ -62,13 +62,7 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
     @Nullable
     @Override
     public String getElementTitle(ReferenceElement referenceElement) {
-        switch (referenceElement.getType()) {
-            case Class:
-            case ClassInitializer:
-                return referenceElement.getName();
-            default:
-                return referenceElement.getModifierAsString() + " " + referenceElement.getName();
-        }
+        return referenceElement.getName();
     }
 
     @Nullable
