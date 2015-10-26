@@ -26,11 +26,11 @@ public abstract class MainClass {
     static {
         // static class initializer
         staticMethod();
-        staticField2 = "";
+        staticField2 = StaticInnerClass.TEXT;
     }
 
     // field is coupled to a method, in terms of cohesion
-    public static String staticField1 = staticMethod2();
+    public static String staticField1 = staticMethod2c();
 
     private static String staticField2;
 
@@ -38,15 +38,28 @@ public abstract class MainClass {
 
     private int field2 = createInt();
 
+    public ENUM field3 = ENUM.A;
+
+    public MainClass() {
+        InnerClass innerClass = new InnerClass();
+        innerClass.getName();
+    }
+
+    public MainClass(int field1, int field2, ENUM field3) {
+        this.field1 = field1;
+        this.field2 = field2;
+        this.field3 = field3;
+    }
+
     private int createInt() {
         return 0;
     }
 
     public static void staticMethod() {
-        staticMethod2();
+        staticMethod2c();
     }
 
-    private static String staticMethod2() {
+    private static String staticMethod2c() {
         return null;
     }
 
@@ -63,6 +76,7 @@ public abstract class MainClass {
     void method2() {
         field1 = 4;
         field1 = 1;
+        field3.getString();
     }
 
     abstract void abstractMethod();
@@ -73,7 +87,27 @@ public abstract class MainClass {
 
     class InnerClass {
         // TODO what about inner classes?
-        String innerField = staticMethod2();
+        String innerField = staticMethod2c();
+        public String getName() {
+            return "Name";
+        }
+    }
+
+    static class StaticInnerClass {
+        public int i =3;
+        public static final String TEXT = "text";
+        static {
+            System.out.println(TEXT);
+            System.out.println(staticField1);
+        }
+    }
+
+    enum ENUM {
+        A, B, C;
+
+        public String getString() {
+            return "String";
+        }
     }
 
 }
