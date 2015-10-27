@@ -16,6 +16,11 @@
 
 package ch.docksnet.rgraph;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramRelationshipInfo;
@@ -36,11 +41,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Stefan Zeller
@@ -82,7 +82,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
     }
 
     private DiagramRelationshipInfo resolveEdgeType(final ReferenceNode
-                                                            caller, final ReferenceElement calleeMethod) {
+            caller, final ReferenceElement calleeMethod) {
         final DiagramRelationshipInfo r;
         if (caller.getIdentifyingElement().getType() == ReferenceElement.Type.Field) {
             r = createEdgeFromField();
@@ -93,7 +93,8 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
     }
 
     @NotNull
-    private DiagramRelationshipInfo createEdgeFromNonField(final ReferenceNode caller, final ReferenceElement calleeMethod) {
+    private DiagramRelationshipInfo createEdgeFromNonField(final ReferenceNode caller, final
+    ReferenceElement calleeMethod) {
         DiagramRelationshipInfo r;
         r = new DiagramRelationshipInfoAdapter(ReferenceEdge.Type.REFERENCE.name()) {
             @Override
@@ -102,7 +103,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<ReferenceElement
             }
 
             @Override
-            public String getLabel() {
+            public String getToLabel() {
                 return caller.getIdentifyingElement().getCalleeCount(calleeMethod) + "";
             }
         };
