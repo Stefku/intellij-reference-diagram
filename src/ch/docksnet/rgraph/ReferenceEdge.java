@@ -17,14 +17,17 @@
 package ch.docksnet.rgraph;
 
 import com.intellij.diagram.DiagramEdgeBase;
+import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramRelationshipInfo;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author Stefan Zeller
  */
-public class ReferenceEdge extends DiagramEdgeBase<ReferenceElement> {
+public class ReferenceEdge extends DiagramEdgeBase<PsiElement> {
 
-    public ReferenceEdge(ReferenceNode source, ReferenceNode target, DiagramRelationshipInfo relationship) {
+
+    public ReferenceEdge(DiagramNode<PsiElement> source, DiagramNode<PsiElement> target, DiagramRelationshipInfo relationship) {
         super(source, target, relationship);
     }
 

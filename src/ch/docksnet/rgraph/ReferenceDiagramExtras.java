@@ -16,26 +16,27 @@
 
 package ch.docksnet.rgraph;
 
-import java.util.List;
-
 import com.intellij.diagram.DiagramBuilder;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.extras.DiagramExtras;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * @author Stefan Zeller
  */
-public class ReferenceDiagramExtras extends DiagramExtras<ReferenceElement> {
+public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
 
     @Nullable
     @Override
-    public Object getData(String dataId, List<DiagramNode<ReferenceElement>> nodes, DiagramBuilder builder) {
+    public Object getData(String dataId, List<DiagramNode<PsiElement>> nodes, DiagramBuilder builder) {
         if (nodes.size() == 1) {
             if (CommonDataKeys.PSI_ELEMENT.is(dataId)) {
-                ReferenceElement referenceElement = nodes.get(0).getIdentifyingElement();
-                return referenceElement.getPsiElement();
+                PsiElement psiElement = nodes.get(0).getIdentifyingElement();
+                return psiElement;
             }
         }
         return super.getData(dataId, nodes, builder);

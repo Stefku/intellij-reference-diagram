@@ -22,17 +22,18 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.ui.SimpleColoredText;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Stefan Zeller
  */
-public class ReferenceDiagramElementManager extends AbstractDiagramElementManager<ReferenceElement> {
+public class ReferenceDiagramElementManager extends AbstractDiagramElementManager<PsiElement> {
 
     @Nullable
     @Override
-    public ReferenceElement findInDataContext(DataContext context) {
+    public PsiElement findInDataContext(DataContext context) {
 
         if (CommonDataKeys.PSI_FILE.getData(context) == null) {
             return null;
@@ -55,7 +56,7 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
             return null;
         }
 
-        return ReferenceElementFactory.createInstance(psiClass);
+        return psiClass;
     }
 
     @Override
@@ -65,15 +66,18 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
 
     @Nullable
     @Override
-    public String getElementTitle(ReferenceElement referenceElement) {
-        return referenceElement.getName();
+    public String getElementTitle(PsiElement psiElement) {
+        if (psiElement instanceof PsiNamedElement) {
+            return ((PsiNamedElement) psiElement).getName();
+        }
+        throw new IllegalStateException("psiElement must be a PsiNamedElement: " + psiElement);
     }
 
     @Nullable
     @Override
     public SimpleColoredText getItemName(Object o, DiagramState state) {
-        if (o instanceof ReferenceElement) {
-            return new SimpleColoredText(((ReferenceElement) o).getName(), DEFAULT_TEXT_ATTR);
+        if (o instanceof PsiElement) {
+            return new SimpleColoredText(getElementTitle((PsiElement) o), DEFAULT_TEXT_ATTR);
         } else {
             return null;
         }
@@ -81,7 +85,7 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
     }
 
     @Override
-    public String getNodeTooltip(ReferenceElement referenceElement) {
+    public String getNodeTooltip(PsiElement PsiElement) {
         return null;
     }
 

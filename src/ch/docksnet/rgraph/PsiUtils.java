@@ -16,17 +16,12 @@
 
 package ch.docksnet.rgraph;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifierListOwner;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.impl.source.PsiMethodImpl;
@@ -71,8 +66,11 @@ public class PsiUtils {
     }
 
     private static String resolveClassInitializerName(PsiClassInitializer classInitializer) {
-        Set<ReferenceElement.Modifier> modifiers = resolveModifiers(classInitializer);
-        String name = resolveClassInitializerName(modifiers);
+        String name = "";
+        if (classInitializer.hasModifierProperty("static")) {
+            name = "static ";
+        }
+        name += "[initializer]";
         return name;
     }
 
@@ -98,43 +96,4 @@ public class PsiUtils {
         return psiMethod.getName() + "(" + parameters + ")";
     }
 
-    public static String resolveClassInitializerName(Set<ReferenceElement.Modifier> modifiers) {
-        if (modifiers.size() == 1 && modifiers.contains(ReferenceElement.Modifier.STATIC)) {
-            return STATIC_CLASS_INITIALIZER_NAME;
-        } else if (modifiers.isEmpty()) {
-            return CLASS_INITIALIZER_NAME;
-        } else {
-            throw new IllegalStateException("Unsupported modifier of ClassInitializer: " + modifiers);
-        }
-    }
-
-    public static Set<ReferenceElement.Modifier> resolveModifiers(PsiModifierListOwner modifierListOwner) {
-        Set<ReferenceElement.Modifier> result = new HashSet<>();
-
-        if (modifierListOwner.hasModifierProperty("public")) {
-            result.add(ReferenceElement.Modifier.PUBLIC);
-        }
-
-        if (modifierListOwner.hasModifierProperty("private")) {
-            result.add(ReferenceElement.Modifier.PRIVATE);
-        }
-
-        if (modifierListOwner.hasModifierProperty("protected")) {
-            result.add(ReferenceElement.Modifier.PROTECTED);
-        }
-
-        if (modifierListOwner.hasModifierProperty("static")) {
-            result.add(ReferenceElement.Modifier.STATIC);
-        }
-
-        if (modifierListOwner.hasModifierProperty("final")) {
-            result.add(ReferenceElement.Modifier.FINAL);
-        }
-
-        if (modifierListOwner.hasModifierProperty("abstract")) {
-            result.add(ReferenceElement.Modifier.ABSTRACT);
-        }
-
-        return Collections.unmodifiableSet(result);
-    }
 }

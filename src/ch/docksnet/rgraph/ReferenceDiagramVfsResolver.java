@@ -18,22 +18,26 @@ package ch.docksnet.rgraph;
 
 import com.intellij.diagram.DiagramVfsResolver;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementFactory;
+import com.intellij.psi.util.PsiFormatUtil;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Stefan Zeller
  */
-public class ReferenceDiagramVfsResolver implements DiagramVfsResolver<ReferenceElement> {
+public class ReferenceDiagramVfsResolver implements DiagramVfsResolver<PsiElement> {
 
     @Override
-    public String getQualifiedName(ReferenceElement file) {
-        return file.getName();
+    public String getQualifiedName(PsiElement psiElement) {
+        PsiFormatUtil.
+        return psiElement.;
     }
 
     @Nullable
     @Override
-    public ReferenceElement resolveElementByFQN(String name, Project project) {
-        return ReferenceElementFactory.getElement(name);
+    public PsiElement resolveElementByFQN(String name, Project project) {
+        return PsiElementFactory.getElement(name);
     }
 
 }
