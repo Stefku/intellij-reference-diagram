@@ -23,12 +23,11 @@ import java.util.Objects;
 import java.util.Set;
 
 import ch.docksnet.utils.IncrementableSet;
-import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
-import com.intellij.psi.impl.source.PsiClassImpl;
-import com.intellij.psi.impl.source.PsiMethodImpl;
+import com.intellij.psi.PsiMethod;
 
 /**
  * @author Stefan Zeller
@@ -49,17 +48,17 @@ public class ReferenceElement {
     public ReferenceElement(PsiElement psiElement) {
         this.psiElement = psiElement;
         this.callees = new ArrayList<>();
-        if (psiElement instanceof PsiClassImpl) {
+        if (psiElement instanceof PsiClass) {
             // TODO to constructor?
-            this.name = ((PsiClassImpl) psiElement).getName();
+            this.name = ((PsiClass) psiElement).getName();
             this.type = Type.Class;
-            this.modifiers = PsiUtils.resolveModifiers((PsiClassImpl) psiElement);
+            this.modifiers = PsiUtils.resolveModifiers((PsiClass) psiElement);
             this.members = new ArrayList<>();
             this.callers = Collections.emptyList();
-        } else if (psiElement instanceof PsiMethodImpl) {
-            this.name = PsiUtils.createMethodName((PsiMethodImpl) psiElement);
+        } else if (psiElement instanceof PsiMethod) {
+            this.name = PsiUtils.createMethodName((PsiMethod) psiElement);
             this.type = Type.Method;
-            this.modifiers = PsiUtils.resolveModifiers((PsiMethodImpl) psiElement);
+            this.modifiers = PsiUtils.resolveModifiers((PsiMethod) psiElement);
             this.members = Collections.EMPTY_LIST;
             this.callers = new ArrayList<>();
         } else if (psiElement instanceof PsiClassInitializer) {
