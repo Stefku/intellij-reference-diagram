@@ -170,30 +170,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     @NotNull
     @Override
     public String getNodeName(DiagramNode<PsiElement> diagramNode) {
-        PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
-
-            @Override
-            public String processClass(PsiClass psiClass) {
-                throw new NotImplementedException();
-            }
-
-            @Override
-            public String processMethod(PsiMethod psiMethod) {
-                return psiMethod.getName();
-            }
-
-            @Override
-            public String processField(PsiField psiField) {
-                return psiField.getName();
-            }
-
-            @Override
-            public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
-                return PsiUtils.getName(psiClassInitializer);
-            }
-        };
-
-        return psiElementDispatcher.dispatch(diagramNode.getIdentifyingElement());
+        return PsiUtils.getPresentableName(diagramNode.getIdentifyingElement());
     }
 
     @Nullable
@@ -203,7 +180,13 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     @Override
+    public void removeNode(DiagramNode<PsiElement> node) {
+        System.out.println("removeNode()");
+    }
+
+    @Override
     public void refreshDataModel() {
+        System.out.println("refreshDataModel()");
     }
 
     @NotNull

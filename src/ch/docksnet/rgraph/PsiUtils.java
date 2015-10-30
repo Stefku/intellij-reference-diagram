@@ -16,12 +16,15 @@
 
 package ch.docksnet.rgraph;
 
+import java.util.List;
+
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiMethod;
 import com.intellij.psi.impl.source.PsiMethodImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.Nullable;
@@ -73,4 +76,32 @@ public class PsiUtils {
         }
     }
 
+    public static String getPresentableName(PsiElement psiElement) {
+        PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
+
+            @Override
+            public String processClass(PsiClass psiClass) {
+                return psiClass.getName();
+            }
+
+            @Override
+            public String processMethod(PsiMethod psiMethod) {
+                List<String> parameterArray = MethodFQN.getParameterArray(psiMethod);
+                String parameterRepresentation = MethodFQN.createParameterRepresentation(parameterArray);
+                return psiMethod.getName() + "(" + parameterRepresentation + ")";
+            }
+
+            @Override
+            public String processField(PsiField psiField) {
+                return psiField.getName();
+            }
+
+            @Override
+            public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
+                return getName(psiClassInitializer);
+            }
+        };
+
+        return psiElementDispatcher.dispatch(psiElement);
+    }
 }
