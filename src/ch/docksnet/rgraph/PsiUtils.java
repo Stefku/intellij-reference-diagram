@@ -25,7 +25,6 @@ import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.impl.source.PsiMethodImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,20 +46,31 @@ public class PsiUtils {
         }
     }
 
-    public static PsiElement getRootPsiElement(PsiElement psiElement) {
+    public static PsiElement getRootPsiElement(PsiClass psiClass, PsiElement psiElement) {
         PsiElement parent = psiElement.getParent();
         if (parent == null) {
             throw new IllegalStateException("no parent found");
         }
-        if (parent instanceof PsiMethodImpl) {
-            return parent;
+        if (parent instanceof PsiMethod) {
+            if (PsiUtils.classHasMethod(psiClass, (PsiMethod) parent)) {
+                return parent;
+            }
         } else if (parent instanceof PsiClassInitializer) {
             return parent;
         } else if (parent instanceof PsiField) {
             return parent;
-        } else {
-            return getRootPsiElement(parent);
         }
+
+        return getRootPsiElement(psiClass, parent);
+    }
+
+    private static boolean classHasMethod(PsiClass psiClass, PsiMethod other) {
+        for (PsiMethod psiMethod : psiClass.getMethods()) {
+            if (psiMethod.equals(other)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static PsiClass getPsiClass(String classFQN, Project project) {
