@@ -17,7 +17,6 @@
 package ch.docksnet.rgraph;
 
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.impl.source.PsiJavaFileImpl;
 
 /**
  * @author Stefan Zeller

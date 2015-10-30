@@ -31,11 +31,15 @@ public class SourceTargetPair {
         this.target = target;
     }
 
-    public @NotNull PsiElement getSource() {
+    public
+    @NotNull
+    PsiElement getSource() {
         return source;
     }
 
-    public @NotNull PsiElement getTarget() {
+    public
+    @NotNull
+    PsiElement getTarget() {
         return target;
     }
 

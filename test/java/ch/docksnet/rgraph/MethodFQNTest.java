@@ -20,10 +20,10 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
- * @author u215942 (Stefan Zeller)
+ * @author Stefan Zeller
  */
 public class MethodFQNTest {
 
@@ -48,25 +48,5 @@ public class MethodFQNTest {
 
         assertEquals("ch.docksnet.app.MainClass#method1(int,String,int)", result);
     }
-
-//    @Test(expected = IllegalArgumentException.class)
-//    public void some_bad_case_1() throws Exception {
-//        MethodFQN.create("ch.docksnet.app.MainClass#met(hod1(int,String,int)");
-//    }
-//
-//    @Test(expected = IllegalArgumentException.class)
-//    public void some_bad_case_2() throws Exception {
-//        MethodFQN.create("ch.docksnet.app.Mai#nClass#method1(int,String,int)");
-//    }
-//
-//    @Test(expected = IllegalArgumentException.class)
-//    public void some_bad_case_3() throws Exception {
-//        MethodFQN.create("ch.docksnet.ap(p.MainClass#method1(int,String,int)");
-//    }
-//
-//    @Test(expected = IllegalArgumentException.class)
-//    public void some_bad_case_4() throws Exception {
-//        MethodFQN.create("ch.docksnet.app.MainClass#method1(int,Stri.ng,int)");
-//    }
 
 }

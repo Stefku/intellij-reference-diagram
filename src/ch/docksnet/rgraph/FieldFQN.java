@@ -75,19 +75,4 @@ public class FieldFQN {
         return false;
     }
 
-    public static class Builder {
-        private final String className;
-        private final String fieldName;
-
-        public Builder(String className, String fieldName) {
-            this.className = className;
-            this.fieldName = fieldName;
-        }
-
-        public FieldFQN create() {
-            return new FieldFQN(className, fieldName);
-        }
-
-    }
-
 }

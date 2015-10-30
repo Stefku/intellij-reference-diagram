@@ -16,14 +16,14 @@
 
 package ch.docksnet.rgraph;
 
+import java.util.List;
+
 import com.intellij.diagram.DiagramBuilder;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.extras.DiagramExtras;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * @author Stefan Zeller

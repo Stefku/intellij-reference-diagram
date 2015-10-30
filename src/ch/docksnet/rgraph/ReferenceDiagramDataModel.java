@@ -55,29 +55,12 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     public ReferenceDiagramDataModel(Project project, PsiClass psiClass) {
         super(project, ReferenceDiagramProvider.getInstance());
-
         collectNodes(psiClass);
+        IncrementableSet<SourceTargetPair> incrementableSet = resolveRelationships(psiClass);
+        createEdges(incrementableSet);
+    }
 
-        IncrementableSet<SourceTargetPair> incrementableSet = new IncrementableSet<>();
-
-        for (ReferenceNode node : nodes) {
-            PsiElement callee = node.getIdentifyingElement();
-            ReferenceNode calleeNode = new ReferenceNode(callee, getProvider());
-
-            Collection<PsiReference> all = ReferencesSearch.search(callee, new LocalSearchScope
-                    (psiClass)).findAll();
-
-            for (PsiReference psiReference : all) {
-                if (!(psiReference instanceof PsiReferenceExpression)) {
-                    continue;
-                }
-                PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
-                PsiElement caller = PsiUtils.getRootPsiElement(referenceExpression);
-
-                incrementableSet.increment(new SourceTargetPair(caller, callee));
-            }
-        }
-
+    public void createEdges(IncrementableSet<SourceTargetPair> incrementableSet) {
         for (Map.Entry<SourceTargetPair, Long> element : incrementableSet.elements()) {
 
             PsiElement caller = element.getKey().getSource();
@@ -95,7 +78,29 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
             edges.add(new ReferenceEdge(callerNode, calleeNode, relationship));
         }
+    }
 
+    @NotNull
+    public IncrementableSet<SourceTargetPair> resolveRelationships(PsiClass psiClass) {
+        IncrementableSet<SourceTargetPair> incrementableSet = new IncrementableSet<>();
+
+        for (ReferenceNode node : nodes) {
+            PsiElement callee = node.getIdentifyingElement();
+
+            Collection<PsiReference> all = ReferencesSearch.search(callee, new LocalSearchScope
+                    (psiClass)).findAll();
+
+            for (PsiReference psiReference : all) {
+                if (!(psiReference instanceof PsiReferenceExpression)) {
+                    continue;
+                }
+                PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
+                PsiElement caller = PsiUtils.getRootPsiElement(referenceExpression);
+
+                incrementableSet.increment(new SourceTargetPair(caller, callee));
+            }
+        }
+        return incrementableSet;
     }
 
     @NotNull
@@ -209,7 +214,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     @Override
     public void dispose() {
-
     }
 
 }

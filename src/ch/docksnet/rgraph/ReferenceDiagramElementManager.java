@@ -84,7 +84,6 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
         } else {
             return null;
         }
-
     }
 
     @Override

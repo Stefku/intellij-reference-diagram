@@ -16,11 +16,11 @@
 
 package ch.docksnet.rgraph;
 
+import java.awt.*;
+
 import com.intellij.diagram.DiagramColorManagerBase;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.ui.JBColor;
-
-import java.awt.*;
 
 /**
  * @author Stefan Zeller

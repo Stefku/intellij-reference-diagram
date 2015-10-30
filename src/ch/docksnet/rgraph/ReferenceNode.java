@@ -24,7 +24,7 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * @author u215942 (Stefan Zeller)
+ * @author Stefan Zeller
  */
 public class ReferenceNode extends PsiDiagramNode<PsiElement> {
 
@@ -47,4 +47,5 @@ public class ReferenceNode extends PsiDiagramNode<PsiElement> {
     public Icon getIcon() {
         return getElement().getIcon(1);
     }
+
 }

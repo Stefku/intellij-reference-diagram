@@ -27,7 +27,8 @@ import com.intellij.psi.PsiElement;
 public class ReferenceEdge extends DiagramEdgeBase<PsiElement> {
 
 
-    public ReferenceEdge(DiagramNode<PsiElement> source, DiagramNode<PsiElement> target, DiagramRelationshipInfo relationship) {
+    public ReferenceEdge(DiagramNode<PsiElement> source, DiagramNode<PsiElement> target,
+            DiagramRelationshipInfo relationship) {
         super(source, target, relationship);
     }
 
