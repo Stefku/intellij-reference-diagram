@@ -16,7 +16,9 @@
 
 package ch.docksnet.rgraph;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
@@ -25,6 +27,7 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.impl.source.PsiMethodImpl;
+import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -94,6 +97,11 @@ public class PsiUtils {
         }
         String parameters = StringUtil.join(nameArray, ",");
         return psiMethod.getName() + "(" + parameters + ")";
+    }
+
+    public static PsiClass getPsiClass(String classFQN, Project project) {
+        return JavaPsiFacade.getInstance(project).findClass(classFQN, GlobalSearchScope
+                .projectScope(project));
     }
 
 }

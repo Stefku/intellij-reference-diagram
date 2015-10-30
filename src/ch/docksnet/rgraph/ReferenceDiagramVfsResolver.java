@@ -16,11 +16,16 @@
 
 package ch.docksnet.rgraph;
 
+import java.util.List;
+
 import com.intellij.diagram.DiagramVfsResolver;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.util.PsiFormatUtil;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiMethod;
+import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -28,16 +33,68 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ReferenceDiagramVfsResolver implements DiagramVfsResolver<PsiElement> {
 
+    public static final PsiElementDispatcher<String> PSI_ELEMENT_DISPATCHER = new PsiElementDispatcher() {
+        @Override
+        public String processClass(PsiClass psiClass) {
+            return ClassFQN.create(psiClass).getFQN();
+        }
+
+        @Override
+        public String processMethod(PsiMethod psiMethod) {
+            return MethodFQN.create(psiMethod).getFQN();
+        }
+
+        @Override
+        public String processField(PsiField psiField) {
+            return FieldFQN.create(psiField).getFQN();
+        }
+
+        @Override
+        public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
+            throw new NotImplementedException();
+        }
+
+    };
+
     @Override
     public String getQualifiedName(PsiElement psiElement) {
-        PsiFormatUtil.
-        return psiElement.;
+        return PSI_ELEMENT_DISPATCHER.dispatch(psiElement);
     }
 
     @Nullable
     @Override
-    public PsiElement resolveElementByFQN(String name, Project project) {
-        return PsiElementFactory.getElement(name);
+    public PsiElement resolveElementByFQN(String fqn, Project project) {
+        if (MethodFQN.isMethodFQN(fqn)) {
+            MethodFQN methodFQN = MethodFQN.create(fqn);
+            PsiClass psiClass = PsiUtils.getPsiClass(methodFQN.getClassName(), project);
+
+            PsiMethod[] methodsByName = psiClass.findMethodsByName(methodFQN.getMethodName(), true);
+            for (PsiMethod psiMethod : methodsByName) {
+                List<String> parameterArray = MethodFQN.getParameterArray(psiMethod);
+                String parameterRepresentation = MethodFQN.createParameterRepresentation(parameterArray);
+                if (MethodFQN.createParameterRepresentation(methodFQN.getParameters()).equals
+                        (parameterRepresentation)) {
+                    return psiMethod;
+                }
+            }
+            throw new IllegalArgumentException("Method not found: " + fqn);
+        } else if (FieldFQN.isFieldFQN(fqn)) {
+            FieldFQN fieldFQN = FieldFQN.create(fqn);
+            PsiClass psiClass = PsiUtils.getPsiClass(fieldFQN.getClassName(), project);
+
+            for (PsiField psiField : psiClass.getFields()) {
+                if (psiField.getName().equals(fieldFQN.getFieldName())) {
+                    return psiField;
+                }
+            }
+            throw new IllegalArgumentException("Field not found: " + fqn);
+
+        } else if (ClassFQN.isClassFQN(fqn)) {
+            ClassFQN classFQN = ClassFQN.create(fqn);
+            PsiClass psiClass = PsiUtils.getPsiClass(classFQN.getFQN(), project);
+            return psiClass;
+        }
+        throw new IllegalStateException("Cannot processs fqn: " + fqn);
     }
 
 }

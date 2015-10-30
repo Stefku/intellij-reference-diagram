@@ -19,12 +19,14 @@ package ch.docksnet.rgraph;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
+import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.diagram.PsiDiagramNode;
 import com.intellij.diagram.presentation.DiagramLineType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
+import com.intellij.openapi.util.SimpleModificationTracker;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
@@ -38,6 +40,7 @@ import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
+import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,81 +53,63 @@ import java.util.List;
  * @author Stefan Zeller
  */
 public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
-    private List<PsiDiagramNode> myNodes = new ArrayList<>();
-    private List<ReferenceEdge> myEdges = new ArrayList<>();
+
+    private List<ReferenceNode> nodes = new ArrayList<>();
+    private List<ReferenceEdge> edges = new ArrayList<>();
 
     public ReferenceDiagramDataModel(Project project, PsiClass psiClass) {
         super(project, ReferenceDiagramProvider.getInstance());
 
-            for (PsiMethod psiMethod : psiClass.getMethods()) {
-                Collection<PsiReference> all = ReferencesSearch.search(psiMethod, new LocalSearchScope(psiClass)).findAll();
-            }
+        for (PsiMethod psiMethod : psiClass.getMethods()) {
+            nodes.add(new ReferenceNode(psiMethod, getProvider()));
+        }
 
-            for (PsiField psiField : psiClass.getFields()) {
-            }
+        for (PsiField psiField : psiClass.getFields()) {
+            nodes.add(new ReferenceNode(psiField, getProvider()));
+        }
 
-            for (PsiClassInitializer psiClassInitializer : psiClass.getInitializers()) {
-//                myNodes.add(new PsiDiagramNode<>(element));
-            }
+
     }
-
-
-
-//    @NotNull
-//    private DiagramRelationshipInfo createEdgeFromNonField(final ReferenceNode caller, final ReferenceElement calleeMethod) {
-//        DiagramRelationshipInfo r;
-//        r = new DiagramRelationshipInfoAdapter(ReferenceEdge.Type.REFERENCE.name()) {
-//            @Override
-//            public Shape getStartArrow() {
-//                return STANDARD;
-//            }
-//
-//            @Override
-//            public String getLabel() {
-//                return caller.getIdentifyingElement().getCalleeCount(calleeMethod) + "";
-//            }
-//        };
-//        return r;
-//    }
-//
-//    @NotNull
-//    private DiagramRelationshipInfo createEdgeFromField() {
-//        DiagramRelationshipInfo r;
-//        r = new DiagramRelationshipInfoAdapter(ReferenceEdge.Type.FIELD_TO_METHOD.name()) {
-//            @Override
-//            public Shape getStartArrow() {
-//                return DELTA_SMALL;
-//            }
-//
-//            @Override
-//            public DiagramLineType getLineType() {
-//                return DiagramLineType.DASHED;
-//            }
-//        };
-//        return r;
-//    }
-
-
 
     @NotNull
     @Override
-    public Collection<PsiDiagramNode> getNodes() {
-        return myNodes;
+    public Collection<? extends DiagramNode<PsiElement>> getNodes() {
+        return nodes;
     }
 
     @NotNull
     @Override
     public Collection<? extends DiagramEdge<PsiElement>> getEdges() {
-        return myEdges;
+        return edges;
     }
 
     @NotNull
     @Override
     public String getNodeName(DiagramNode<PsiElement> diagramNode) {
-        if (diagramNode.getIdentifyingElement() instanceof PsiNamedElement) {
-            return ((PsiNamedElement) diagramNode.getIdentifyingElement()).getName();
-        }
-        throw new IllegalStateException("PsiElement has no name: " + diagramNode.getIdentifyingElement());
+        PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
+
+            @Override
+            public String processClass(PsiClass psiClass) {
+                throw new NotImplementedException();
+            }
+
+            @Override
+            public String processMethod(PsiMethod psiMethod) {
+                return psiMethod.getName();
+            }
+
+            @Override
+            public String processField(PsiField psiField) {
+                return psiField.getName();
+            }
+
+            @Override
+            public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
+                return psiClassInitializer.getName();
+            }
+        };
+
+        return psiElementDispatcher.dispatch(diagramNode.getIdentifyingElement());
     }
 
     @Nullable
@@ -132,15 +117,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     public DiagramNode<PsiElement> addElement(PsiElement psiElement) {
         return null;
     }
-
-//    @NotNull
-//    @Override
-//    public String getNodeName(PsiDiagramNode node) {
-//        if (node.getIdentifyingElement() instanceof PsiNamedElement) {
-//            return ((PsiNamedElement) node.getIdentifyingElement()).getName();
-//        }
-//        throw new IllegalStateException("PsiElement has no name: " + node.getIdentifyingElement());
-//    }
 
     @Override
     public void refreshDataModel() {
@@ -154,6 +130,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     @Override
     public void dispose() {
+
     }
 
 }
