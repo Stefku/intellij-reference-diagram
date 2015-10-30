@@ -42,6 +42,4 @@ public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
         return super.getData(dataId, nodes, builder);
     }
 
-
-
 }
