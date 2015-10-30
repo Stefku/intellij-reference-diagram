@@ -180,12 +180,10 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     @Override
     public void removeNode(DiagramNode<PsiElement> node) {
-        System.out.println("removeNode()");
     }
 
     @Override
     public void refreshDataModel() {
-        System.out.println("refreshDataModel()");
     }
 
     @NotNull
