@@ -17,6 +17,8 @@
 package ch.docksnet.utils;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Stefan Zeller
@@ -41,6 +43,10 @@ public class IncrementableSet<T> {
         } else {
             map.put(element, 1L);
         }
+    }
+
+    public Set<Map.Entry<T, Long>> elements() {
+        return map.entrySet();
     }
 
 }

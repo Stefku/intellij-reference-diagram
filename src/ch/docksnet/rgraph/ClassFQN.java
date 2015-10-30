@@ -16,24 +16,33 @@
 
 package ch.docksnet.rgraph;
 
-import com.intellij.diagram.DiagramEdgeBase;
-import com.intellij.diagram.DiagramNode;
-import com.intellij.diagram.DiagramRelationshipInfo;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiClass;
 
 /**
  * @author Stefan Zeller
  */
-public class ReferenceEdge extends DiagramEdgeBase<PsiElement> {
+public class ClassFQN {
+    private final String fqn;
 
-
-    public ReferenceEdge(DiagramNode<PsiElement> source, DiagramNode<PsiElement> target,
-            DiagramRelationshipInfo relationship) {
-        super(source, target, relationship);
+    private ClassFQN(String fqn) {
+        this.fqn = fqn;
     }
 
-    enum Type {
-        FIELD_TO_METHOD, REFERENCE
+    public static ClassFQN create(String string) {
+        return new ClassFQN(string);
+    }
+
+    public static ClassFQN create(PsiClass psiClass) {
+        String className = psiClass.getQualifiedName();
+        return new ClassFQN(className);
+    }
+
+    public static boolean isClassFQN(String string) {
+        return true;
+    }
+
+    public String getFQN() {
+        return fqn;
     }
 
 }

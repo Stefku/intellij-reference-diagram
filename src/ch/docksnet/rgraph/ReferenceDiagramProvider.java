@@ -27,6 +27,7 @@ import com.intellij.diagram.extras.DiagramExtras;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
 import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,11 +35,11 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Stefan Zeller
  */
-public class ReferenceDiagramProvider extends BaseDiagramProvider<ReferenceElement> {
+public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
 
     public static final String ID = "ReferenceDiagramProvider";
-    private DiagramElementManager<ReferenceElement> myElementManager = new ReferenceDiagramElementManager();
-    private DiagramVfsResolver<ReferenceElement> myVfsResolver = new ReferenceDiagramVfsResolver();
+    private DiagramElementManager<PsiElement> myElementManager = new ReferenceDiagramElementManager();
+    private DiagramVfsResolver<PsiElement> myVfsResolver = new ReferenceDiagramVfsResolver();
     private ReferenceDiagramExtras myExtras = new ReferenceDiagramExtras();
     private DiagramColorManager myColorManager = new ReferenceDiagramColorManager();
 
@@ -49,12 +50,12 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<ReferenceEleme
     }
 
     @Override
-    public DiagramElementManager<ReferenceElement> getElementManager() {
+    public DiagramElementManager<PsiElement> getElementManager() {
         return myElementManager;
     }
 
     @Override
-    public DiagramVfsResolver<ReferenceElement> getVfsResolver() {
+    public DiagramVfsResolver<PsiElement> getVfsResolver() {
         return myVfsResolver;
     }
 
@@ -65,16 +66,16 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<ReferenceEleme
 
     @NotNull
     @Override
-    public DiagramExtras<ReferenceElement> getExtras() {
+    public DiagramExtras<PsiElement> getExtras() {
         return myExtras;
     }
 
     @Override
-    public ReferenceDiagramDataModel createDataModel(@NotNull Project project, @Nullable ReferenceElement
-            referenceElement, @Nullable VirtualFile virtualFile, DiagramPresentationModel model) {
-        PreConditionUtil.assertTrue(referenceElement.getPsiElement() instanceof PsiClass, "referenceElement" +
+    public ReferenceDiagramDataModel createDataModel(@NotNull Project project, @Nullable PsiElement
+            psiElement, @Nullable VirtualFile virtualFile, DiagramPresentationModel model) {
+        PreConditionUtil.assertTrue(psiElement instanceof PsiClass, "PsiElement" +
                 ".psiElement must be a PsiClass");
-        return new ReferenceDiagramDataModel(project, referenceElement);
+        return new ReferenceDiagramDataModel(project, (PsiClass) psiElement);
     }
 
     @Override

@@ -16,30 +16,23 @@
 
 package ch.docksnet.rgraph;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifierListOwner;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.impl.source.PsiMethodImpl;
+import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Stefan Zeller
  */
 public class PsiUtils {
-
-    public static final String NO_PARENT_METHOD_FOUND = "[No parent method found!]";
-    public static final String STATIC_CLASS_INITIALIZER_NAME = "[static initializer]";
-    public static final String CLASS_INITIALIZER_NAME = "[initializer]";
 
     @Nullable
     public static PsiClass getClassFromHierarchy(PsiElement psiElement) {
@@ -54,87 +47,61 @@ public class PsiUtils {
         }
     }
 
-    public static String getParentName(PsiElement psiElement) {
+    public static PsiElement getRootPsiElement(PsiElement psiElement) {
         PsiElement parent = psiElement.getParent();
         if (parent == null) {
-            return NO_PARENT_METHOD_FOUND;
+            throw new IllegalStateException("no parent found");
         }
         if (parent instanceof PsiMethodImpl) {
-            return createMethodName((PsiMethodImpl) parent);
+            return parent;
         } else if (parent instanceof PsiClassInitializer) {
-            return resolveClassInitializerName((PsiClassInitializer) parent);
+            return parent;
         } else if (parent instanceof PsiField) {
-            return ((PsiField) parent).getName();
+            return parent;
         } else {
-            return getParentName(parent);
+            return getRootPsiElement(parent);
         }
     }
 
-    private static String resolveClassInitializerName(PsiClassInitializer classInitializer) {
-        Set<ReferenceElement.Modifier> modifiers = resolveModifiers(classInitializer);
-        String name = resolveClassInitializerName(modifiers);
-        return name;
+    public static PsiClass getPsiClass(String classFQN, Project project) {
+        return JavaPsiFacade.getInstance(project).findClass(classFQN, GlobalSearchScope
+                .projectScope(project));
     }
 
-    public static String getClassName(PsiElement psiElement) {
-        PsiElement parent = psiElement.getParent();
-        if (parent == null) {
-            return "[No parent class found!]";
-        }
-        if (parent instanceof PsiClassImpl) {
-            return ((PsiClassImpl) parent).getName();
+    public static String getName(PsiClassInitializer psiClassInitializer) {
+        if (psiClassInitializer.getModifierList().hasModifierProperty("static")) {
+            return "[static init]";
         } else {
-            return getClassName(parent);
+            return "[init]";
         }
     }
 
-    public static String createMethodName(PsiMethod psiMethod) {
-        PsiType[] parameterTypes = psiMethod.getHierarchicalMethodSignature().getParameterTypes();
-        String[] nameArray = new String[parameterTypes.length];
-        for (int i = 0; i < parameterTypes.length; i++) {
-            nameArray[i] = parameterTypes[i].getPresentableText();
-        }
-        String parameters = StringUtil.join(nameArray, ",");
-        return psiMethod.getName() + "(" + parameters + ")";
-    }
+    public static String getPresentableName(PsiElement psiElement) {
+        PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
 
-    public static String resolveClassInitializerName(Set<ReferenceElement.Modifier> modifiers) {
-        if (modifiers.size() == 1 && modifiers.contains(ReferenceElement.Modifier.STATIC)) {
-            return STATIC_CLASS_INITIALIZER_NAME;
-        } else if (modifiers.isEmpty()) {
-            return CLASS_INITIALIZER_NAME;
-        } else {
-            throw new IllegalStateException("Unsupported modifier of ClassInitializer: " + modifiers);
-        }
-    }
+            @Override
+            public String processClass(PsiClass psiClass) {
+                return psiClass.getName();
+            }
 
-    public static Set<ReferenceElement.Modifier> resolveModifiers(PsiModifierListOwner modifierListOwner) {
-        Set<ReferenceElement.Modifier> result = new HashSet<>();
+            @Override
+            public String processMethod(PsiMethod psiMethod) {
+                List<String> parameterArray = MethodFQN.getParameterArray(psiMethod);
+                String parameterRepresentation = MethodFQN.createParameterRepresentation(parameterArray);
+                return psiMethod.getName() + "(" + parameterRepresentation + ")";
+            }
 
-        if (modifierListOwner.hasModifierProperty("public")) {
-            result.add(ReferenceElement.Modifier.PUBLIC);
-        }
+            @Override
+            public String processField(PsiField psiField) {
+                return psiField.getName();
+            }
 
-        if (modifierListOwner.hasModifierProperty("private")) {
-            result.add(ReferenceElement.Modifier.PRIVATE);
-        }
+            @Override
+            public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
+                return getName(psiClassInitializer);
+            }
+        };
 
-        if (modifierListOwner.hasModifierProperty("protected")) {
-            result.add(ReferenceElement.Modifier.PROTECTED);
-        }
-
-        if (modifierListOwner.hasModifierProperty("static")) {
-            result.add(ReferenceElement.Modifier.STATIC);
-        }
-
-        if (modifierListOwner.hasModifierProperty("final")) {
-            result.add(ReferenceElement.Modifier.FINAL);
-        }
-
-        if (modifierListOwner.hasModifierProperty("abstract")) {
-            result.add(ReferenceElement.Modifier.ABSTRACT);
-        }
-
-        return Collections.unmodifiableSet(result);
+        return psiElementDispatcher.dispatch(psiElement);
     }
 }

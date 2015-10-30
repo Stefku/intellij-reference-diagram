@@ -18,43 +18,34 @@ package ch.docksnet.rgraph;
 
 import javax.swing.*;
 
-import com.intellij.diagram.DiagramNodeBase;
-import com.intellij.icons.AllIcons;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.diagram.DiagramProvider;
+import com.intellij.diagram.PsiDiagramNode;
+import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Stefan Zeller
  */
-public class ReferenceNode extends DiagramNodeBase<ReferenceElement> {
+public class ReferenceNode extends PsiDiagramNode<PsiElement> {
 
-    private final ReferenceElement referenceElement;
-
-    public ReferenceNode(ReferenceElement referenceElement) {
-        super(ReferenceDiagramProvider.getInstance());
-        this.referenceElement = referenceElement;
+    public ReferenceNode(PsiElement psiElement, DiagramProvider provider) {
+        super(psiElement, provider);
     }
 
     @Nullable
     @Override
     public String getTooltip() {
-        return "";
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return "ReferenceNode{} " + super.toString();
     }
 
     @Override
     public Icon getIcon() {
-        return referenceElement.getPsiElement().getIcon(1);
-    }
-
-    @NotNull
-    @Override
-    public ReferenceElement getIdentifyingElement() {
-        return referenceElement;
-    }
-
-    @Override
-    public boolean canNavigateToSource() {
-        return true;
+        return getElement().getIcon(1);
     }
 
 }

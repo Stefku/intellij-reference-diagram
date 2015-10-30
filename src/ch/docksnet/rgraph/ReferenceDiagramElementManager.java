@@ -28,11 +28,11 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Stefan Zeller
  */
-public class ReferenceDiagramElementManager extends AbstractDiagramElementManager<ReferenceElement> {
+public class ReferenceDiagramElementManager extends AbstractDiagramElementManager<PsiElement> {
 
     @Nullable
     @Override
-    public ReferenceElement findInDataContext(DataContext context) {
+    public PsiElement findInDataContext(DataContext context) {
 
         if (CommonDataKeys.PSI_FILE.getData(context) == null) {
             return null;
@@ -55,7 +55,7 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
             return null;
         }
 
-        return ReferenceElementFactory.createInstance(psiClass);
+        return psiClass;
     }
 
     @Override
@@ -65,23 +65,22 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
 
     @Nullable
     @Override
-    public String getElementTitle(ReferenceElement referenceElement) {
-        return referenceElement.getName();
+    public String getElementTitle(PsiElement psiElement) {
+        return PsiUtils.getPresentableName(psiElement);
     }
 
     @Nullable
     @Override
     public SimpleColoredText getItemName(Object o, DiagramState state) {
-        if (o instanceof ReferenceElement) {
-            return new SimpleColoredText(((ReferenceElement) o).getName(), DEFAULT_TEXT_ATTR);
+        if (o instanceof PsiElement) {
+            return new SimpleColoredText(getElementTitle((PsiElement) o), DEFAULT_TEXT_ATTR);
         } else {
             return null;
         }
-
     }
 
     @Override
-    public String getNodeTooltip(ReferenceElement referenceElement) {
+    public String getNodeTooltip(PsiElement PsiElement) {
         return null;
     }
 
