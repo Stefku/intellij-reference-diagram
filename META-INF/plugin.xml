@@ -17,8 +17,8 @@
 <idea-plugin version="2">
   <id>ch.docksnet.rgraph</id>
   <name>Java Method Reference Diagram</name>
-  <version>1.2.0</version>
-  <vendor email="stefku@docksnet.ch">Stefan Zeller</vendor>
+  <version>1.3.0</version>
+  <vendor>Stefan Zeller</vendor>
   <depends>com.intellij.diagram</depends>
   <description><![CDATA[
       Java Method Reference Diagram<br>
@@ -32,6 +32,9 @@
 
   <change-notes><![CDATA[
         <ul>
+	        <li>
+		        Version 1.3.0, Bug with callees from anonymous inner classes; Add ability to remove node from diagram; Diagram is not updated after refactoring.
+	        </li>
         	<li>
 				<a
 					href="https://github.com/Stefku/intellij-reference-diagram/issues?q=milestone%3A1.2.0+is%3Aclosed">Version 1.2.0</a>: Improve icons and lines; Small Bugfix.
