@@ -16,38 +16,34 @@
 
 package ch.docksnet.rgraph;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import ch.docksnet.utils.IncrementableSet;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
-import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
-import com.intellij.diagram.PsiDiagramNode;
 import com.intellij.diagram.presentation.DiagramLineType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
-import com.intellij.openapi.util.SimpleModificationTracker;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceExpression;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Stefan Zeller
@@ -60,6 +56,87 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     public ReferenceDiagramDataModel(Project project, PsiClass psiClass) {
         super(project, ReferenceDiagramProvider.getInstance());
 
+        collectNodes(psiClass);
+
+        IncrementableSet<SourceTargetPair> incrementableSet = new IncrementableSet<>();
+
+        for (ReferenceNode node : nodes) {
+            PsiElement callee = node.getIdentifyingElement();
+            ReferenceNode calleeNode = new ReferenceNode(callee, getProvider());
+
+            Collection<PsiReference> all = ReferencesSearch.search(callee, new LocalSearchScope
+                    (psiClass)).findAll();
+
+            for (PsiReference psiReference : all) {
+                if (!(psiReference instanceof PsiReferenceExpression)) {
+                    continue;
+                }
+                PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
+                PsiElement caller = PsiUtils.getRootPsiElement(referenceExpression);
+
+                incrementableSet.increment(new SourceTargetPair(caller, callee));
+            }
+        }
+
+        for (Map.Entry<SourceTargetPair, Long> element : incrementableSet.elements()) {
+
+            PsiElement caller = element.getKey().getSource();
+            PsiElement callee = element.getKey().getTarget();
+
+            final DiagramRelationshipInfo relationship;
+            if (caller instanceof PsiField) {
+                relationship = createEdgeFromField();
+            } else {
+                relationship = createEdgeFromNonField(element.getValue());
+            }
+
+            ReferenceNode callerNode = new ReferenceNode(caller, getProvider());
+            ReferenceNode calleeNode = new ReferenceNode(callee, getProvider());
+
+            edges.add(new ReferenceEdge(callerNode, calleeNode, relationship));
+        }
+
+    }
+
+    @NotNull
+    private DiagramRelationshipInfo createEdgeFromNonField(final long count) {
+        DiagramRelationshipInfo r;
+        r = new DiagramRelationshipInfoAdapter(ReferenceEdge.Type.REFERENCE.name()) {
+            @Override
+            public Shape getStartArrow() {
+                return STANDARD;
+            }
+
+            @Override
+            public String getToLabel() {
+                if (count == 1) {
+                    return "";
+                } else {
+                    return Long.toString(count);
+                }
+            }
+        };
+        return r;
+    }
+
+    @NotNull
+    private DiagramRelationshipInfo createEdgeFromField() {
+        DiagramRelationshipInfo r;
+        r = new DiagramRelationshipInfoAdapter(ReferenceEdge.Type.FIELD_TO_METHOD.name()) {
+            @Override
+            public Shape getStartArrow() {
+                return DELTA_SMALL;
+            }
+
+            @Override
+            public DiagramLineType getLineType() {
+                return DiagramLineType.DASHED;
+            }
+        };
+        return r;
+    }
+
+    public void collectNodes(PsiClass psiClass) {
         for (PsiMethod psiMethod : psiClass.getMethods()) {
             nodes.add(new ReferenceNode(psiMethod, getProvider()));
         }
@@ -68,7 +145,9 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             nodes.add(new ReferenceNode(psiField, getProvider()));
         }
 
-
+        for (PsiClassInitializer psiClassInitializer : psiClass.getInitializers()) {
+            nodes.add(new ReferenceNode(psiClassInitializer, getProvider()));
+        }
     }
 
     @NotNull
@@ -105,7 +184,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
             @Override
             public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
-                return psiClassInitializer.getName();
+                return PsiUtils.getName(psiClassInitializer);
             }
         };
 

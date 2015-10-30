@@ -21,6 +21,7 @@ import com.intellij.diagram.presentation.DiagramState;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.ui.SimpleColoredText;
@@ -69,6 +70,8 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
     public String getElementTitle(PsiElement psiElement) {
         if (psiElement instanceof PsiNamedElement) {
             return ((PsiNamedElement) psiElement).getName();
+        } else if (psiElement instanceof PsiClassInitializer) {
+            return PsiUtils.getName((PsiClassInitializer) psiElement);
         }
         throw new IllegalStateException("psiElement must be a PsiNamedElement: " + psiElement);
     }

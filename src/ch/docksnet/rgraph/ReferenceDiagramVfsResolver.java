@@ -51,7 +51,7 @@ public class ReferenceDiagramVfsResolver implements DiagramVfsResolver<PsiElemen
 
         @Override
         public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
-            throw new NotImplementedException();
+            return PsiUtils.getName(psiClassInitializer);
         }
 
     };

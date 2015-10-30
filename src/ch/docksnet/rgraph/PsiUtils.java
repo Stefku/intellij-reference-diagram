@@ -68,6 +68,22 @@ public class PsiUtils {
         }
     }
 
+    public static PsiElement getRootPsiElement(PsiElement psiElement) {
+        PsiElement parent = psiElement.getParent();
+        if (parent == null) {
+            throw new IllegalStateException("no parent found");
+        }
+        if (parent instanceof PsiMethodImpl) {
+            return parent;
+        } else if (parent instanceof PsiClassInitializer) {
+            return parent;
+        } else if (parent instanceof PsiField) {
+            return parent;
+        } else {
+            return getRootPsiElement(parent);
+        }
+    }
+
     private static String resolveClassInitializerName(PsiClassInitializer classInitializer) {
         String name = "";
         if (classInitializer.hasModifierProperty("static")) {
@@ -102,6 +118,14 @@ public class PsiUtils {
     public static PsiClass getPsiClass(String classFQN, Project project) {
         return JavaPsiFacade.getInstance(project).findClass(classFQN, GlobalSearchScope
                 .projectScope(project));
+    }
+
+    public static String getName(PsiClassInitializer psiClassInitializer) {
+        if (psiClassInitializer.getModifierList().hasModifierProperty("static")) {
+            return "[static init]";
+        } else {
+            return "[init]";
+        }
     }
 
 }
