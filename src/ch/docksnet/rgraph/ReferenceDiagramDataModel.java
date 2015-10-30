@@ -180,6 +180,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     @Override
     public void removeNode(DiagramNode<PsiElement> node) {
+        nodes.remove(node);
     }
 
     @Override
