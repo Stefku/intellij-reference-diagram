@@ -17,7 +17,7 @@
 <idea-plugin version="2">
   <id>ch.docksnet.rgraph</id>
   <name>Java Method Reference Diagram</name>
-  <version>1.3.0</version>
+  <version>1.3.1</version>
   <vendor>Stefan Zeller</vendor>
   <depends>com.intellij.diagram</depends>
   <description><![CDATA[
@@ -33,17 +33,23 @@
   <change-notes><![CDATA[
         <ul>
 	        <li>
-		        Version 1.3.0, Bug with callees from anonymous inner classes; Add ability to remove node from diagram; Diagram is not updated after refactoring.
+		        Version 1.3.1: Bug with callees from inner classes.
+	        </li>
+	        <li>
+		        Version 1.3.0: Bug with callees from anonymous inner classes; Add ability to remove node from diagram; Diagram is not updated after refactoring.
 	        </li>
         	<li>
-				<a
-					href="https://github.com/Stefku/intellij-reference-diagram/issues?q=milestone%3A1.2.0+is%3Aclosed">Version 1.2.0</a>: Improve icons and lines; Small Bugfix.
+				Version 1.2.0: Improve icons and lines; Small Bugfix.
 			</li>
-        	<li><a
-					href="https://github.com/Stefku/intellij-reference-diagram/issues?q=milestone%3A1.1.1+is%3Aclosed">Version 1.1.1</a>: Bug fixes. E.g. searching in diagram is now working CTRL+F12 / CTRL+F.
-			</li>
-	        <li>Version 1.1.0: show modifiers and the count of reference from one element to another</li>
-            <li>Version 1.0.1: Goto source (F4) is possible</li>
+        	<li>
+		        Version 1.1.1:Bug fixes. E.g. searching in diagram is now working CTRL+F12 / CTRL+F.
+	        </li>
+	        <li>
+		        Version 1.1.0: show modifiers and the count of reference from one element to another
+	        </li>
+            <li>
+	            Version 1.0.1: Goto source (F4) is possible
+            </li>
         </ul>
       ]]>
   </change-notes>
@@ -58,11 +64,9 @@
   -->
 
   <application-components>
-    <!-- Add your application components here -->
   </application-components>
 
   <project-components>
-    <!-- Add your project components here -->
   </project-components>
 
   <actions>
