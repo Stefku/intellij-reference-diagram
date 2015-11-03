@@ -96,6 +96,10 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
                 PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
                 PsiElement caller = PsiUtils.getRootPsiElement(psiClass, referenceExpression);
 
+                if (caller == null) {
+                    continue;
+                }
+
                 incrementableSet.increment(new SourceTargetPair(caller, callee));
             }
         }
