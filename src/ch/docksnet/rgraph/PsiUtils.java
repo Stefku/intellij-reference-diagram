@@ -46,10 +46,11 @@ public class PsiUtils {
         }
     }
 
+    @Nullable
     public static PsiElement getRootPsiElement(PsiClass psiClass, PsiElement psiElement) {
         PsiElement parent = psiElement.getParent();
         if (parent == null) {
-            throw new IllegalStateException("no parent found");
+            return null;
         }
         if (parent instanceof PsiMethod) {
             if (PsiUtils.classHasMethod(psiClass, (PsiMethod) parent)) {
