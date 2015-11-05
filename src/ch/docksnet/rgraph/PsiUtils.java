@@ -115,4 +115,31 @@ public class PsiUtils {
 
         return psiElementDispatcher.dispatch(psiElement);
     }
+
+    public static String getFqn(PsiElement psiElement) {
+        PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
+
+            @Override
+            public String processClass(PsiClass psiClass) {
+                return ClassFQN.create(psiClass).getFQN();
+            }
+
+            @Override
+            public String processMethod(PsiMethod psiMethod) {
+                return MethodFQN.create(psiMethod).getFQN();
+            }
+
+            @Override
+            public String processField(PsiField psiField) {
+                return FieldFQN.create(psiField).getFQN();
+            }
+
+            @Override
+            public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
+                return getName(psiClassInitializer);
+            }
+        };
+
+        return psiElementDispatcher.dispatch(psiElement);
+    }
 }

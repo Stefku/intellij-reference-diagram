@@ -11,5 +11,6 @@
     <orderEntry type="jdk" jdkName="IntelliJ IDEA IU-141.1010.3" jdkType="IDEA JDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jdepend-2.9.5" level="project" />
+    <orderEntry type="library" name="uml-support" level="project" />
   </component>
 </module>
