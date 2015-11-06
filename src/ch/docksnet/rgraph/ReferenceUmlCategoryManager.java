@@ -23,6 +23,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
+import com.intellij.ui.LayeredIcon;
 import icons.UmlIcons;
 
 /**
@@ -123,12 +124,22 @@ public class ReferenceUmlCategoryManager extends AbstractDiagramNodeContentManag
 
     static {
         FIELDS = new DiagramCategory("Fields", AllIcons.Nodes.Field, true, true);
+
         METHODS = new DiagramCategory("Methods", AllIcons.Nodes.Method, true, true);
+
         CONSTRUCTORS = new DiagramCategory("Constructors", UmlIcons.Constructor, true, true);
-        STATIC_FIELDS = new DiagramCategory("Static Fields", AllIcons.Nodes.PropertyReadStatic, true, true);
-        STATIC_METHODS = new DiagramCategory("Static Methods", AllIcons.Nodes.CustomRegion, true, true);
-        CLASS_INITIALIZER = new DiagramCategory("Class Initializer", AllIcons.Nodes.PpJdk, true, true);
-        STATIC_CLASS_INITIALIZER = new DiagramCategory("Static Class Initializer", AllIcons.Nodes.Locked, true, true);
+
+        LayeredIcon staticField = new LayeredIcon(AllIcons.Nodes.Field, AllIcons.Nodes.StaticMark);
+        STATIC_FIELDS = new DiagramCategory("Static Fields", staticField, true, true);
+
+        LayeredIcon staticMethod = new LayeredIcon(AllIcons.Nodes.Method, AllIcons.Nodes.StaticMark);
+        STATIC_METHODS = new DiagramCategory("Static Methods", staticMethod, true, true);
+
+        CLASS_INITIALIZER = new DiagramCategory("Class Initializer", AllIcons.Nodes.ClassInitializer, true, true);
+
+        LayeredIcon staticClassInitializer = new LayeredIcon(AllIcons.Nodes.ClassInitializer, AllIcons.Nodes.StaticMark);
+        STATIC_CLASS_INITIALIZER = new DiagramCategory("Static Class Initializer", staticClassInitializer, true, true);
+
         CATEGORIES = new DiagramCategory[]{FIELDS, METHODS, CONSTRUCTORS, CLASS_INITIALIZER, STATIC_FIELDS, STATIC_METHODS,
                 STATIC_CLASS_INITIALIZER};
     }

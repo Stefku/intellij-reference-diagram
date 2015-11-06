@@ -20,7 +20,10 @@ import javax.swing.*;
 
 import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.PsiDiagramNode;
+import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiMethod;
+import icons.UmlIcons;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -45,7 +48,10 @@ public class ReferenceNode extends PsiDiagramNode<PsiElement> {
 
     @Override
     public Icon getIcon() {
-        return getElement().getIcon(1);
+        if (getIdentifyingElement() instanceof PsiMethod && ((PsiMethod) getIdentifyingElement()).isConstructor()) {
+            return UmlIcons.Constructor;
+        }
+        return getElement().getIcon(Iconable.ICON_FLAG_VISIBILITY);
     }
 
 }
