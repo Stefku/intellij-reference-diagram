@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import com.intellij.diagram.DiagramAction;
+import ch.docksnet.utils.IncrementableSet;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
@@ -42,9 +42,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.uml.utils.UmlJavaUtils;
+import com.intellij.psi.search.LocalSearchScope;
+import com.intellij.psi.search.searches.ReferencesSearch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -141,7 +144,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
         final String commandName = "TEST";
 
-        Callable callable = new Callable() {
+        Callable<ReferenceEdge> callable = new Callable() {
             public ReferenceEdge call() throws Exception {
                 final DiagramRelationshipInfo relationship;
                 if (from instanceof PsiField) {
@@ -155,9 +158,16 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             }
         };
 
-        return (DiagramEdge) DiagramAction.performCommand(getBuilder(), callable, commandName,
-                (String) null, new PsiElement[]{((PsiElement) from.getIdentifyingElement())
-                        .getContainingFile()});
+        //        return (DiagramEdge) DiagramAction.performCommand(getBuilder(), callable, commandName,
+        //                (String) null, new PsiElement[]{((PsiElement) from.getIdentifyingElement())
+        //                        .getContainingFile()});
+        ReferenceEdge referenceEdge = null;
+        try {
+            referenceEdge = callable.call();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        return referenceEdge;
     }
 
     @Override
@@ -172,14 +182,24 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         } else {
             PsiElement toRemove = (PsiElement) node.getIdentifyingElement();
             myNodes.remove(node);
-            elementsRemovedByUser.put(PsiUtils.getFqn(element), spManager.createSmartPsiElementPointer(toRemove));
+            elementsRemovedByUser.put(PsiUtils.getFqn(element), spManager.createSmartPsiElementPointer
+                    (toRemove));
             elementsAddedByUser.remove(PsiUtils.getFqn(element));
             removeAllEdgesFromOrTo(node);
         }
     }
 
-    private void removeAllEdgesFromOrTo(DiagramNode node) {
-        // TODO
+    private void removeAllEdgesFromOrTo(DiagramNode<PsiElement> node) {
+        String removedNode = PsiUtils.getFqn(node.getIdentifyingElement());
+        Set<DiagramEdge<PsiElement>> toRemove = new HashSet<>();
+        for (DiagramEdge<PsiElement> myEdge : myEdges) {
+            if (PsiUtils.getFqn(myEdge.getSource().getIdentifyingElement()).equals(removedNode)) {
+                toRemove.add(myEdge);
+            } else if (PsiUtils.getFqn(myEdge.getTarget().getIdentifyingElement()).equals(removedNode)) {
+                toRemove.add(myEdge);
+            }
+        }
+        myEdges.removeAll(toRemove);
     }
 
     @Override
@@ -212,7 +232,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     public synchronized void updateDataModel() {
-        // TODO add nodes and edges
+        // TODO add edges
         DiagramProvider provider = getBuilder().getProvider();
         Set<PsiElement> elements = getElements();
 
@@ -222,11 +242,48 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             }
         }
 
+        IncrementableSet<SourceTargetPair> relationships = resolveRelationships(myInitialElement.getElement
+                ());
+        for (Map.Entry<SourceTargetPair, Long> sourceTargetPair : relationships.elements()) {
+            SourceTargetPair key = sourceTargetPair.getKey();
+            DiagramNode<PsiElement> source = findNode(key.getSource());
+            DiagramNode<PsiElement> target = findNode(key.getTarget());
+            if (source != null && target != null) {
+                myEdges.add(createEdge(source, target));
+            }
+        }
+
         // TODO: for what these backups?
         mergeWithBackup(myNodes, myNodesOld);
         mergeWithBackup(myEdges, myEdgesOld);
         mergeWithBackup(myDependencyEdges, myDependencyEdgesOld);
+    }
 
+    @NotNull
+    public IncrementableSet<SourceTargetPair> resolveRelationships(PsiClass psiClass) {
+        IncrementableSet<SourceTargetPair> incrementableSet = new IncrementableSet<>();
+
+        for (DiagramNode<PsiElement> node : myNodes) {
+            PsiElement callee = node.getIdentifyingElement();
+
+            Collection<PsiReference> all = ReferencesSearch.search(callee, new LocalSearchScope
+                    (psiClass)).findAll();
+
+            for (PsiReference psiReference : all) {
+                if (!(psiReference instanceof PsiReferenceExpression)) {
+                    continue;
+                }
+                PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
+                PsiElement caller = PsiUtils.getRootPsiElement(psiClass, referenceExpression);
+
+                if (caller == null) {
+                    continue;
+                }
+
+                incrementableSet.increment(new SourceTargetPair(caller, callee));
+            }
+        }
+        return incrementableSet;
     }
 
     private Set<PsiElement> getElements() {
@@ -271,7 +328,8 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     @Nullable
     @Override
     public DiagramNode<PsiElement> addElement(PsiElement psiElement) {
-        // TODO
+        // TODO how to enable the ability for to add elements?
+        System.out.println("addElement " + psiElement);
         return null;
     }
 
@@ -279,6 +337,10 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         return findNode(element) != null;
     }
 
+    /**
+     * @param psiElement
+     * @return {@code true} if {@code myNodes} contains {@code psiElement}.
+     */
     @Nullable
     public DiagramNode<PsiElement> findNode(PsiElement psiElement) {
         Iterator ptr = (new ArrayList(myNodes)).iterator();
@@ -290,12 +352,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
                 return node;
             }
         }
-
         return null;
-    }
-
-    public boolean isDependencyDiagramSupported() {
-        return true;
     }
 
     public void collapseNode(DiagramNode<PsiElement> node) {
@@ -320,33 +377,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         init((PsiClass) element);
         refreshDataModel();
     }
-
-    //    @NotNull
-    //    public IncrementableSet<SourceTargetPair> resolveRelationships(PsiClass psiClass) {
-    //        IncrementableSet<SourceTargetPair> incrementableSet = new IncrementableSet<>();
-    //
-    //        for (ReferenceNode node : nodes) {
-    //            PsiElement callee = node.getIdentifyingElement();
-    //
-    //            Collection<PsiReference> all = ReferencesSearch.search(callee, new LocalSearchScope
-    //                    (psiClass)).findAll();
-    //
-    //            for (PsiReference psiReference : all) {
-    //                if (!(psiReference instanceof PsiReferenceExpression)) {
-    //                    continue;
-    //                }
-    //                PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
-    //                PsiElement caller = PsiUtils.getRootPsiElement(psiClass, referenceExpression);
-    //
-    //                if (caller == null) {
-    //                    continue;
-    //                }
-    //
-    //                incrementableSet.increment(new SourceTargetPair(caller, callee));
-    //            }
-    //        }
-    //        return incrementableSet;
-    //    }
 
     @NotNull
     private DiagramRelationshipInfo createEdgeFromNonField(final long count) {
