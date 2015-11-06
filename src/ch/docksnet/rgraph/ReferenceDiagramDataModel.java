@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import ch.docksnet.utils.IncrementableSet;
 import com.intellij.diagram.DiagramDataModel;
@@ -138,36 +137,16 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     @Nullable
-    @Override
     public DiagramEdge<PsiElement> createEdge(final @NotNull DiagramNode<PsiElement> from, final @NotNull
-    DiagramNode<PsiElement> to) {
-
-        final String commandName = "TEST";
-
-        Callable<ReferenceEdge> callable = new Callable() {
-            public ReferenceEdge call() throws Exception {
-                final DiagramRelationshipInfo relationship;
-                if (from instanceof PsiField) {
-                    relationship = createEdgeFromField();
-                } else {
-                    // TODO where to get count?
-                    relationship = createEdgeFromNonField(0);
-                }
-
-                return new ReferenceEdge(from, to, relationship);
-            }
-        };
-
-        //        return (DiagramEdge) DiagramAction.performCommand(getBuilder(), callable, commandName,
-        //                (String) null, new PsiElement[]{((PsiElement) from.getIdentifyingElement())
-        //                        .getContainingFile()});
-        ReferenceEdge referenceEdge = null;
-        try {
-            referenceEdge = callable.call();
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
+    DiagramNode<PsiElement> to, Long value) {
+        final DiagramRelationshipInfo relationship;
+        if (from instanceof PsiField) {
+            relationship = createEdgeFromField();
+        } else {
+            relationship = createEdgeFromNonField(value == null ? 0 : value);
         }
-        return referenceEdge;
+
+        return new ReferenceEdge(from, to, relationship);
     }
 
     @Override
@@ -249,7 +228,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             DiagramNode<PsiElement> source = findNode(key.getSource());
             DiagramNode<PsiElement> target = findNode(key.getTarget());
             if (source != null && target != null) {
-                myEdges.add(createEdge(source, target));
+                myEdges.add(createEdge(source, target, sourceTargetPair.getValue()));
             }
         }
 
