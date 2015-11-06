@@ -182,11 +182,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     @Override
-    public void removeEdge(DiagramEdge<PsiElement> edge) {
-        // TODO
-    }
-
-    @Override
     public void refreshDataModel() {
         clearAll();
         // TODO handle Categories
@@ -211,7 +206,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     public synchronized void updateDataModel() {
-        // TODO add edges
         DiagramProvider provider = getBuilder().getProvider();
         Set<PsiElement> elements = getElements();
 
@@ -221,8 +215,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             }
         }
 
-        IncrementableSet<SourceTargetPair> relationships = resolveRelationships(myInitialElement.getElement
-                ());
+        IncrementableSet<SourceTargetPair> relationships = resolveRelationships(myInitialElement.getElement());
         for (Map.Entry<SourceTargetPair, Long> sourceTargetPair : relationships.elements()) {
             SourceTargetPair key = sourceTargetPair.getKey();
             DiagramNode<PsiElement> source = findNode(key.getSource());
@@ -307,8 +300,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     @Nullable
     @Override
     public DiagramNode<PsiElement> addElement(PsiElement psiElement) {
-        // TODO how to enable the ability for to add elements?
-        System.out.println("addElement " + psiElement);
         return null;
     }
 
@@ -332,14 +323,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             }
         }
         return null;
-    }
-
-    public void collapseNode(DiagramNode<PsiElement> node) {
-        // TODO
-    }
-
-    public void expandNode(DiagramNode<PsiElement> node) {
-        // TODO
     }
 
     public boolean isPsiListener() {
