@@ -87,13 +87,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         myInitialElement = psiClass == null ? null : spManager.createSmartPsiElementPointer
                 (psiClass);
         collectNodes(psiClass);
-        enableAllContentCategories();
-    }
-
-    private void enableAllContentCategories() {
-        for (DiagramCategory category : ReferenceDiagramProvider.getInstance().getNodeContentManager().getContentCategories()) {
-            myPresentationModel.getPresentation().setCategoryEnabled(category, true);
-        }
     }
 
     public void collectNodes(PsiClass psiClass) {

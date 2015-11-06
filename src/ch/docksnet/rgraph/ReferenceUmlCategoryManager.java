@@ -32,6 +32,7 @@ public class ReferenceUmlCategoryManager extends AbstractDiagramNodeContentManag
     public static final DiagramCategory STATIC_FIELDS;
     public static final DiagramCategory FIELDS;
     public static final DiagramCategory CONSTRUCTORS;
+    public static final DiagramCategory STATIC_METHODS;
     public static final DiagramCategory METHODS;
     public static final DiagramCategory STATIC_CLASS_INITIALIZER;
     public static final DiagramCategory CLASS_INITIALIZER;
@@ -75,7 +76,24 @@ public class ReferenceUmlCategoryManager extends AbstractDiagramNodeContentManag
         if (METHODS.equals(category)) {
             if (element instanceof PsiMethod) {
                 if (!((PsiMethod) element).isConstructor()) {
-                    return true;
+                    if (!((PsiMethod) element).hasModifierProperty("static")) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+        if (STATIC_METHODS.equals(category)) {
+            if (element instanceof PsiMethod) {
+                if (!((PsiMethod) element).isConstructor()) {
+                    if (((PsiMethod) element).hasModifierProperty("static")) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 } else {
                     return false;
                 }
@@ -104,12 +122,15 @@ public class ReferenceUmlCategoryManager extends AbstractDiagramNodeContentManag
     }
 
     static {
-        STATIC_FIELDS = new DiagramCategory("Static Fields", AllIcons.Nodes.PropertyReadStatic);
-        FIELDS = new DiagramCategory("Fields", AllIcons.Nodes.Field);
-        CONSTRUCTORS = new DiagramCategory("Constructors", UmlIcons.Constructor);
-        METHODS = new DiagramCategory("Methods", AllIcons.Nodes.Method);
-        STATIC_CLASS_INITIALIZER = new DiagramCategory("Static Class Initializer", AllIcons.Nodes.Locked);
-        CLASS_INITIALIZER = new DiagramCategory("Class Initializer", AllIcons.Nodes.PpJdk);
-        CATEGORIES = new DiagramCategory[]{STATIC_FIELDS, FIELDS, CONSTRUCTORS, METHODS, STATIC_CLASS_INITIALIZER, CLASS_INITIALIZER};
+        FIELDS = new DiagramCategory("Fields", AllIcons.Nodes.Field, true, true);
+        METHODS = new DiagramCategory("Methods", AllIcons.Nodes.Method, true, true);
+        CONSTRUCTORS = new DiagramCategory("Constructors", UmlIcons.Constructor, true, true);
+        STATIC_FIELDS = new DiagramCategory("Static Fields", AllIcons.Nodes.PropertyReadStatic, true, true);
+        STATIC_METHODS = new DiagramCategory("Static Methods", AllIcons.Nodes.CustomRegion, true, true);
+        CLASS_INITIALIZER = new DiagramCategory("Class Initializer", AllIcons.Nodes.PpJdk, true, true);
+        STATIC_CLASS_INITIALIZER = new DiagramCategory("Static Class Initializer", AllIcons.Nodes.Locked, true, true);
+        CATEGORIES = new DiagramCategory[]{FIELDS, METHODS, CONSTRUCTORS, CLASS_INITIALIZER, STATIC_FIELDS, STATIC_METHODS,
+                STATIC_CLASS_INITIALIZER};
     }
+
 }
