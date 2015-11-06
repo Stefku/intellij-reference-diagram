@@ -26,9 +26,11 @@ import java.util.Map;
 import java.util.Set;
 
 import ch.docksnet.utils.IncrementableSet;
+import com.intellij.diagram.DiagramCategory;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
+import com.intellij.diagram.DiagramPresentationModel;
 import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
@@ -68,11 +70,13 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private final Collection<DiagramEdge<PsiElement>> myDependencyEdgesOld = new HashSet();
 
     private final SmartPointerManager spManager;
+    private final DiagramPresentationModel myPresentationModel;
     private SmartPsiElementPointer<PsiClass> myInitialElement;
 
-    public ReferenceDiagramDataModel(Project project, PsiClass psiClass) {
+    public ReferenceDiagramDataModel(Project project, PsiClass psiClass, DiagramPresentationModel presentationModel) {
         super(project, ReferenceDiagramProvider.getInstance());
         spManager = SmartPointerManager.getInstance(getProject());
+        myPresentationModel = presentationModel;
         init(psiClass);
     }
 
@@ -83,6 +87,13 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         myInitialElement = psiClass == null ? null : spManager.createSmartPsiElementPointer
                 (psiClass);
         collectNodes(psiClass);
+        enableAllContentCategories();
+    }
+
+    private void enableAllContentCategories() {
+        for (DiagramCategory category : ReferenceDiagramProvider.getInstance().getNodeContentManager().getContentCategories()) {
+            myPresentationModel.getPresentation().setCategoryEnabled(category, true);
+        }
     }
 
     public void collectNodes(PsiClass psiClass) {
@@ -184,7 +195,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     @Override
     public void refreshDataModel() {
         clearAll();
-        // TODO handle Categories
         updateDataModel();
     }
 
@@ -277,7 +287,12 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private boolean isAllowedToShow(PsiElement psiElement) {
         if (psiElement != null && psiElement.isValid()) {
             // TODO DiagramScopeManager scopeManager1 = this.getScopeManager();
-            return true;
+            for (DiagramCategory enabledCategory : getBuilder().getPresentation().getEnabledCategories()) {
+                if (getBuilder().getProvider().getNodeContentManager().isInCategory(psiElement, enabledCategory, getBuilder()
+                        .getPresentation())) {
+                    return true;
+                }
+            }
         }
         return false;
     }

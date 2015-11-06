@@ -20,6 +20,7 @@ import ch.docksnet.utils.PreConditionUtil;
 import com.intellij.diagram.BaseDiagramProvider;
 import com.intellij.diagram.DiagramColorManager;
 import com.intellij.diagram.DiagramElementManager;
+import com.intellij.diagram.DiagramNodeContentManager;
 import com.intellij.diagram.DiagramPresentationModel;
 import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.DiagramVfsResolver;
@@ -38,10 +39,11 @@ import org.jetbrains.annotations.Nullable;
 public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
 
     public static final String ID = "ReferenceDiagramProvider";
-    private DiagramElementManager<PsiElement> myElementManager = new ReferenceDiagramElementManager();
-    private DiagramVfsResolver<PsiElement> myVfsResolver = new ReferenceDiagramVfsResolver();
-    private ReferenceDiagramExtras myExtras = new ReferenceDiagramExtras();
-    private DiagramColorManager myColorManager = new ReferenceDiagramColorManager();
+    private final DiagramElementManager<PsiElement> myElementManager = new ReferenceDiagramElementManager();
+    private final DiagramVfsResolver<PsiElement> myVfsResolver = new ReferenceDiagramVfsResolver();
+    private final ReferenceDiagramExtras myExtras = new ReferenceDiagramExtras();
+    private final DiagramColorManager myColorManager = new ReferenceDiagramColorManager();
+    private final ReferenceUmlCategoryManager myUmlCategoryManager = new ReferenceUmlCategoryManager();
 
     @Pattern("[a-zA-Z0-9_-]*")
     @Override
@@ -75,7 +77,7 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
             psiElement, @Nullable VirtualFile virtualFile, DiagramPresentationModel model) {
         PreConditionUtil.assertTrue(psiElement instanceof PsiClass, "PsiElement" +
                 ".psiElement must be a PsiClass");
-        return new ReferenceDiagramDataModel(project, (PsiClass) psiElement);
+        return new ReferenceDiagramDataModel(project, (PsiClass) psiElement, model);
     }
 
     @Override
@@ -87,4 +89,8 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
         return (ReferenceDiagramProvider) DiagramProvider.findByID(ID);
     }
 
+    @Override
+    public DiagramNodeContentManager getNodeContentManager() {
+        return myUmlCategoryManager;
+    }
 }
