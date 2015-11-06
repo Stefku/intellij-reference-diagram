@@ -35,6 +35,7 @@ import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.diagram.presentation.DiagramLineType;
+import com.intellij.diagram.settings.DiagramLayout;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiClass;
@@ -77,15 +78,19 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         super(project, ReferenceDiagramProvider.getInstance());
         spManager = SmartPointerManager.getInstance(getProject());
         myPresentationModel = presentationModel;
+        setDefaultLayout();
         init(psiClass);
+    }
+
+    private void setDefaultLayout() {
+        myPresentationModel.getPresentation().setLayout(DiagramLayout.HIERARCHIC_GROUP);
     }
 
     /**
      * Populates elementsAddedByUser with members of given PsiClass
      */
     private void init(PsiClass psiClass) {
-        myInitialElement = psiClass == null ? null : spManager.createSmartPsiElementPointer
-                (psiClass);
+        myInitialElement = psiClass == null ? null : spManager.createSmartPsiElementPointer(psiClass);
         collectNodes(psiClass);
     }
 
