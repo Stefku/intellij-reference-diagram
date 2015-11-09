@@ -38,7 +38,6 @@ import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.diagram.presentation.DiagramLineType;
-import com.intellij.diagram.settings.DiagramLayout;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiClass;
@@ -356,6 +355,14 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
                     return Long.toString(count);
                 }
             }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (!(obj instanceof DiagramRelationshipInfoAdapter)) {
+                    return false;
+                }
+                return toString().equals(obj.toString()) && getToLabel().equals(((DiagramRelationshipInfoAdapter) obj).getToLabel());
+            }
         };
         return r;
     }
@@ -372,6 +379,14 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             @Override
             public DiagramLineType getLineType() {
                 return DiagramLineType.DASHED;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (!(obj instanceof DiagramRelationshipInfoAdapter)) {
+                    return false;
+                }
+                return toString().equals(obj.toString());
             }
         };
         return r;
