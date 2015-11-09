@@ -79,12 +79,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         super(project, ReferenceDiagramProvider.getInstance());
         spManager = SmartPointerManager.getInstance(getProject());
         myPresentationModel = presentationModel;
-        setDefaultLayout();
         init(psiClass);
-    }
-
-    private void setDefaultLayout() {
-        myPresentationModel.getPresentation().setLayout(DiagramLayout.HIERARCHIC_GROUP);
     }
 
     /**
@@ -141,8 +136,8 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     @Nullable
-    public DiagramEdge<PsiElement> createEdge(final @NotNull DiagramNode<PsiElement> from, final @NotNull
-    DiagramNode<PsiElement> to, Long value) {
+    public DiagramEdge<PsiElement> addEdge(final @NotNull DiagramNode<PsiElement> from, final @NotNull DiagramNode<PsiElement> to,
+            Long value) {
         final DiagramRelationshipInfo relationship;
         if (from instanceof PsiField) {
             relationship = createEdgeFromField();
@@ -227,14 +222,14 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             DiagramNode<PsiElement> source = findNode(key.getSource());
             DiagramNode<PsiElement> target = findNode(key.getTarget());
             if (source != null && target != null) {
-                myEdges.add(createEdge(source, target, sourceTargetPair.getValue()));
+                myEdges.add(addEdge(source, target, sourceTargetPair.getValue()));
             }
         }
     }
 
     @Nullable
     public PsiClass getInitialElement() {
-        if(myInitialElement == null) {
+        if (myInitialElement == null) {
             return null;
         } else {
             PsiElement element = myInitialElement.getElement();
