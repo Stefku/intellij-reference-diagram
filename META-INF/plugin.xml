@@ -15,67 +15,72 @@
   -->
 
 <idea-plugin version="2">
-  <id>ch.docksnet.rgraph</id>
-  <name>Java Method Reference Diagram</name>
-  <version>1.4.0</version>
-  <vendor>Stefan Zeller</vendor>
-  <depends>com.intellij.diagram</depends>
-  <description><![CDATA[
-      Java Method Reference Diagram<br>
-      This plugins shows a diagram of a java class with two purposes
-      <ul>
-        <li>A usage graph of methods, fields and class initializer blocks</li>
-        <li>Visual information about orphaned groups, meaning independent clusters of methods and fields that are candidates for refactoring to separate classes</li>
-      </ul>
-      See <a href="https://github.com/Stefku/intellij-reference-diagram">https://github.com/Stefku/intellij-reference-diagram</a><br>
-      ]]></description>
+	<id>ch.docksnet.rgraph</id>
+	<name>Java Method Reference Diagram</name>
+	<version>1.4.0</version>
+	<vendor>Stefan Zeller</vendor>
+	<depends>com.intellij.diagram</depends>
+	<description><![CDATA[
+		Java Method Reference Diagram<br>
+		This plugins shows a diagram of a java class with two purposes
+		<ul>
+			<li>A usage graph of methods, fields and class initializer blocks</li>
+			<li>Visual information about orphaned groups, meaning independent clusters of methods and fields that are candidates for
+				refactoring to separate classes
+			</li>
+		</ul>
+		See <a href="https://github.com/Stefku/intellij-reference-diagram">https://github.com/Stefku/intellij-reference-diagram</a><br>
+		]]></description>
 
-  <change-notes><![CDATA[
-        <ul>
-	        <li>
-		        Version 1.4.0: Ability to hide node types like fields, static fields, methods, etc.; Bug fixes. Known Issue: Graph layout changes sometimes.
-	        </li>
-	        <li>
-		        Version 1.3.1: Bug with callees from inner classes.
-	        </li>
-	        <li>
-		        Version 1.3.0: Bug with callees from anonymous inner classes; Add ability to remove node from diagram; Diagram is not updated after refactoring.
-	        </li>
-        	<li>
+	<change-notes><![CDATA[
+		<ul>
+			<li>
+				Version 1.4.0: Ability to hide node types like fields, static fields, methods, etc.; Show cluster count in pup up menu; Some
+				bug fixes. Known Issue: Graph layout changes sometimes.
+			</li>
+			<li>
+				Version 1.3.1: Bug with callees from inner classes.
+			</li>
+			<li>
+				Version 1.3.0: Bug with callees from anonymous inner classes; Add ability to remove node from diagram; Diagram is not
+				updated after refactoring.
+			</li>
+			<li>
 				Version 1.2.0: Improve icons and lines; Small Bugfix.
 			</li>
-        	<li>
-		        Version 1.1.1:Bug fixes. E.g. searching in diagram is now working CTRL+F12 / CTRL+F.
-	        </li>
-	        <li>
-		        Version 1.1.0: show modifiers and the count of reference from one element to another
-	        </li>
-            <li>
-	            Version 1.0.1: Goto source (F4) is possible
-            </li>
-        </ul>
-      ]]>
+			<li>
+				Version 1.1.1:Bug fixes. E.g. searching in diagram is now working CTRL+F12 / CTRL+F.
+			</li>
+			<li>
+				Version 1.1.0: show modifiers and the count of reference from one element to another
+			</li>
+			<li>
+				Version 1.0.1: Goto source (F4) is possible
+			</li>
+		</ul>
+		]]>
   </change-notes>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="141.1010"/>
+	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+	<idea-version since-build="141.1010"/>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+		   on how to target different products -->
+	<!-- uncomment to enable plugin in all products
+	  <depends>com.intellij.modules.lang</depends>
+	  -->
 
-  <application-components>
-  </application-components>
+	<application-components>
+	</application-components>
 
-  <project-components>
-  </project-components>
+	<project-components>
+	</project-components>
 
-  <actions>
-  </actions>
+	<actions>
+		<action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.ShowClusterCountAction"/>
+	</actions>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <diagram.Provider implementation="ch.docksnet.rgraph.ReferenceDiagramProvider"/>
-  </extensions>
+	<extensions defaultExtensionNs="com.intellij">
+		<diagram.Provider implementation="ch.docksnet.rgraph.ReferenceDiagramProvider"/>
+	</extensions>
 </idea-plugin>

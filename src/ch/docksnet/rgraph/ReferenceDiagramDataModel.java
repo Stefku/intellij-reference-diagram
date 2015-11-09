@@ -16,7 +16,7 @@
 
 package ch.docksnet.rgraph;
 
-import java.awt.*;
+import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 import ch.docksnet.utils.IncrementableSet;
+import ch.docksnet.utils.lcom.ClusterAnalyzer;
+import ch.docksnet.utils.lcom.LCOMAnalyzerData;
+import ch.docksnet.utils.lcom.LCOMNode;
 import com.intellij.diagram.DiagramCategory;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramEdge;
@@ -65,14 +68,14 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     private final Collection<DiagramNode<PsiElement>> myNodes = new HashSet<>();
     private final Collection<DiagramEdge<PsiElement>> myEdges = new HashSet<>();
-    private final Collection<DiagramEdge<PsiElement>> myDependencyEdges = new HashSet<>();
     private final Collection<DiagramNode<PsiElement>> myNodesOld = new HashSet();
     private final Collection<DiagramEdge<PsiElement>> myEdgesOld = new HashSet();
-    private final Collection<DiagramEdge<PsiElement>> myDependencyEdgesOld = new HashSet();
 
     private final SmartPointerManager spManager;
     private final DiagramPresentationModel myPresentationModel;
     private SmartPsiElementPointer<PsiClass> myInitialElement;
+
+    private long currentClusterCount = 0;
 
     public ReferenceDiagramDataModel(Project project, PsiClass psiClass, DiagramPresentationModel presentationModel) {
         super(project, ReferenceDiagramProvider.getInstance());
@@ -124,18 +127,12 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     @NotNull
     @Override
     public Collection<? extends DiagramEdge<PsiElement>> getEdges() {
-        if (myDependencyEdges.isEmpty()) {
-            Collection var10000 = myEdges;
-            if (myEdges == null) {
-                throw new IllegalStateException(String.format("@NotNull method %s.%s must not return null",
-                        new Object[]{"com/intellij/uml/java/JavaUmlDataModel", "getEdges"}));
-            } else {
-                return var10000;
-            }
+        Collection var10000 = myEdges;
+        if (myEdges == null) {
+            throw new IllegalStateException(String.format("@NotNull method %s.%s must not return null",
+                    new Object[]{"com/intellij/uml/java/JavaUmlDataModel", "getEdges"}));
         } else {
-            HashSet allEdges = new HashSet(myEdges);
-            allEdges.addAll(myDependencyEdges);
-            return allEdges;
+            return var10000;
         }
     }
 
@@ -161,6 +158,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     @Override
     public void removeNode(DiagramNode<PsiElement> node) {
         removeElement((PsiElement) node.getIdentifyingElement());
+        analyzeLcom4();
     }
 
     private void removeElement(PsiElement element) {
@@ -194,6 +192,15 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     public void refreshDataModel() {
         clearAll();
         updateDataModel();
+        analyzeLcom4();
+    }
+
+    private void analyzeLcom4() {
+        LCOMConverter lcomConverter = new LCOMConverter();
+        Collection<LCOMNode> lcom4Nodes = lcomConverter.convert(getNodes(), getEdges());
+        LCOMAnalyzerData lcomAnalyzerData = new LCOMAnalyzerData(lcom4Nodes);
+        ClusterAnalyzer clusterAnalyzer = new ClusterAnalyzer(lcomAnalyzerData);
+        currentClusterCount = clusterAnalyzer.countCluster();
     }
 
     @NotNull
@@ -204,7 +211,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private void clearAll() {
         clearAndBackup(myNodes, myNodesOld);
         clearAndBackup(myEdges, myEdgesOld);
-        clearAndBackup(myDependencyEdges, myDependencyEdgesOld);
     }
 
     private static <T> void clearAndBackup(Collection<T> target, Collection<T> backup) {
@@ -236,7 +242,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         // TODO: for what these backups?
         mergeWithBackup(myNodes, myNodesOld);
         mergeWithBackup(myEdges, myEdgesOld);
-        mergeWithBackup(myDependencyEdges, myDependencyEdgesOld);
     }
 
     @NotNull
@@ -348,7 +353,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         clearAll();
         myNodesOld.clear();
         myEdgesOld.clear();
-        myDependencyEdgesOld.clear();
         init((PsiClass) element);
         refreshDataModel();
     }
@@ -389,6 +393,10 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             }
         };
         return r;
+    }
+
+    public long getCurrentClusterCount() {
+        return currentClusterCount;
     }
 
 }
