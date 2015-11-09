@@ -75,6 +75,8 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private final DiagramPresentationModel myPresentationModel;
     private SmartPsiElementPointer<PsiClass> myInitialElement;
 
+    private long currentClusterCount = 0;
+
     public ReferenceDiagramDataModel(Project project, PsiClass psiClass, DiagramPresentationModel presentationModel) {
         super(project, ReferenceDiagramProvider.getInstance());
         spManager = SmartPointerManager.getInstance(getProject());
@@ -156,6 +158,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     @Override
     public void removeNode(DiagramNode<PsiElement> node) {
         removeElement((PsiElement) node.getIdentifyingElement());
+        analyzeLcom4();
     }
 
     private void removeElement(PsiElement element) {
@@ -197,8 +200,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         Collection<LCOMNode> lcom4Nodes = lcomConverter.convert(getNodes(), getEdges());
         LCOMAnalyzerData lcomAnalyzerData = new LCOMAnalyzerData(lcom4Nodes);
         ClusterAnalyzer clusterAnalyzer = new ClusterAnalyzer(lcomAnalyzerData);
-        long clusterCount = clusterAnalyzer.countCluster();
-        System.out.println("Cluster Count: " + clusterCount);
+        currentClusterCount = clusterAnalyzer.countCluster();
     }
 
     @NotNull
@@ -391,6 +393,10 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             }
         };
         return r;
+    }
+
+    public long getCurrentClusterCount() {
+        return currentClusterCount;
     }
 
 }

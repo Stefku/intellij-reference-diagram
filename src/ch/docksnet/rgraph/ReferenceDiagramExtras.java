@@ -16,11 +16,13 @@
 
 package ch.docksnet.rgraph;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.intellij.diagram.DiagramBuilder;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.extras.DiagramExtras;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +42,13 @@ public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
             }
         }
         return super.getData(dataId, nodes, builder);
+    }
+
+    @Override
+    public List<AnAction> getExtraActions() {
+        final List<AnAction> result = new ArrayList<>();
+        result.add(new ShowClusterCountAction());
+        return result;
     }
 
 }
