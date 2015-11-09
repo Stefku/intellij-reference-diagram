@@ -43,7 +43,7 @@ public class ReferenceNode extends PsiDiagramNode<PsiElement> {
 
     @Override
     public String toString() {
-        return "ReferenceNode{} " + super.toString();
+        return "ReferenceNode{} " + getIdentifyingElement();
     }
 
     @Override
