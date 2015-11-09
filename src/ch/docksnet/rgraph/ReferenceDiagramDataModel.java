@@ -33,7 +33,6 @@ import com.intellij.diagram.DiagramCategory;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
-import com.intellij.diagram.DiagramPresentationModel;
 import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
@@ -69,15 +68,13 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private final Collection<DiagramEdge<PsiElement>> myEdges = new HashSet<>();
 
     private final SmartPointerManager spManager;
-    private final DiagramPresentationModel myPresentationModel;
     private SmartPsiElementPointer<PsiClass> myInitialElement;
 
     private long currentClusterCount = 0;
 
-    public ReferenceDiagramDataModel(Project project, PsiClass psiClass, DiagramPresentationModel presentationModel) {
+    public ReferenceDiagramDataModel(Project project, PsiClass psiClass) {
         super(project, ReferenceDiagramProvider.getInstance());
         spManager = SmartPointerManager.getInstance(getProject());
-        myPresentationModel = presentationModel;
         init(psiClass);
     }
 
