@@ -1,11 +1,11 @@
-# Java Reference Diagram Plugin
+# Java Reference Diagram Plugin 1.4.0
 
 This plugin for IntelliJ IDEA provides a diagram showing a reference graph for methods and fields in java classes.
 
 This plugin is available in IntelliJ Plugin Registry: [https://plugins.jetbrains.com/plugin/7996](https://plugins.jetbrains.com/plugin/7996)
 
 ## Use Cases
-1. Reference Graph for elements in class
+1. Reference graph for elements in classes
 2. Analyzing structure of classes with respect to cohesion
 
 ## Features
