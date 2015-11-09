@@ -68,8 +68,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     private final Collection<DiagramNode<PsiElement>> myNodes = new HashSet<>();
     private final Collection<DiagramEdge<PsiElement>> myEdges = new HashSet<>();
-    private final Collection<DiagramNode<PsiElement>> myNodesOld = new HashSet();
-    private final Collection<DiagramEdge<PsiElement>> myEdgesOld = new HashSet();
 
     private final SmartPointerManager spManager;
     private final DiagramPresentationModel myPresentationModel;
@@ -209,14 +207,8 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     private void clearAll() {
-        clearAndBackup(myNodes, myNodesOld);
-        clearAndBackup(myEdges, myEdgesOld);
-    }
-
-    private static <T> void clearAndBackup(Collection<T> target, Collection<T> backup) {
-        backup.clear();
-        backup.addAll(target);
-        target.clear();
+        myNodes.clear();
+        myEdges.clear();
     }
 
     public synchronized void updateDataModel() {
@@ -238,10 +230,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
                 myEdges.add(createEdge(source, target, sourceTargetPair.getValue()));
             }
         }
-
-        // TODO: for what these backups?
-        mergeWithBackup(myNodes, myNodesOld);
-        mergeWithBackup(myEdges, myEdgesOld);
     }
 
     @NotNull
@@ -300,18 +288,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         return false;
     }
 
-    private static <T> void mergeWithBackup(Collection<T> target, Collection<T> backup) {
-        Iterator<T> i$ = backup.iterator();
-
-        while (i$.hasNext()) {
-            T t = i$.next();
-            if (target.contains(t)) {
-                target.remove(t);
-                target.add(t);
-            }
-        }
-    }
-
     public void dispose() {
     }
 
@@ -351,8 +327,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         super.rebuild(element);
         elementsRemovedByUser.clear();
         clearAll();
-        myNodesOld.clear();
-        myEdgesOld.clear();
         init((PsiClass) element);
         refreshDataModel();
     }
