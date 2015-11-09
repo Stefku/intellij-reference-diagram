@@ -221,13 +221,27 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             }
         }
 
-        IncrementableSet<SourceTargetPair> relationships = resolveRelationships(myInitialElement.getElement());
+        IncrementableSet<SourceTargetPair> relationships = resolveRelationships(getInitialElement());
         for (Map.Entry<SourceTargetPair, Long> sourceTargetPair : relationships.elements()) {
             SourceTargetPair key = sourceTargetPair.getKey();
             DiagramNode<PsiElement> source = findNode(key.getSource());
             DiagramNode<PsiElement> target = findNode(key.getTarget());
             if (source != null && target != null) {
                 myEdges.add(createEdge(source, target, sourceTargetPair.getValue()));
+            }
+        }
+    }
+
+    @Nullable
+    public PsiClass getInitialElement() {
+        if(myInitialElement == null) {
+            return null;
+        } else {
+            PsiElement element = myInitialElement.getElement();
+            if (element != null && element.isValid()) {
+                return (PsiClass) element;
+            } else {
+                return null;
             }
         }
     }
@@ -277,7 +291,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     private boolean isAllowedToShow(PsiElement psiElement) {
         if (psiElement != null && psiElement.isValid()) {
-            // TODO DiagramScopeManager scopeManager1 = this.getScopeManager();
             for (DiagramCategory enabledCategory : getBuilder().getPresentation().getEnabledCategories()) {
                 if (getBuilder().getProvider().getNodeContentManager().isInCategory(psiElement, enabledCategory, getBuilder()
                         .getPresentation())) {
