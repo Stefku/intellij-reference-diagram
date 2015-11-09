@@ -30,7 +30,7 @@ were hidden disconnected clusters. Comparing the cluster count before and after 
 Does static methods and fields play a role in cohesion of a class? Just show or hide them via the toolbar. You can set the default behavior
 in the usual settings dialog of the others diagrams.
 
-![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/ExampleDiagram_ch.docksnet.app.MainClass.png)
+![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/settings_default_categories.png)
 
 ## Example
 
@@ -38,7 +38,7 @@ This example shows three cohesive clusters in MainClass (source is showed below)
 A blue line indicates a method call, where a green line means that a field is coupled to a method in terms of cohesion.
 The numbers on the edges indicating the number of references.
 
-![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/settings_default_categories.png)
+![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/ExampleDiagram_ch.docksnet.app.MainClass.png)
 
 ```java
 public abstract class MainClass {
