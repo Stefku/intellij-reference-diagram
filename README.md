@@ -137,3 +137,5 @@ public abstract class MainClass {
 
 }
 ```
+# Known Issues
+- Diagram does not work for library files (#38)
