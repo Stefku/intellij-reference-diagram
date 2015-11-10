@@ -33,12 +33,10 @@ import com.intellij.diagram.DiagramCategory;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
-import com.intellij.diagram.DiagramPresentationModel;
 import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.diagram.presentation.DiagramLineType;
-import com.intellij.diagram.settings.DiagramLayout;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiClass;
@@ -68,25 +66,16 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     private final Collection<DiagramNode<PsiElement>> myNodes = new HashSet<>();
     private final Collection<DiagramEdge<PsiElement>> myEdges = new HashSet<>();
-    private final Collection<DiagramNode<PsiElement>> myNodesOld = new HashSet();
-    private final Collection<DiagramEdge<PsiElement>> myEdgesOld = new HashSet();
 
     private final SmartPointerManager spManager;
-    private final DiagramPresentationModel myPresentationModel;
     private SmartPsiElementPointer<PsiClass> myInitialElement;
 
     private long currentClusterCount = 0;
 
-    public ReferenceDiagramDataModel(Project project, PsiClass psiClass, DiagramPresentationModel presentationModel) {
+    public ReferenceDiagramDataModel(Project project, PsiClass psiClass) {
         super(project, ReferenceDiagramProvider.getInstance());
         spManager = SmartPointerManager.getInstance(getProject());
-        myPresentationModel = presentationModel;
-        setDefaultLayout();
         init(psiClass);
-    }
-
-    private void setDefaultLayout() {
-        myPresentationModel.getPresentation().setLayout(DiagramLayout.HIERARCHIC_GROUP);
     }
 
     /**
@@ -143,10 +132,10 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     @Nullable
-    public DiagramEdge<PsiElement> createEdge(final @NotNull DiagramNode<PsiElement> from, final @NotNull
-    DiagramNode<PsiElement> to, Long value) {
+    public DiagramEdge<PsiElement> addEdge(final @NotNull DiagramNode<PsiElement> from, final @NotNull DiagramNode<PsiElement> to,
+            Long value) {
         final DiagramRelationshipInfo relationship;
-        if (from instanceof PsiField) {
+        if (from.getIdentifyingElement() instanceof PsiField) {
             relationship = createEdgeFromField();
         } else {
             relationship = createEdgeFromNonField(value == null ? 0 : value);
@@ -209,14 +198,8 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     private void clearAll() {
-        clearAndBackup(myNodes, myNodesOld);
-        clearAndBackup(myEdges, myEdgesOld);
-    }
-
-    private static <T> void clearAndBackup(Collection<T> target, Collection<T> backup) {
-        backup.clear();
-        backup.addAll(target);
-        target.clear();
+        myNodes.clear();
+        myEdges.clear();
     }
 
     public synchronized void updateDataModel() {
@@ -229,19 +212,29 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             }
         }
 
-        IncrementableSet<SourceTargetPair> relationships = resolveRelationships(myInitialElement.getElement());
+        IncrementableSet<SourceTargetPair> relationships = resolveRelationships(getInitialElement());
         for (Map.Entry<SourceTargetPair, Long> sourceTargetPair : relationships.elements()) {
             SourceTargetPair key = sourceTargetPair.getKey();
             DiagramNode<PsiElement> source = findNode(key.getSource());
             DiagramNode<PsiElement> target = findNode(key.getTarget());
             if (source != null && target != null) {
-                myEdges.add(createEdge(source, target, sourceTargetPair.getValue()));
+                myEdges.add(addEdge(source, target, sourceTargetPair.getValue()));
             }
         }
+    }
 
-        // TODO: for what these backups?
-        mergeWithBackup(myNodes, myNodesOld);
-        mergeWithBackup(myEdges, myEdgesOld);
+    @Nullable
+    public PsiClass getInitialElement() {
+        if (myInitialElement == null) {
+            return null;
+        } else {
+            PsiElement element = myInitialElement.getElement();
+            if (element != null && element.isValid()) {
+                return (PsiClass) element;
+            } else {
+                return null;
+            }
+        }
     }
 
     @NotNull
@@ -289,7 +282,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     private boolean isAllowedToShow(PsiElement psiElement) {
         if (psiElement != null && psiElement.isValid()) {
-            // TODO DiagramScopeManager scopeManager1 = this.getScopeManager();
             for (DiagramCategory enabledCategory : getBuilder().getPresentation().getEnabledCategories()) {
                 if (getBuilder().getProvider().getNodeContentManager().isInCategory(psiElement, enabledCategory, getBuilder()
                         .getPresentation())) {
@@ -298,18 +290,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             }
         }
         return false;
-    }
-
-    private static <T> void mergeWithBackup(Collection<T> target, Collection<T> backup) {
-        Iterator<T> i$ = backup.iterator();
-
-        while (i$.hasNext()) {
-            T t = i$.next();
-            if (target.contains(t)) {
-                target.remove(t);
-                target.add(t);
-            }
-        }
     }
 
     public void dispose() {
@@ -351,8 +331,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         super.rebuild(element);
         elementsRemovedByUser.clear();
         clearAll();
-        myNodesOld.clear();
-        myEdgesOld.clear();
         init((PsiClass) element);
         refreshDataModel();
     }
@@ -374,6 +352,14 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
                     return Long.toString(count);
                 }
             }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (!(obj instanceof DiagramRelationshipInfoAdapter)) {
+                    return false;
+                }
+                return toString().equals(obj.toString()) && getToLabel().equals(((DiagramRelationshipInfoAdapter) obj).getToLabel());
+            }
         };
         return r;
     }
@@ -390,6 +376,14 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             @Override
             public DiagramLineType getLineType() {
                 return DiagramLineType.DASHED;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (!(obj instanceof DiagramRelationshipInfoAdapter)) {
+                    return false;
+                }
+                return toString().equals(obj.toString());
             }
         };
         return r;

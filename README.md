@@ -1,11 +1,36 @@
-# Java Reference Diagram Plugin
+# Java Reference Diagram Plugin 1.4.0
 
-This plugin for IntelliJ IDEA provides a diagram showing a reference graph for methods in java classes.
-
-A future version shall show orphaned groups of methods, thus visiualize [lack of cohesion of methods](http://sonar-jenkins.blogspot.ch/2012/12/what-is-lcom4.html) 
-which is probably slighty different from a graph of dependencies.
+This plugin for IntelliJ IDEA provides a diagram showing a reference graph for methods and fields in java classes.
 
 This plugin is available in IntelliJ Plugin Registry: [https://plugins.jetbrains.com/plugin/7996](https://plugins.jetbrains.com/plugin/7996)
+
+## Use Cases
+1. Reference graph for elements in classes
+2. Analyzing structure of classes with respect to cohesion
+
+## Features
+- Show or hide categories of elements, like fields, methods, constructors, class initializers and their static companions.
+- If the return value of a method is assigned to a field, then this is also threaded like a dependency and is shown in a different line style
+- As other diagrams, features available like Goto Source (F4), File Structure (Strg+F12) and Search (Ctrl+F), refactorings, Find Usages etc.
+- Nodes can be removed from graph to help analyze cohesive structure of the cluss.  
+- In pop-up menu, the cluster count is shown (Didn't found out yet how to show this in graph toolbar). 
+
+## Cohesive clusters
+If you have a suspect class and you want to analyze the cohesivnes of it this diagram helps you to visualize the [lack of cohesion of methods]
+(http://sonar-jenkins.blogspot.ch/2012/12/what-is-lcom4.html). The clusters are shown visual in the diagram. Also, the cluster count is shown
+in pop-up menu. This is useful if you have big classes in legacy projects and you are not able to see the cluster count directly in the
+diagram.
+
+Sometimes, cohesive groups are not separeted because they are connected through common methods or fields. For example for logging purposes.
+There's a great chance to see this as single nodes that are highly connected. With removing these nodes from the diagram you can see if there
+were hidden disconnected clusters. Comparing the cluster count before and after the removal helps with this task.
+
+![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/Example_show_cluster_count.png)
+   
+Does static methods and fields play a role in cohesion of a class? Just show or hide them via the toolbar. You can set the default behavior
+in the usual settings dialog of the others diagrams.
+
+![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/settings_default_categories.png)
 
 ## Example
 
@@ -13,7 +38,7 @@ This example shows three cohesive clusters in MainClass (source is showed below)
 A blue line indicates a method call, where a green line means that a field is coupled to a method in terms of cohesion.
 The numbers on the edges indicating the number of references.
 
-![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/master/test/ExampleDiagram_ch.docksnet.app.MainClass.png)
+![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/ExampleDiagram_ch.docksnet.app.MainClass.png)
 
 ```java
 public abstract class MainClass {

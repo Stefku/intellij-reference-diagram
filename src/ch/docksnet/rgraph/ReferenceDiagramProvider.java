@@ -77,7 +77,7 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
             psiElement, @Nullable VirtualFile virtualFile, DiagramPresentationModel model) {
         PreConditionUtil.assertTrue(psiElement instanceof PsiClass, "PsiElement" +
                 ".psiElement must be a PsiClass");
-        return new ReferenceDiagramDataModel(project, (PsiClass) psiElement, model);
+        return new ReferenceDiagramDataModel(project, (PsiClass) psiElement);
     }
 
     @Override

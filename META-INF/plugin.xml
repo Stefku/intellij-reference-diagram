@@ -36,7 +36,7 @@
 		<ul>
 			<li>
 				Version 1.4.0: Ability to hide node types like fields, static fields, methods, etc.; Show cluster count in pup up menu; Some
-				bug fixes. Known Issue: Graph layout changes sometimes.
+				bug fixes.
 			</li>
 			<li>
 				Version 1.3.1: Bug with callees from inner classes.
@@ -61,14 +61,7 @@
 		]]>
   </change-notes>
 
-	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
 	<idea-version since-build="141.1010"/>
-
-	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-		   on how to target different products -->
-	<!-- uncomment to enable plugin in all products
-	  <depends>com.intellij.modules.lang</depends>
-	  -->
 
 	<application-components>
 	</application-components>
