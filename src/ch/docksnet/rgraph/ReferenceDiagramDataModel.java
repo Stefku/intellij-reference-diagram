@@ -135,7 +135,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     public DiagramEdge<PsiElement> addEdge(final @NotNull DiagramNode<PsiElement> from, final @NotNull DiagramNode<PsiElement> to,
             Long value) {
         final DiagramRelationshipInfo relationship;
-        if (from instanceof PsiField) {
+        if (from.getIdentifyingElement() instanceof PsiField) {
             relationship = createEdgeFromField();
         } else {
             relationship = createEdgeFromNonField(value == null ? 0 : value);
