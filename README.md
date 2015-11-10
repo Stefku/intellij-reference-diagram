@@ -34,7 +34,7 @@ in the usual settings dialog of the others diagrams.
 
 ## Example
 
-This example shows three cohesive clusters in MainClass (source is showed below). 
+This example shows five cohesive clusters in MainClass (source is showed below). 
 A blue line indicates a method call, where a green line means that a field is coupled to a method in terms of cohesion.
 The numbers on the edges indicating the number of references.
 
