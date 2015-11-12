@@ -17,7 +17,7 @@
 <idea-plugin version="2">
 	<id>ch.docksnet.rgraph</id>
 	<name>Java Method Reference Diagram</name>
-	<version>1.4.0</version>
+	<version>1.5.0</version>
 	<vendor>Stefan Zeller</vendor>
 	<depends>com.intellij.diagram</depends>
 	<description><![CDATA[
@@ -34,6 +34,9 @@
 
 	<change-notes><![CDATA[
 		<ul>
+			<li>
+				Version 1.5.0: Show inner classes and enums.
+			</li>
 			<li>
 				Version 1.4.0: Ability to hide node types like fields, static fields, methods, etc.; Show cluster count in pup up menu; Some
 				bug fixes.
