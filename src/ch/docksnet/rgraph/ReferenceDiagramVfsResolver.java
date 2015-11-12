@@ -21,7 +21,6 @@ import java.util.List;
 import com.intellij.diagram.DiagramVfsResolver;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
@@ -32,32 +31,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ReferenceDiagramVfsResolver implements DiagramVfsResolver<PsiElement> {
 
-    public static final PsiElementDispatcher<String> PSI_ELEMENT_DISPATCHER = new PsiElementDispatcher() {
-        @Override
-        public String processClass(PsiClass psiClass) {
-            return ClassFQN.create(psiClass).getFQN();
-        }
-
-        @Override
-        public String processMethod(PsiMethod psiMethod) {
-            return MethodFQN.create(psiMethod).getFQN();
-        }
-
-        @Override
-        public String processField(PsiField psiField) {
-            return FieldFQN.create(psiField).getFQN();
-        }
-
-        @Override
-        public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
-            return PsiUtils.getName(psiClassInitializer);
-        }
-
-    };
-
     @Override
     public String getQualifiedName(PsiElement psiElement) {
-        return PSI_ELEMENT_DISPATCHER.dispatch(psiElement);
+        return PsiUtils.getFqn(psiElement);
     }
 
     @Nullable

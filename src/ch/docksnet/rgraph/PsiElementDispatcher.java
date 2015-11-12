@@ -29,7 +29,19 @@ public abstract class PsiElementDispatcher<T> {
 
     public T dispatch(PsiElement psiElement) {
         if (psiElement instanceof PsiClass) {
-            return processClass((PsiClass) psiElement);
+            if (((PsiClass) psiElement).getContainingClass() == null) {
+                return processClass((PsiClass) psiElement);
+            } else {
+                if (((PsiClass) psiElement).isEnum()) {
+                    return processEnum((PsiClass) psiElement);
+                } else {
+                    if (((PsiClass) psiElement).hasModifierProperty("static")) {
+                        return processStaticInnerClass((PsiClass) psiElement);
+                    } else {
+                        return processInnerClass((PsiClass) psiElement);
+                    }
+                }
+            }
         } else if (psiElement instanceof PsiMethod) {
             return processMethod((PsiMethod) psiElement);
         } else if (psiElement instanceof PsiField) {
@@ -47,5 +59,11 @@ public abstract class PsiElementDispatcher<T> {
     public abstract T processField(PsiField psiField);
 
     public abstract T processClassInitializer(PsiClassInitializer psiClassInitializer);
+
+    public abstract T processInnerClass(PsiClass innerClass);
+
+    public abstract T processStaticInnerClass(PsiClass staticInnerClass);
+
+    public abstract T processEnum(PsiClass anEnum);
 
 }
