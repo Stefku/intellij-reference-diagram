@@ -88,18 +88,19 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     public void collectNodes(PsiClass psiClass) {
         for (PsiMethod psiMethod : psiClass.getMethods()) {
-            elementsAddedByUser.put(getFqn(psiMethod), spManager.createSmartPsiElementPointer(
-                    (PsiElement) psiMethod));
+            elementsAddedByUser.put(getFqn(psiMethod), spManager.createSmartPsiElementPointer((PsiElement) psiMethod));
         }
 
         for (PsiField psiField : psiClass.getFields()) {
-            elementsAddedByUser.put(getFqn(psiField), spManager.createSmartPsiElementPointer(
-                    (PsiElement) psiField));
+            elementsAddedByUser.put(getFqn(psiField), spManager.createSmartPsiElementPointer((PsiElement) psiField));
         }
 
         for (PsiClassInitializer psiClassInitializer : psiClass.getInitializers()) {
-            elementsAddedByUser.put(getFqn(psiClassInitializer), spManager.createSmartPsiElementPointer(
-                    (PsiElement) psiClassInitializer));
+            elementsAddedByUser.put(getFqn(psiClassInitializer), spManager.createSmartPsiElementPointer((PsiElement) psiClassInitializer));
+        }
+
+        for (PsiClass innerClass : psiClass.getInnerClasses()) {
+            elementsAddedByUser.put(getFqn(innerClass), spManager.createSmartPsiElementPointer((PsiElement) innerClass));
         }
     }
 

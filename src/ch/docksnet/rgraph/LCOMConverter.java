@@ -95,6 +95,21 @@ public class LCOMConverter {
             public LCOMNode.Type processClassInitializer(PsiClassInitializer psiClassInitializer) {
                 return LCOMNode.Type.ClassInitializer;
             }
+
+            @Override
+            public LCOMNode.Type processInnerClass(PsiClass innerClass) {
+                return LCOMNode.Type.InnerClass;
+            }
+
+            @Override
+            public LCOMNode.Type processStaticInnerClass(PsiClass staticInnerClass) {
+                return LCOMNode.Type.StaticInnerClass;
+            }
+
+            @Override
+            public LCOMNode.Type processEnum(PsiClass anEnum) {
+                return LCOMNode.Type.Enum;
+            }
         };
         return elementDispatcher.dispatch(referenceNode.getIdentifyingElement());
     }

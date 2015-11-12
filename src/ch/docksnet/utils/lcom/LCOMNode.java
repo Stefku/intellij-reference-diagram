@@ -95,7 +95,7 @@ public class LCOMNode {
     }
 
     public enum Type {
-        Method, Field, Constant, Constructur, ClassInitializer, Class
+        Method, Field, Constant, Constructur, ClassInitializer, Class, InnerClass, StaticInnerClass, Enum
     }
 
 }

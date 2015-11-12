@@ -20,6 +20,7 @@ import com.intellij.diagram.AbstractDiagramNodeContentManager;
 import com.intellij.diagram.DiagramCategory;
 import com.intellij.diagram.presentation.DiagramState;
 import com.intellij.icons.AllIcons;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
@@ -37,6 +38,9 @@ public class ReferenceUmlCategoryManager extends AbstractDiagramNodeContentManag
     public static final DiagramCategory METHODS;
     public static final DiagramCategory STATIC_CLASS_INITIALIZER;
     public static final DiagramCategory CLASS_INITIALIZER;
+    public static final DiagramCategory INNER_CLASS;
+    public static final DiagramCategory STATIC_INNER_CLASS;
+    public static final DiagramCategory ENUM;
     private static final DiagramCategory[] CATEGORIES;
 
     public ReferenceUmlCategoryManager() {
@@ -47,6 +51,39 @@ public class ReferenceUmlCategoryManager extends AbstractDiagramNodeContentManag
     }
 
     public boolean isInCategory(Object element, DiagramCategory category, DiagramState presentation) {
+        if (ENUM.equals(category)) {
+            if (element instanceof PsiClass) {
+                if (((PsiClass) element).getContainingClass() != null) {
+                    if (((PsiClass) element).isEnum()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        if (STATIC_INNER_CLASS.equals(category)) {
+            if (element instanceof PsiClass) {
+                if (((PsiClass) element).getContainingClass() != null) {
+                    if (!((PsiClass) element).isEnum() && ((PsiClass) element).hasModifierProperty("static")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        if (INNER_CLASS.equals(category)) {
+            if (element instanceof PsiClass) {
+                if (((PsiClass) element).getContainingClass() != null) {
+                    if (!((PsiClass) element).isEnum() && !((PsiClass) element).hasModifierProperty("static")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
         if (STATIC_FIELDS.equals(category)) {
             if (element instanceof PsiField) {
                 if (((PsiField) element).hasModifierProperty("static")) {
@@ -140,8 +177,16 @@ public class ReferenceUmlCategoryManager extends AbstractDiagramNodeContentManag
         LayeredIcon staticClassInitializer = new LayeredIcon(AllIcons.Nodes.ClassInitializer, AllIcons.Nodes.StaticMark);
         STATIC_CLASS_INITIALIZER = new DiagramCategory("Static Class Initializer", staticClassInitializer, true, true);
 
+        INNER_CLASS = new DiagramCategory("Inner Class", UmlIcons.Innerclass, true, true);
+
+        LayeredIcon staticInnerClass = new LayeredIcon(UmlIcons.Innerclass, AllIcons.Nodes.StaticMark);
+        STATIC_INNER_CLASS = new DiagramCategory("Static Inner Class", staticInnerClass, true, true);
+
+        ENUM = new DiagramCategory("Enum", AllIcons.Nodes.Enum, true, true);
+
+
         CATEGORIES = new DiagramCategory[]{FIELDS, METHODS, CONSTRUCTORS, CLASS_INITIALIZER, STATIC_FIELDS, STATIC_METHODS,
-                STATIC_CLASS_INITIALIZER};
+                STATIC_CLASS_INITIALIZER, INNER_CLASS, STATIC_INNER_CLASS, ENUM};
     }
 
 }

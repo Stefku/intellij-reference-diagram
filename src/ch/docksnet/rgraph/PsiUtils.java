@@ -57,9 +57,17 @@ public class PsiUtils {
                 return parent;
             }
         } else if (parent instanceof PsiClassInitializer) {
-            return parent;
+            if (PsiUtils.classHasClassInitializer(psiClass, (PsiClassInitializer) parent)) {
+                return parent;
+            }
         } else if (parent instanceof PsiField) {
-            return parent;
+            if (PsiUtils.classHasField(psiClass, (PsiField) parent)) {
+                return parent;
+            }
+        } else if (parent instanceof PsiClass) {
+            if (((PsiClass) parent).getContainingClass().equals(psiClass)) {
+                return parent;
+            }
         }
 
         return getRootPsiElement(psiClass, parent);
@@ -68,6 +76,24 @@ public class PsiUtils {
     private static boolean classHasMethod(PsiClass psiClass, PsiMethod other) {
         for (PsiMethod psiMethod : psiClass.getMethods()) {
             if (psiMethod.equals(other)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean classHasField(PsiClass psiClass, PsiField other) {
+        for (PsiField psiField : psiClass.getFields()) {
+            if (psiField.equals(other)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean classHasClassInitializer(PsiClass psiClass, PsiClassInitializer other) {
+        for (PsiClassInitializer classInitializer : psiClass.getInitializers()) {
+            if (classInitializer.equals(other)) {
                 return true;
             }
         }
@@ -111,6 +137,21 @@ public class PsiUtils {
             public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
                 return getName(psiClassInitializer);
             }
+
+            @Override
+            public String processInnerClass(PsiClass innerClass) {
+                return innerClass.getName();
+            }
+
+            @Override
+            public String processStaticInnerClass(PsiClass staticInnerClass) {
+                return staticInnerClass.getName();
+            }
+
+            @Override
+            public String processEnum(PsiClass anEnum) {
+                return anEnum.getName();
+            }
         };
 
         return psiElementDispatcher.dispatch(psiElement);
@@ -137,6 +178,21 @@ public class PsiUtils {
             @Override
             public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
                 return getName(psiClassInitializer);
+            }
+
+            @Override
+            public String processInnerClass(PsiClass innerClass) {
+                return ClassFQN.create(innerClass).getFQN();
+            }
+
+            @Override
+            public String processStaticInnerClass(PsiClass staticInnerClass) {
+                return ClassFQN.create(staticInnerClass).getFQN();
+            }
+
+            @Override
+            public String processEnum(PsiClass anEnum) {
+                return ClassFQN.create(anEnum).getFQN();
             }
         };
 
