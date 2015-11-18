@@ -73,7 +73,9 @@
 	</project-components>
 
 	<actions>
-		<action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.ShowClusterCountAction"/>
+		<action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.ShowClusterCountAction">
+			<add-to-group group-id="Uml.Standard.Toolbar.Actions"/>
+		</action>
 	</actions>
 
 	<extensions defaultExtensionNs="com.intellij">

@@ -17,6 +17,7 @@
 package ch.docksnet.rgraph;
 
 import com.intellij.diagram.DiagramAction;
+import com.intellij.diagram.DiagramBuilder;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
@@ -26,6 +27,11 @@ public class ShowClusterCountAction extends DiagramAction {
 
     @Override
     public void perform(AnActionEvent anActionEvent) {
+    }
+
+    @Override
+    public boolean displayTextInToolbar() {
+        return true;
     }
 
     @Override
@@ -43,6 +49,7 @@ public class ShowClusterCountAction extends DiagramAction {
         } else {
             e.getPresentation().setText("Cluster Count: calculate");
         }
+        super.update(e);
     }
 
 }
