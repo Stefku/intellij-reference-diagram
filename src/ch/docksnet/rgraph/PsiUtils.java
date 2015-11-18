@@ -16,10 +16,12 @@
 
 package ch.docksnet.rgraph;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiAnonymousClass;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
@@ -39,7 +41,7 @@ public class PsiUtils {
         if (parent == null) {
             return null;
         }
-        if (parent instanceof PsiClass) {
+        if (parent instanceof PsiClass && !(parent instanceof PsiAnonymousClass)) {
             return ((PsiClass) parent);
         } else {
             return getClassFromHierarchy(parent);
@@ -48,29 +50,55 @@ public class PsiUtils {
 
     @Nullable
     public static PsiElement getRootPsiElement(PsiClass psiClass, PsiElement psiElement) {
+        return getRootPsiElementWithStack(psiClass, psiElement, new LinkedList<PsiElement>());
+    }
+
+    private static PsiElement getRootPsiElementWithStack(PsiClass psiClass, PsiElement psiElement, List<PsiElement> stack) {
+        stack.add(psiElement);
         PsiElement parent = psiElement.getParent();
         if (parent == null) {
             return null;
         }
-        if (parent instanceof PsiMethod) {
-            if (PsiUtils.classHasMethod(psiClass, (PsiMethod) parent)) {
-                return parent;
+        try {
+            if (parent instanceof PsiMethod) {
+                if (PsiUtils.classHasMethod(psiClass, (PsiMethod) parent)) {
+                    return parent;
+                }
+            } else if (parent instanceof PsiClassInitializer) {
+                if (PsiUtils.classHasClassInitializer(psiClass, (PsiClassInitializer) parent)) {
+                    return parent;
+                }
+            } else if (parent instanceof PsiField) {
+                if (PsiUtils.classHasField(psiClass, (PsiField) parent)) {
+                    return parent;
+                }
+            } else if (parent instanceof PsiClass) {
+                if (psiClass.equals(((PsiClass) parent).getContainingClass())) {
+                    return parent;
+                }
+            } else if (parent instanceof PsiAnonymousClass) {
+                if (((PsiAnonymousClass) parent).getContainingClass().equals(psiClass)) {
+                    return parent;
+                }
             }
-        } else if (parent instanceof PsiClassInitializer) {
-            if (PsiUtils.classHasClassInitializer(psiClass, (PsiClassInitializer) parent)) {
-                return parent;
-            }
-        } else if (parent instanceof PsiField) {
-            if (PsiUtils.classHasField(psiClass, (PsiField) parent)) {
-                return parent;
-            }
-        } else if (parent instanceof PsiClass) {
-            if (((PsiClass) parent).getContainingClass().equals(psiClass)) {
-                return parent;
-            }
+        } catch (Exception ex) {
+            stack.add(parent);
+            String preparedStack = prepareStack(stack);
+            throw new IllegalStateException("Cannot get root element. Stack: " + preparedStack);
         }
 
-        return getRootPsiElement(psiClass, parent);
+        return getRootPsiElementWithStack(psiClass, parent, stack);
+    }
+
+    private static String prepareStack(List<PsiElement> stack) {
+        StringBuilder sb = new StringBuilder();
+
+        for (PsiElement element : stack) {
+            sb.append(element.toString());
+            sb.append(", ");
+        }
+
+        return sb.toString();
     }
 
     private static boolean classHasMethod(PsiClass psiClass, PsiMethod other) {
@@ -198,4 +226,5 @@ public class PsiUtils {
 
         return psiElementDispatcher.dispatch(psiElement);
     }
+
 }
