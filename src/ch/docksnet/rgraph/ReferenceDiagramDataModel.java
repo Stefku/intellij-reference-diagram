@@ -28,6 +28,7 @@ import java.util.Set;
 import ch.docksnet.utils.IncrementableSet;
 import ch.docksnet.utils.lcom.ClusterAnalyzer;
 import ch.docksnet.utils.lcom.LCOMAnalyzerData;
+import ch.docksnet.utils.lcom.LCOMHSAnalyzer;
 import ch.docksnet.utils.lcom.LCOMNode;
 import com.intellij.diagram.DiagramCategory;
 import com.intellij.diagram.DiagramDataModel;
@@ -71,6 +72,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private SmartPsiElementPointer<PsiClass> myInitialElement;
 
     private long currentClusterCount = 0;
+    private double lcomHsValue = 0;
 
     public ReferenceDiagramDataModel(Project project, PsiClass psiClass) {
         super(project, ReferenceDiagramProvider.getInstance());
@@ -148,7 +150,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     @Override
     public void removeNode(DiagramNode<PsiElement> node) {
         removeElement((PsiElement) node.getIdentifyingElement());
-        analyzeLcom4();
+        analyze();
     }
 
     private void removeElement(PsiElement element) {
@@ -182,15 +184,23 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     public void refreshDataModel() {
         clearAll();
         updateDataModel();
-        analyzeLcom4();
+        analyze();
     }
 
-    private void analyzeLcom4() {
+    public double getLcomHsValue() {
+        return lcomHsValue;
+    }
+
+    private void analyze() {
         LCOMConverter lcomConverter = new LCOMConverter();
         Collection<LCOMNode> lcom4Nodes = lcomConverter.convert(getNodes(), getEdges());
         LCOMAnalyzerData lcomAnalyzerData = new LCOMAnalyzerData(lcom4Nodes);
+
         ClusterAnalyzer clusterAnalyzer = new ClusterAnalyzer(lcomAnalyzerData);
         currentClusterCount = clusterAnalyzer.countCluster();
+
+        LCOMHSAnalyzer lcomHsAnalyzer = new LCOMHSAnalyzer(lcomAnalyzerData);
+        lcomHsValue = lcomHsAnalyzer.analyze();
     }
 
     @NotNull

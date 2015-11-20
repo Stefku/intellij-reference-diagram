@@ -48,6 +48,7 @@ public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
     public List<AnAction> getExtraActions() {
         final List<AnAction> result = new ArrayList<>();
         result.add(new ShowClusterCountAction());
+        result.add(new ShowLcomHsAction());
         return result;
     }
 

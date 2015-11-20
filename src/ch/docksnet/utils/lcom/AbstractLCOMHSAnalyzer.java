@@ -16,15 +16,15 @@
 
 package ch.docksnet.utils.lcom;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * LCOM-HS:  LCOM modification proposed by Henderson-Sellers [1] [2].
  * <p/>
  * [1]: Henderson-Sellers, B., Constantine, L., Graham, I. Coupling and Cohesion: towards a valid metrics suite
- * for object-oriented analysis and design, Object-oriented Systems, Vol. 3(3), 1996, pp. 143–158.
+ * for object-oriented analysis and design, Object-oriented Systems, Vol. 3(3), 1996, pp. 143ï¿½158.
  * [2]: Henderson-Sellers, B. Object-oriented metrics: measures of complexity. Prentice-Hall, 1996, pp.142-147.
  *
  * @author Stefan Zeller
@@ -34,13 +34,21 @@ public abstract class AbstractLCOMHSAnalyzer {
     protected final LCOMAnalyzerData data;
 
     public AbstractLCOMHSAnalyzer(LCOMAnalyzerData data) {
-        this.data = data;
+        this.data = prepareModel(data);
     }
 
-    public BigDecimal analyze() {
+    protected LCOMAnalyzerData prepareModel(LCOMAnalyzerData input) {
+        return input;
+    }
+
+    public double analyze() {
         int methodCount = countMethods();
         LCOMNode[] variables = getVariables();
         int variableCount = variables.length;
+
+        if (variableCount == 0 || methodCount == 0) {
+            return 1;
+        }
 
         int sum = 0;
 
@@ -48,12 +56,18 @@ public abstract class AbstractLCOMHSAnalyzer {
             sum += countMethodsAccessingVariable(variable);
         }
 
-        BigDecimal result = new BigDecimal(sum)
-                .divide(new BigDecimal(variableCount))
-                .subtract(new BigDecimal(methodCount))
-                .divide(new BigDecimal(1 - methodCount));
+        double numerator = sum / variableCount - methodCount;
+        double denominator = 1 - methodCount;
 
-        return result;
+        if (numerator == 0) {
+            return 0;
+        }
+
+        if (numerator == denominator) {
+            return 1;
+        }
+
+        return numerator / denominator;
     }
 
     private int countMethods() {
@@ -67,13 +81,27 @@ public abstract class AbstractLCOMHSAnalyzer {
     }
 
     private LCOMNode[] getVariables() {
+        return getVariablesFrom(data.getNodeRegistry().values());
+    }
+
+    protected LCOMNode[] getVariablesFrom(Collection<LCOMNode> lcomNodes) {
         List<LCOMNode> result = new ArrayList<>();
-        for (LCOMNode lcomNode : data.getNodeRegistry().values()) {
+        for (LCOMNode lcomNode : lcomNodes) {
             if (isVariable(lcomNode)) {
                 result.add(lcomNode);
             }
         }
-        return (LCOMNode[]) result.toArray();
+        return (LCOMNode[]) result.toArray(new LCOMNode[]{});
+    }
+
+    protected LCOMNode[] getMethodsFrom(Collection<LCOMNode> lcomNodes) {
+        List<LCOMNode> result = new ArrayList<>();
+        for (LCOMNode lcomNode : lcomNodes) {
+            if (isMethod(lcomNode)) {
+                result.add(lcomNode);
+            }
+        }
+        return (LCOMNode[]) result.toArray(new LCOMNode[]{});
     }
 
     private int countMethodsAccessingVariable(LCOMNode variable) {
