@@ -13,12 +13,12 @@ This plugin is available in IntelliJ Plugin Registry: [https://plugins.jetbrains
 - If the return value of a method is assigned to a field, then this is also threaded like a dependency and is shown in a different line style
 - As other diagrams, features available like Goto Source (F4), File Structure (Strg+F12) and Search (Ctrl+F), refactorings, Find Usages etc.
 - Nodes can be removed from graph to help analyze cohesive structure of the cluss.  
-- In pop-up menu, the cluster count is shown (Didn't found out yet how to show this in graph toolbar). 
+- The cluster count is shown in the toolbar. 
 
 ## Cohesive clusters
 If you have a suspect class and you want to analyze the cohesivnes of it this diagram helps you to visualize the [lack of cohesion of methods]
 (http://sonar-jenkins.blogspot.ch/2012/12/what-is-lcom4.html). The clusters are shown visual in the diagram. Also, the cluster count is shown
-in pop-up menu. This is useful if you have big classes in legacy projects and you are not able to see the cluster count directly in the
+in the toolbar. This is useful if you have big classes in legacy projects and you are not able to see the cluster count directly in the
 diagram.
 
 Sometimes, cohesive groups are not separeted because they are connected through common methods or fields. For example for logging purposes.
