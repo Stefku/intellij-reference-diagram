@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,6 +66,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private final Map<String, SmartPsiElementPointer<PsiElement>> elementsRemovedByUser = new HashMap();
 
     private final Collection<DiagramNode<PsiElement>> myNodes = new HashSet<>();
+    private final Map<PsiElement, DiagramNode<PsiElement>> myNodesPool = new HashMap<>();
     private final Collection<DiagramEdge<PsiElement>> myEdges = new HashSet<>();
 
     private final SmartPointerManager spManager;
@@ -209,7 +211,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
         for (PsiElement element : elements) {
             if (isAllowedToShow(element)) {
-                myNodes.add(new ReferenceNode(element, provider));
+                myNodes.add(getReferenceNode(provider, element));
             }
         }
 
@@ -222,6 +224,16 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
                 myEdges.add(addEdge(source, target, sourceTargetPair.getValue()));
             }
         }
+    }
+
+    @NotNull
+    private ReferenceNode getReferenceNode(DiagramProvider provider, PsiElement element) {
+        if (myNodesPool.containsKey(element)) {
+            return (ReferenceNode) myNodesPool.get(element);
+        }
+        ReferenceNode node = new ReferenceNode(element, provider);
+        myNodesPool.put(element, node);
+        return node;
     }
 
     @Nullable
@@ -392,6 +404,51 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     public long getCurrentClusterCount() {
         return currentClusterCount;
+    }
+
+    public void removeMarkedNodes() {
+        List<ReferenceNode> toRemove = new ArrayList<>();
+        for (DiagramNode<PsiElement> myNode : myNodes) {
+            if (myNode instanceof ReferenceNode) {
+                if (((ReferenceNode) myNode).isMarked()) {
+                    toRemove.add((ReferenceNode) myNode);
+                    ((ReferenceNode) myNode).switchMarked();
+                }
+            }
+        }
+        Iterator<ReferenceNode> iterator = toRemove.iterator();
+        while (iterator.hasNext()) {
+            ReferenceNode next = iterator.next();
+            removeElement((PsiElement) next.getIdentifyingElement());
+        }
+        analyzeLcom4();
+    }
+
+    public void isolateMarkedNodes() {
+        List<ReferenceNode> toRemove = new ArrayList<>();
+        for (DiagramNode<PsiElement> myNode : myNodes) {
+            if (myNode instanceof ReferenceNode) {
+                if (!((ReferenceNode) myNode).isMarked()) {
+                    toRemove.add((ReferenceNode) myNode);
+                } else {
+                    ((ReferenceNode) myNode).switchMarked();
+                }
+            }
+        }
+        Iterator<ReferenceNode> iterator = toRemove.iterator();
+        while (iterator.hasNext()) {
+            ReferenceNode next = iterator.next();
+            removeElement((PsiElement) next.getIdentifyingElement());
+        }
+        analyzeLcom4();
+    }
+
+    public void unmarkAllNodes() {
+        for (DiagramNode<PsiElement> myNode : myNodes) {
+            if (myNode instanceof ReferenceNode) {
+                ((ReferenceNode) myNode).unsetMarked();
+            }
+        }
     }
 
 }

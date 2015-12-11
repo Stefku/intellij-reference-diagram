@@ -31,6 +31,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ReferenceNode extends PsiDiagramNode<PsiElement> {
 
+    private boolean marked;
+
     public ReferenceNode(PsiElement psiElement, DiagramProvider provider) {
         super(psiElement, provider);
     }
@@ -52,6 +54,26 @@ public class ReferenceNode extends PsiDiagramNode<PsiElement> {
             return UmlIcons.Constructor;
         }
         return getElement().getIcon(Iconable.ICON_FLAG_VISIBILITY);
+    }
+
+    public boolean isMarked() {
+        return marked;
+    }
+
+    public void setMarked() {
+        marked = true;
+    }
+
+    public void unsetMarked() {
+        marked = false;
+    }
+
+    public void switchMarked() {
+        if (isMarked()) {
+            unsetMarked();
+        } else {
+            setMarked();
+        }
     }
 
 }

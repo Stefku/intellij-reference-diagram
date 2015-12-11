@@ -14,41 +14,38 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
+package ch.docksnet.rgraph.actions;
 
+import ch.docksnet.rgraph.ReferenceNode;
 import com.intellij.diagram.DiagramAction;
-import com.intellij.diagram.DiagramBuilder;
+import com.intellij.diagram.DiagramNode;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
  * @author Stefan Zeller
  */
-public class ShowClusterCountAction extends DiagramAction {
+public class UnmarkAction extends DiagramAction {
 
     @Override
-    public void perform(AnActionEvent anActionEvent) {
-    }
-
-    @Override
-    public boolean displayTextInToolbar() {
-        return true;
+    public void perform(AnActionEvent e) {
+        for (DiagramNode diagramNode : getSelectedNodes(e)) {
+            if (diagramNode instanceof ReferenceNode) {
+                ((ReferenceNode) diagramNode).unsetMarked();
+            }
+        }
+        getBuilder(e).getPresentationModel().update();
     }
 
     @Override
     public String getActionName() {
-        return "Show Cluster Count";
+        return "Unmark Selected";
     }
 
     @Override
     public void update(AnActionEvent e) {
         e.getPresentation().setVisible(true);
-        e.getPresentation().setEnabled(false);
-        if (getDataModel(e) instanceof ReferenceDiagramDataModel) {
-            long currentClusterCount = ((ReferenceDiagramDataModel) getDataModel(e)).getCurrentClusterCount();
-            e.getPresentation().setText("Cluster Count: " + currentClusterCount);
-        } else {
-            e.getPresentation().setText("Cluster Count: calculate");
-        }
+        e.getPresentation().setEnabled(true);
+        e.getPresentation().setText(getActionName());
         super.update(e);
     }
 
