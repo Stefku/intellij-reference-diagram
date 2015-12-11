@@ -91,9 +91,8 @@
 		<action id="RGRAPH.UnmarkAll" class="ch.docksnet.rgraph.actions.UnmarkAllAction">
 			<keyboard-shortcut first-keystroke="ctrl shift a" keymap="$default"/>
 		</action>
-		<action id="RGRAPH.MarkCallees" class="ch.docksnet.rgraph.actions.MarkCalleesAction">
-			<keyboard-shortcut first-keystroke="ctrl c" keymap="$default"/>
-		</action>
+		<action id="RGRAPH.MarkCallees" class="ch.docksnet.rgraph.actions.MarkCalleesAction"></action>
+		<action id="RGRAPH.MarkCallers" class="ch.docksnet.rgraph.actions.MarkCallersAction"></action>
 		<action id="RGRAPH.DeleteMarked" class="ch.docksnet.rgraph.actions.DeleteMarkedAction">
 			<keyboard-shortcut first-keystroke="ctrl r" keymap="$default"/>
 		</action>
@@ -105,4 +104,5 @@
 	<extensions defaultExtensionNs="com.intellij">
 		<diagram.Provider implementation="ch.docksnet.rgraph.ReferenceDiagramProvider"/>
 	</extensions>
+
 </idea-plugin>

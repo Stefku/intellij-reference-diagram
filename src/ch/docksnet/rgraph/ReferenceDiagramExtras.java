@@ -26,6 +26,7 @@ import ch.docksnet.rgraph.actions.DeleteMarkedAction;
 import ch.docksnet.rgraph.actions.IsolateMarkedAction;
 import ch.docksnet.rgraph.actions.MarkAction;
 import ch.docksnet.rgraph.actions.MarkCalleesAction;
+import ch.docksnet.rgraph.actions.MarkCallersAction;
 import ch.docksnet.rgraph.actions.ShowClusterCountAction;
 import ch.docksnet.rgraph.actions.UnmarkAction;
 import ch.docksnet.rgraph.actions.UnmarkAllAction;
@@ -63,6 +64,7 @@ public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
         result.add(new UnmarkAction());
         result.add(new UnmarkAllAction());
         result.add(new MarkCalleesAction());
+        result.add(new MarkCallersAction());
         result.add(new DeleteMarkedAction());
         result.add(new IsolateMarkedAction());
         return result;
