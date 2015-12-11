@@ -37,12 +37,15 @@ public class LCOMConverter {
     private final ReferenceDiagramVfsResolver vfsResolver = new ReferenceDiagramVfsResolver();
     private final Map<String, LCOMNode> lcomNodeRegistry = new HashMap<>();
 
+    /**
+     * Returns nodes representating a directed graph regarding to given {@code nodes} and {@code edges}.
+     */
     public Collection<LCOMNode> convert(Collection<? extends DiagramNode<PsiElement>> nodes, Collection<? extends
             DiagramEdge<PsiElement>> edges) {
         for (DiagramNode<PsiElement> node : nodes) {
             String fqn = vfsResolver.getQualifiedName(node.getIdentifyingElement());
             LCOMNode.Type type = resolveType(node);
-            lcomNodeRegistry.put(fqn, new LCOMNode(fqn, type));
+            lcomNodeRegistry.put(fqn, new LCOMNode(fqn, type, (ReferenceNode) node));
         }
 
         for (DiagramEdge<PsiElement> edge : edges) {

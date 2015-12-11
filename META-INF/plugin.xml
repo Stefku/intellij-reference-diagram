@@ -17,16 +17,23 @@
 <idea-plugin version="2">
 	<id>ch.docksnet.rgraph</id>
 	<name>Java Method Reference Diagram</name>
-	<version>1.6.0</version>
+	<version>2.0.0</version>
 	<vendor>Stefan Zeller</vendor>
 	<depends>com.intellij.diagram</depends>
 	<description><![CDATA[
 		Java Method Reference Diagram<br>
-		This plugins shows a diagram of a java class with two purposes
+		This plugins shows a diagram of a java class with the purposes
 		<ul>
-			<li>A usage graph of methods, fields and class initializer blocks</li>
+			<li>A usage graph of methods, fields and class initializer blocks.</li>
 			<li>Visual information about orphaned groups, meaning independent clusters of methods and fields that are candidates for
 				refactoring to separate classes
+			</li>
+			<li>Analyze structure of callees and callers. I.e.
+				<ul>
+					<li>Show subgraph of transitive callees / callers of a node.</li>
+					<li>Show connection between two elements.</li>
+				</ul>
+				See documentation for detailed informtation.
 			</li>
 		</ul>
 		See <a href="https://github.com/Stefku/intellij-reference-diagram">https://github.com/Stefku/intellij-reference-diagram</a><br>
@@ -34,6 +41,9 @@
 
 	<change-notes><![CDATA[
 		<ul>
+			<li>
+				Version 2.0.0: Ability to mark nodes and delete or isolate them; Mark subgraph of callees / callers of a node.
+			</li>
 			<li>
 				Version 1.6.0: Show cluster count in Toolbar; Bugfix with constructors of anonymous classes.
 			</li>
@@ -76,12 +86,30 @@
 	</project-components>
 
 	<actions>
-		<action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.ShowClusterCountAction">
+		<action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowClusterCountAction">
 			<add-to-group group-id="Uml.Standard.Toolbar.Actions"/>
+		</action>
+		<action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.actions.MarkAction">
+			<keyboard-shortcut first-keystroke="ctrl m" keymap="$default"/>
+		</action>
+		<action id="RGRAPH.UnmarkNode" class="ch.docksnet.rgraph.actions.UnmarkAction">
+			<keyboard-shortcut first-keystroke="ctrl shift m" keymap="$default"/>
+		</action>
+		<action id="RGRAPH.UnmarkAll" class="ch.docksnet.rgraph.actions.UnmarkAllAction">
+			<keyboard-shortcut first-keystroke="ctrl shift a" keymap="$default"/>
+		</action>
+		<action id="RGRAPH.MarkCallees" class="ch.docksnet.rgraph.actions.MarkCalleesAction"></action>
+		<action id="RGRAPH.MarkCallers" class="ch.docksnet.rgraph.actions.MarkCallersAction"></action>
+		<action id="RGRAPH.DeleteMarked" class="ch.docksnet.rgraph.actions.DeleteMarkedAction">
+			<keyboard-shortcut first-keystroke="ctrl r" keymap="$default"/>
+		</action>
+		<action id="RGRAPH.IsolateMarked" class="ch.docksnet.rgraph.actions.IsolateMarkedAction">
+			<keyboard-shortcut first-keystroke="ctrl i" keymap="$default"/>
 		</action>
 	</actions>
 
 	<extensions defaultExtensionNs="com.intellij">
 		<diagram.Provider implementation="ch.docksnet.rgraph.ReferenceDiagramProvider"/>
 	</extensions>
+
 </idea-plugin>

@@ -22,10 +22,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import ch.docksnet.utils.IncrementableSet;
+import ch.docksnet.utils.lcom.CalleesSubgraphAnalyzer;
+import ch.docksnet.utils.lcom.CallersSubgraphAnalyzer;
 import ch.docksnet.utils.lcom.ClusterAnalyzer;
 import ch.docksnet.utils.lcom.LCOMAnalyzerData;
 import ch.docksnet.utils.lcom.LCOMNode;
@@ -65,6 +68,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private final Map<String, SmartPsiElementPointer<PsiElement>> elementsRemovedByUser = new HashMap();
 
     private final Collection<DiagramNode<PsiElement>> myNodes = new HashSet<>();
+    private final Map<PsiElement, DiagramNode<PsiElement>> myNodesPool = new HashMap<>();
     private final Collection<DiagramEdge<PsiElement>> myEdges = new HashSet<>();
 
     private final SmartPointerManager spManager;
@@ -209,7 +213,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
         for (PsiElement element : elements) {
             if (isAllowedToShow(element)) {
-                myNodes.add(new ReferenceNode(element, provider));
+                myNodes.add(getReferenceNode(provider, element));
             }
         }
 
@@ -222,6 +226,16 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
                 myEdges.add(addEdge(source, target, sourceTargetPair.getValue()));
             }
         }
+    }
+
+    @NotNull
+    private ReferenceNode getReferenceNode(DiagramProvider provider, PsiElement element) {
+        if (myNodesPool.containsKey(element)) {
+            return (ReferenceNode) myNodesPool.get(element);
+        }
+        ReferenceNode node = new ReferenceNode(element, provider);
+        myNodesPool.put(element, node);
+        return node;
     }
 
     @Nullable
@@ -394,4 +408,105 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         return currentClusterCount;
     }
 
+    public void removeMarkedNodes() {
+        List<ReferenceNode> toRemove = new ArrayList<>();
+        for (DiagramNode<PsiElement> myNode : myNodes) {
+            if (myNode instanceof ReferenceNode) {
+                if (((ReferenceNode) myNode).isMarked()) {
+                    toRemove.add((ReferenceNode) myNode);
+                    ((ReferenceNode) myNode).switchMarked();
+                }
+            }
+        }
+        Iterator<ReferenceNode> iterator = toRemove.iterator();
+        while (iterator.hasNext()) {
+            ReferenceNode next = iterator.next();
+            removeElement((PsiElement) next.getIdentifyingElement());
+        }
+        analyzeLcom4();
+    }
+
+    public void isolateMarkedNodes() {
+        List<ReferenceNode> toRemove = new ArrayList<>();
+        for (DiagramNode<PsiElement> myNode : myNodes) {
+            if (myNode instanceof ReferenceNode) {
+                if (!((ReferenceNode) myNode).isMarked()) {
+                    toRemove.add((ReferenceNode) myNode);
+                } else {
+                    ((ReferenceNode) myNode).switchMarked();
+                }
+            }
+        }
+        Iterator<ReferenceNode> iterator = toRemove.iterator();
+        while (iterator.hasNext()) {
+            ReferenceNode next = iterator.next();
+            removeElement((PsiElement) next.getIdentifyingElement());
+        }
+        analyzeLcom4();
+    }
+
+    public void unmarkAllNodes() {
+        for (DiagramNode<PsiElement> myNode : myNodes) {
+            if (myNode instanceof ReferenceNode) {
+                ((ReferenceNode) myNode).unsetMarked();
+            }
+        }
+    }
+
+    public void markCallees(List<DiagramNode> roots) {
+        LCOMConverter lcomConverter = new LCOMConverter();
+        Collection<LCOMNode> lcom4Nodes = lcomConverter.convert(getNodes(), getEdges());
+        for (DiagramNode root : roots) {
+            markCallees(root, lcom4Nodes);
+        }
+    }
+
+    private void markCallees(DiagramNode root, Collection<LCOMNode> lcom4Nodes) {
+        LCOMNode lcomRoot = searchRoot(root, lcom4Nodes);
+        lcomRoot.getIdentifyingElement().setMarked();
+        List<LCOMNode> callees = getCalleesTransitiv(lcomRoot, lcom4Nodes);
+        for (LCOMNode callee : callees) {
+            callee.getIdentifyingElement().setMarked();
+        }
+    }
+
+    private LCOMNode searchRoot(DiagramNode diagramNode, Collection<LCOMNode> lcom4Nodes) {
+        for (LCOMNode lcom4Node : lcom4Nodes) {
+            if (lcom4Node.getIdentifyingElement().equals(diagramNode)) {
+                return lcom4Node;
+            }
+        }
+        throw new IllegalStateException("DiagramNode not found");
+    }
+
+    private List<LCOMNode> getCalleesTransitiv(LCOMNode lcomRoot, Collection<LCOMNode> lcom4Nodes) {
+        final LCOMAnalyzerData data = new LCOMAnalyzerData(lcom4Nodes);
+        CalleesSubgraphAnalyzer analyzer = new CalleesSubgraphAnalyzer(data);
+        List<LCOMNode> result = analyzer.getCallees(lcomRoot);
+        return result;
+    }
+
+    public void markCallers(List<DiagramNode> roots) {
+        LCOMConverter lcomConverter = new LCOMConverter();
+        Collection<LCOMNode> lcom4Nodes = lcomConverter.convert(getNodes(), getEdges());
+        for (DiagramNode root : roots) {
+            markCallers(root, lcom4Nodes);
+        }
+    }
+
+    private void markCallers(DiagramNode root, Collection<LCOMNode> lcom4Nodes) {
+        LCOMNode lcomRoot = searchRoot(root, lcom4Nodes);
+        lcomRoot.getIdentifyingElement().setMarked();
+        List<LCOMNode> callers = getCallersTransitiv(lcomRoot, lcom4Nodes);
+        for (LCOMNode caller : callers) {
+            caller.getIdentifyingElement().setMarked();
+        }
+    }
+
+    private List<LCOMNode> getCallersTransitiv(LCOMNode lcomRoot, Collection<LCOMNode> lcom4Nodes) {
+        final LCOMAnalyzerData data = new LCOMAnalyzerData(lcom4Nodes);
+        CallersSubgraphAnalyzer analyzer = new CallersSubgraphAnalyzer(data);
+        List<LCOMNode> result = analyzer.getCallees(lcomRoot);
+        return result;
+    }
 }

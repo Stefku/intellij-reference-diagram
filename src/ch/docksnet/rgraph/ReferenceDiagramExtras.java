@@ -16,15 +16,27 @@
 
 package ch.docksnet.rgraph;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.*;
+
+import ch.docksnet.rgraph.actions.DeleteMarkedAction;
+import ch.docksnet.rgraph.actions.IsolateMarkedAction;
+import ch.docksnet.rgraph.actions.MarkAction;
+import ch.docksnet.rgraph.actions.MarkCalleesAction;
+import ch.docksnet.rgraph.actions.MarkCallersAction;
+import ch.docksnet.rgraph.actions.ShowClusterCountAction;
+import ch.docksnet.rgraph.actions.UnmarkAction;
+import ch.docksnet.rgraph.actions.UnmarkAllAction;
 import com.intellij.diagram.DiagramBuilder;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.extras.DiagramExtras;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -48,7 +60,28 @@ public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
     public List<AnAction> getExtraActions() {
         final List<AnAction> result = new ArrayList<>();
         result.add(new ShowClusterCountAction());
+        result.add(new MarkAction());
+        result.add(new UnmarkAction());
+        result.add(new UnmarkAllAction());
+        result.add(new MarkCalleesAction());
+        result.add(new MarkCallersAction());
+        result.add(new DeleteMarkedAction());
+        result.add(new IsolateMarkedAction());
         return result;
+    }
+
+    @NotNull
+    @Override
+    public JComponent createNodeComponent(DiagramNode<PsiElement> node, DiagramBuilder builder, Point basePoint, JPanel wrapper) {
+        JComponent nodeComponent = super.createNodeComponent(node, builder, basePoint, wrapper);
+
+        if (node instanceof ReferenceNode) {
+            if (((ReferenceNode) node).isMarked()) {
+                nodeComponent.add(new JLabel("marked"));
+            }
+        }
+
+        return nodeComponent;
     }
 
 }
