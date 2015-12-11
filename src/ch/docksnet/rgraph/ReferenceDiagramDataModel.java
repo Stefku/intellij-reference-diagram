@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import ch.docksnet.utils.IncrementableSet;
+import ch.docksnet.utils.lcom.CalleesSubgraphAnalyzer;
 import ch.docksnet.utils.lcom.ClusterAnalyzer;
 import ch.docksnet.utils.lcom.LCOMAnalyzerData;
 import ch.docksnet.utils.lcom.LCOMNode;
@@ -449,6 +450,40 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
                 ((ReferenceNode) myNode).unsetMarked();
             }
         }
+    }
+
+    public void markCallees(List<DiagramNode> roots) {
+        LCOMConverter lcomConverter = new LCOMConverter();
+        Collection<LCOMNode> lcom4Nodes = lcomConverter.convert(getNodes(), getEdges());
+        for (DiagramNode root : roots) {
+            markCallees(root, lcom4Nodes);
+        }
+
+    }
+
+    private void markCallees(DiagramNode root, Collection<LCOMNode> lcom4Nodes) {
+        LCOMNode lcomRoot = searchRoot(root, lcom4Nodes);
+        lcomRoot.getIdentifyingElement().setMarked();
+        List<LCOMNode> callees = getCalleesTransitiv(lcomRoot, lcom4Nodes);
+        for (LCOMNode callee : callees) {
+            callee.getIdentifyingElement().setMarked();
+        }
+    }
+
+    private LCOMNode searchRoot(DiagramNode diagramNode, Collection<LCOMNode> lcom4Nodes) {
+        for (LCOMNode lcom4Node : lcom4Nodes) {
+            if (lcom4Node.getIdentifyingElement().equals(diagramNode)) {
+                return lcom4Node;
+            }
+        }
+        throw new IllegalStateException("DiagramNode not found");
+    }
+
+    private List<LCOMNode> getCalleesTransitiv(LCOMNode lcomRoot, Collection<LCOMNode> lcom4Nodes) {
+        final LCOMAnalyzerData data = new LCOMAnalyzerData(lcom4Nodes);
+        CalleesSubgraphAnalyzer analyzer = new CalleesSubgraphAnalyzer(data);
+        List<LCOMNode> result = analyzer.getCallees(lcomRoot);
+        return result;
     }
 
 }

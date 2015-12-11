@@ -44,7 +44,7 @@ public class MarkAction extends DiagramAction {
     @Override
     public void update(AnActionEvent e) {
         e.getPresentation().setVisible(true);
-        e.getPresentation().setEnabled(true);
+        ActionHelper.enableIfNodesSelected(e);
         e.getPresentation().setText(getActionName());
         super.update(e);
     }

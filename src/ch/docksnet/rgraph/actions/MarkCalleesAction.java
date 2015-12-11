@@ -16,29 +16,33 @@
 
 package ch.docksnet.rgraph.actions;
 
-import ch.docksnet.rgraph.ReferenceNode;
+import java.util.List;
+
+import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
+import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
  * @author Stefan Zeller
  */
-public class UnmarkAction extends DiagramAction {
+public class MarkCalleesAction extends DiagramAction {
 
     @Override
     public void perform(AnActionEvent e) {
-        for (DiagramNode diagramNode : getSelectedNodes(e)) {
-            if (diagramNode instanceof ReferenceNode) {
-                ((ReferenceNode) diagramNode).unsetMarked();
-            }
+        List<DiagramNode> selectedNodes = getSelectedNodes(e);
+
+        DiagramDataModel dataModel = getDataModel(e);
+        if (dataModel instanceof ReferenceDiagramDataModel) {
+            ((ReferenceDiagramDataModel) dataModel).markCallees(selectedNodes);
         }
         getBuilder(e).getPresentationModel().update();
     }
 
     @Override
     public String getActionName() {
-        return "Unmark Selected";
+        return "Mark Callees";
     }
 
     @Override

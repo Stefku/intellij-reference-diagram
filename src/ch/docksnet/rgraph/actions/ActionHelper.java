@@ -16,37 +16,20 @@
 
 package ch.docksnet.rgraph.actions;
 
-import ch.docksnet.rgraph.ReferenceNode;
 import com.intellij.diagram.DiagramAction;
-import com.intellij.diagram.DiagramNode;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
  * @author Stefan Zeller
  */
-public class UnmarkAction extends DiagramAction {
+public class ActionHelper {
 
-    @Override
-    public void perform(AnActionEvent e) {
-        for (DiagramNode diagramNode : getSelectedNodes(e)) {
-            if (diagramNode instanceof ReferenceNode) {
-                ((ReferenceNode) diagramNode).unsetMarked();
-            }
+    public static void enableIfNodesSelected(AnActionEvent e) {
+        if (!DiagramAction.getSelectedNodes(e).isEmpty()) {
+            e.getPresentation().setEnabled(true);
+        } else {
+            e.getPresentation().setEnabled(false);
         }
-        getBuilder(e).getPresentationModel().update();
-    }
-
-    @Override
-    public String getActionName() {
-        return "Unmark Selected";
-    }
-
-    @Override
-    public void update(AnActionEvent e) {
-        e.getPresentation().setVisible(true);
-        ActionHelper.enableIfNodesSelected(e);
-        e.getPresentation().setText(getActionName());
-        super.update(e);
     }
 
 }

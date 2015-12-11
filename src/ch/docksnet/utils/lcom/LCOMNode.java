@@ -19,6 +19,7 @@ package ch.docksnet.utils.lcom;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.docksnet.rgraph.ReferenceNode;
 import ch.docksnet.utils.PreConditionUtil;
 
 /**
@@ -30,8 +31,10 @@ public class LCOMNode {
     private List<LCOMNode> callers = new ArrayList<>();
     private final String fqn;
     private final Type type;
+    private final ReferenceNode identifyingElement;
 
-    public LCOMNode(String fqn, Type type) {
+    public LCOMNode(String fqn, Type type, ReferenceNode identifyingElement) {
+        this.identifyingElement = identifyingElement;
         PreConditionUtil.assertTrue(fqn != null, "Full qualified name must be set");
         PreConditionUtil.assertTrue(type != null, "Type must be set");
         this.type = type;
@@ -88,6 +91,10 @@ public class LCOMNode {
 
     public List<LCOMNode> getCallees() {
         return callees;
+    }
+
+    public ReferenceNode getIdentifyingElement() {
+        return identifyingElement;
     }
 
     public Type getType() {
