@@ -6,7 +6,7 @@ This plugin is available in IntelliJ Plugin Registry: [https://plugins.jetbrains
 
 ## Use Cases
 1. Reference graph for elements in classes
-2. Analyzing structure of classes with respect to cohesion
+2. Analyzing structure of classes with respect to dependencies and cohesion
 
 ## Features
 - Show or hide categories of elements, like fields, methods, constructors, class initializers and their static companions.
@@ -14,6 +14,8 @@ This plugin is available in IntelliJ Plugin Registry: [https://plugins.jetbrains
 - As other diagrams, features available like Goto Source (F4), File Structure (Strg+F12) and Search (Ctrl+F), refactorings, Find Usages etc.
 - Nodes can be removed from graph to help analyze cohesive structure of the cluss.  
 - The cluster count is shown in the toolbar. 
+- Ability to isolate a subgraph based on a node: A subgraph of all it's callers or callees.
+- Show the connection between two nodes
 
 ## Cohesive clusters
 If you have a suspect class and you want to analyze the cohesivnes of it this diagram helps you to visualize the [lack of cohesion of methods]
@@ -31,6 +33,18 @@ Does static methods and fields play a role in cohesion of a class? Just show or 
 in the usual settings dialog of the others diagrams.
 
 ![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/settings_default_categories.png)
+
+## Isolate subgraphs
+If you are interested in all methods and fields that can be reached by a certain method, then you can select that method and choose actions 
+subsequently _Mark Callees_ and _Isolate Marked_. Or you want to see which methods can reach a given diagram element, then you choose actions
+subsequently _Mark Callers_ and _Isolate Marked_.
+
+## Show Connection between two Nodes
+If you want to see the path between two methods you
+1. Select the source of the desired path and _Mark Callees_ then _Isolate Marked_.
+2. Select the destination of the desired path and _Mark Callers_ then _Isolate Marked_.
+ 
+![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/show_path_between_nodes.gif)
 
 ## Example
 
