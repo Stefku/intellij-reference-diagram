@@ -42,7 +42,7 @@
 	<change-notes><![CDATA[
 		<ul>
 			<li>
-				Version 2.0.0: Ability to mark nodes and delete or isolate them; Mark subgraph of callees / callers of a node.
+				Version 2.0.0: Ability to mark nodes and delete or isolate them; Mark subgraph of callees / callers of a node and to show the path between two nodes.
 			</li>
 			<li>
 				Version 1.6.0: Show cluster count in Toolbar; Bugfix with constructors of anonymous classes.
