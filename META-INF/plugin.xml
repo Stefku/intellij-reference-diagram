@@ -17,7 +17,7 @@
 <idea-plugin version="2">
 	<id>ch.docksnet.rgraph</id>
 	<name>Java Method Reference Diagram</name>
-	<version>2.0.0</version>
+	<version>2.1.0</version>
 	<vendor>Stefan Zeller</vendor>
 	<depends>com.intellij.diagram</depends>
 	<description><![CDATA[
@@ -42,7 +42,10 @@
 	<change-notes><![CDATA[
 		<ul>
 			<li>
-				Version 2.0.0: Ability to mark nodes and delete or isolate them; Mark subgraph of callees / callers of a node.
+				Version 2.1.0: Improve appearance of marked nodes.
+			</li>
+			<li>
+				Version 2.0.0: Ability to mark nodes and delete or isolate them; Mark subgraph of callees / callers of a node and to show the path between two nodes.
 			</li>
 			<li>
 				Version 1.6.0: Show cluster count in Toolbar; Bugfix with constructors of anonymous classes.
@@ -89,23 +92,13 @@
 		<action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowClusterCountAction">
 			<add-to-group group-id="Uml.Standard.Toolbar.Actions"/>
 		</action>
-		<action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.actions.MarkAction">
-			<keyboard-shortcut first-keystroke="ctrl m" keymap="$default"/>
-		</action>
-		<action id="RGRAPH.UnmarkNode" class="ch.docksnet.rgraph.actions.UnmarkAction">
-			<keyboard-shortcut first-keystroke="ctrl shift m" keymap="$default"/>
-		</action>
-		<action id="RGRAPH.UnmarkAll" class="ch.docksnet.rgraph.actions.UnmarkAllAction">
-			<keyboard-shortcut first-keystroke="ctrl shift a" keymap="$default"/>
-		</action>
+		<action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.actions.MarkAction"></action>
+		<action id="RGRAPH.UnmarkNode" class="ch.docksnet.rgraph.actions.UnmarkAction"></action>
+		<action id="RGRAPH.UnmarkAll" class="ch.docksnet.rgraph.actions.UnmarkAllAction"></action>
 		<action id="RGRAPH.MarkCallees" class="ch.docksnet.rgraph.actions.MarkCalleesAction"></action>
 		<action id="RGRAPH.MarkCallers" class="ch.docksnet.rgraph.actions.MarkCallersAction"></action>
-		<action id="RGRAPH.DeleteMarked" class="ch.docksnet.rgraph.actions.DeleteMarkedAction">
-			<keyboard-shortcut first-keystroke="ctrl r" keymap="$default"/>
-		</action>
-		<action id="RGRAPH.IsolateMarked" class="ch.docksnet.rgraph.actions.IsolateMarkedAction">
-			<keyboard-shortcut first-keystroke="ctrl i" keymap="$default"/>
-		</action>
+		<action id="RGRAPH.DeleteMarked" class="ch.docksnet.rgraph.actions.DeleteMarkedAction"></action>
+		<action id="RGRAPH.IsolateMarked" class="ch.docksnet.rgraph.actions.IsolateMarkedAction"></action>
 	</actions>
 
 	<extensions defaultExtensionNs="com.intellij">

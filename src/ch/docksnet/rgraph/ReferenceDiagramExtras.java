@@ -16,11 +16,13 @@
 
 package ch.docksnet.rgraph;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 import ch.docksnet.rgraph.actions.DeleteMarkedAction;
 import ch.docksnet.rgraph.actions.IsolateMarkedAction;
@@ -50,6 +52,7 @@ public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
         if (nodes.size() == 1) {
             if (CommonDataKeys.PSI_ELEMENT.is(dataId)) {
                 PsiElement psiElement = nodes.get(0).getIdentifyingElement();
+                assert psiElement != null: "psiElement has no identifying element: " + psiElement;
                 return psiElement;
             }
         }
@@ -77,7 +80,7 @@ public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
 
         if (node instanceof ReferenceNode) {
             if (((ReferenceNode) node).isMarked()) {
-                nodeComponent.add(new JLabel("marked"));
+                nodeComponent.setBorder(new LineBorder(Color.BLUE, 2, true));
             }
         }
 

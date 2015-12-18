@@ -41,13 +41,13 @@ public class ShowClusterCountAction extends DiagramAction {
 
     @Override
     public void update(AnActionEvent e) {
-        e.getPresentation().setVisible(true);
-        e.getPresentation().setEnabled(false);
         if (getDataModel(e) instanceof ReferenceDiagramDataModel) {
+            e.getPresentation().setVisible(true);
+            e.getPresentation().setEnabled(false);
             long currentClusterCount = ((ReferenceDiagramDataModel) getDataModel(e)).getCurrentClusterCount();
             e.getPresentation().setText("Cluster Count: " + currentClusterCount);
         } else {
-            e.getPresentation().setText("Cluster Count: calculate");
+            e.getPresentation().setVisible(false);
         }
         super.update(e);
     }
