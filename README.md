@@ -153,3 +153,6 @@ public abstract class MainClass {
 ```
 # Known Issues
 - Diagram does not work for library files [#38](https://github.com/Stefku/intellij-reference-diagram/issues/38)
+
+# Support
+[Buy Me a Coffee<](https://ko-fi.com/H2H3DOZZ)
