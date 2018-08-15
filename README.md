@@ -4,7 +4,7 @@ This plugin for IntelliJ IDEA provides a diagram showing a reference graph for m
 
 This plugin is available in IntelliJ Plugin Registry: [https://plugins.jetbrains.com/plugin/7996](https://plugins.jetbrains.com/plugin/7996).
 
-Open this diagram with having cursor in a class source code and shoose action "Show UML Diagram" ⌥⇧⌘U / CTRL-SHIFT-ALT-U.
+Open this diagram with having cursor in a class source code and choose action "Show UML Diagram" ⌥⇧⌘U / CTRL-SHIFT-ALT-U.
 
 ## Use Cases
 1. Reference graph for elements in classes
