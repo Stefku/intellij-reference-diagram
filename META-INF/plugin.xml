@@ -17,7 +17,7 @@
 <idea-plugin version="2">
 	<id>ch.docksnet.rgraph</id>
 	<name>Java Method Reference Diagram</name>
-	<version>2.1.0</version>
+	<version>2.2.0</version>
 	<vendor>Stefan Zeller</vendor>
 	<depends>com.intellij.diagram</depends>
 	<description><![CDATA[
@@ -41,6 +41,9 @@
 
 	<change-notes><![CDATA[
 		<ul>
+			<li>
+				Version 2.2.0: IntelliJ 2019.1+ support
+			</li>
 			<li>
 				Version 2.1.0: Improve appearance of marked nodes.
 			</li>
@@ -80,7 +83,7 @@
 		]]>
   </change-notes>
 
-	<idea-version since-build="141.1010"/>
+	<idea-version since-build="191"/>
 
 	<application-components>
 	</application-components>
@@ -90,7 +93,7 @@
 
 	<actions>
 		<action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowClusterCountAction">
-			<add-to-group group-id="Uml.Standard.Toolbar.Actions"/>
+			<add-to-group group-id="Graph.DefaultGraphToolbar"/>
 		</action>
 		<action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.actions.MarkAction"></action>
 		<action id="RGRAPH.UnmarkNode" class="ch.docksnet.rgraph.actions.UnmarkAction"></action>
