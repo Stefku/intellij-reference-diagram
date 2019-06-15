@@ -46,12 +46,15 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.psi.impl.source.PsiJavaFileImpl;
+import com.intellij.psi.search.GlobalSearchScopes;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import org.jetbrains.annotations.NotNull;
@@ -75,6 +78,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private SmartPsiElementPointer<PsiClass> myInitialElement;
 
     private long currentClusterCount = 0;
+    private OuterReferences outerReferences = OuterReferences.empty();
 
     public ReferenceDiagramDataModel(Project project, PsiClass psiClass) {
         super(project, ReferenceDiagramProvider.getInstance());
@@ -217,7 +221,9 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
             }
         }
 
-        IncrementableSet<SourceTargetPair> relationships = resolveRelationships(getInitialElement());
+        PsiClass initialElement = getInitialElement();
+        IncrementableSet<SourceTargetPair> relationships = resolveRelationships(initialElement);
+        outerReferences = getOuterReferences(initialElement);
         for (Map.Entry<SourceTargetPair, Long> sourceTargetPair : relationships.elements()) {
             SourceTargetPair key = sourceTargetPair.getKey();
             DiagramNode<PsiElement> source = findNode(key.getSource());
@@ -226,6 +232,35 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
                 myEdges.add(addEdge(source, target, sourceTargetPair.getValue()));
             }
         }
+    }
+
+    private OuterReferences getOuterReferences(PsiClass psiClass) {
+        OuterReferences outerReferences = new OuterReferences();
+        String ownPackageName = ((PsiJavaFileImpl) psiClass.getContainingFile()).getPackageName();
+        for (DiagramNode<PsiElement> node : myNodes) {
+            PsiElement callee = node.getIdentifyingElement();
+            Collection<PsiReference> all = ReferencesSearch.search(callee, GlobalSearchScopes.projectProductionScope(getProject())).findAll();
+            for (PsiReference psiReference : all) {
+                if (!(psiReference instanceof PsiReferenceExpression)) {
+                    continue;
+                }
+                PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
+                String otherPackageName = resolvePackageName(referenceExpression);
+                outerReferences.update(ownPackageName, otherPackageName);
+            }
+        }
+        return outerReferences;
+    }
+
+    private String resolvePackageName(PsiElement psiElement) {
+        if (psiElement instanceof PsiJavaFile) {
+            return ((PsiJavaFile) psiElement).getPackageName();
+        }
+        PsiElement parent = psiElement.getParent();
+        if (parent == null) {
+            return null;
+        }
+        return resolvePackageName(parent);
     }
 
     @NotNull
@@ -508,5 +543,9 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         CallersSubgraphAnalyzer analyzer = new CallersSubgraphAnalyzer(data);
         List<LCOMNode> result = analyzer.getCallees(lcomRoot);
         return result;
+    }
+
+    public OuterReferences getOuterReferences() {
+        return this.outerReferences;
     }
 }

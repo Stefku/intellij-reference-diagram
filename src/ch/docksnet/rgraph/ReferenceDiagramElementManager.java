@@ -30,6 +30,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ReferenceDiagramElementManager extends AbstractDiagramElementManager<PsiElement> {
 
+    /**
+     * Entry point to decide if a diagram can be show for the given DataContext.
+     *
+     * @return null if no diagram can be shown.
+     */
     @Nullable
     @Override
     public PsiElement findInDataContext(DataContext context) {
