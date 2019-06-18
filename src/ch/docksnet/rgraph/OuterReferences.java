@@ -29,10 +29,13 @@ public class OuterReferences {
         return new OuterReferences();
     }
 
-    public void update(String ownPackageName, String otherPackageName) {
-        if (samePackage(ownPackageName, otherPackageName)) {
+    public void update(FileFQN ownFile, FileFQN otherFile) {
+        if (ownFile.equals(otherFile)) {
+            return;
+        }
+        if (ownFile.samePackage(otherFile)) {
             samePackage += 1;
-        } else if (sameHierarchiy(ownPackageName, otherPackageName)) {
+        } else if (ownFile.sameHierarchy(otherFile)) {
             inHierarchy += 1;
         } else {
             otherHierarchy += 1;

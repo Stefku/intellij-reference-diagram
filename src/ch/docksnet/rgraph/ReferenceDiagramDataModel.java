@@ -53,7 +53,6 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.impl.source.PsiJavaFileImpl;
 import com.intellij.psi.search.GlobalSearchScopes;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
@@ -125,12 +124,11 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     @NotNull
     @Override
     public Collection<? extends DiagramEdge<PsiElement>> getEdges() {
-        Collection var10000 = myEdges;
         if (myEdges == null) {
             throw new IllegalStateException(String.format("@NotNull method %s.%s must not return null",
                     new Object[]{"com/intellij/uml/java/JavaUmlDataModel", "getEdges"}));
         } else {
-            return var10000;
+            return myEdges;
         }
     }
 
@@ -236,7 +234,8 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     private OuterReferences getOuterReferences(PsiClass psiClass) {
         OuterReferences outerReferences = new OuterReferences();
-        String ownPackageName = ((PsiJavaFileImpl) psiClass.getContainingFile()).getPackageName();
+        FileFQN ownFile = FileFQN.from((PsiJavaFile) psiClass.getContainingFile());
+
         for (DiagramNode<PsiElement> node : myNodes) {
             PsiElement callee = node.getIdentifyingElement();
             Collection<PsiReference> all = ReferencesSearch.search(callee, GlobalSearchScopes.projectProductionScope(getProject())).findAll();
@@ -245,22 +244,11 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
                     continue;
                 }
                 PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
-                String otherPackageName = resolvePackageName(referenceExpression);
-                outerReferences.update(ownPackageName, otherPackageName);
+                FileFQN otherFile = FileFQN.resolveHierarchically(referenceExpression);
+                outerReferences.update(ownFile, otherFile);
             }
         }
         return outerReferences;
-    }
-
-    private String resolvePackageName(PsiElement psiElement) {
-        if (psiElement instanceof PsiJavaFile) {
-            return ((PsiJavaFile) psiElement).getPackageName();
-        }
-        PsiElement parent = psiElement.getParent();
-        if (parent == null) {
-            return null;
-        }
-        return resolvePackageName(parent);
     }
 
     @NotNull
@@ -278,9 +266,9 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         if (myInitialElement == null) {
             return null;
         } else {
-            PsiElement element = myInitialElement.getElement();
+            PsiClass element = myInitialElement.getElement();
             if (element != null && element.isValid()) {
-                return (PsiClass) element;
+                return element;
             } else {
                 return null;
             }
@@ -546,6 +534,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     public OuterReferences getOuterReferences() {
-        return this.outerReferences;
+        return outerReferences;
     }
 }

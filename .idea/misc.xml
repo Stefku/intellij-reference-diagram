@@ -13,7 +13,7 @@
     <entry_points version="2.0" />
   </component>
   <component name="IdProvider" IDEtalkID="8EBDEB830F2806379D856F21D180D95D" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="IntelliJ IDEA IU-141.1010.3" project-jdk-type="IDEA JDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="false" project-jdk-name="IntelliJ IDEA IU-191.7479.19" project-jdk-type="IDEA JDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
