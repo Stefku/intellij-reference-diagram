@@ -15,12 +15,12 @@
   -->
 
 <idea-plugin version="2">
-	<id>ch.docksnet.rgraph</id>
-	<name>Java Method Reference Diagram</name>
-	<version>2.2.0</version>
-	<vendor>Stefan Zeller</vendor>
-	<depends>com.intellij.diagram</depends>
-	<description><![CDATA[
+    <id>ch.docksnet.rgraph</id>
+    <name>Java Method Reference Diagram</name>
+    <version>3.0.0-SNAPSHOT</version>
+    <vendor>Stefan Zeller</vendor>
+    <depends>com.intellij.diagram</depends>
+    <description><![CDATA[
 		Java Method Reference Diagram<br>
 		This plugins shows a diagram of a java class with the purposes
 		<ul>
@@ -39,7 +39,7 @@
 		See <a href="https://github.com/Stefku/intellij-reference-diagram">https://github.com/Stefku/intellij-reference-diagram</a><br>
 		]]></description>
 
-	<change-notes><![CDATA[
+    <change-notes><![CDATA[
 		<ul>
 			<li>
 				Version 2.2.0: IntelliJ 2019.1+ support
@@ -81,34 +81,40 @@
 			</li>
 		</ul>
 		]]>
-  </change-notes>
+    </change-notes>
 
-	<idea-version since-build="191"/>
+    <idea-version since-build="191"/>
 
-	<application-components>
-	</application-components>
+    <application-components>
+    </application-components>
 
-	<project-components>
-	</project-components>
+    <project-components>
+    </project-components>
 
-	<actions>
-		<action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowClusterCountAction">
-			<add-to-group group-id="Graph.DefaultGraphToolbar"/>
-		</action>
-		<action id="RGRAPH.ShowOuterReferences" class="ch.docksnet.rgraph.actions.ShowOuterReferencesAction">
-			<add-to-group group-id="Graph.DefaultGraphToolbar"/>
-		</action>
-		<action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.actions.MarkAction"></action>
-		<action id="RGRAPH.UnmarkNode" class="ch.docksnet.rgraph.actions.UnmarkAction"></action>
-		<action id="RGRAPH.UnmarkAll" class="ch.docksnet.rgraph.actions.UnmarkAllAction"></action>
-		<action id="RGRAPH.MarkCallees" class="ch.docksnet.rgraph.actions.MarkCalleesAction"></action>
-		<action id="RGRAPH.MarkCallers" class="ch.docksnet.rgraph.actions.MarkCallersAction"></action>
-		<action id="RGRAPH.DeleteMarked" class="ch.docksnet.rgraph.actions.DeleteMarkedAction"></action>
-		<action id="RGRAPH.IsolateMarked" class="ch.docksnet.rgraph.actions.IsolateMarkedAction"></action>
-	</actions>
+    <actions>
+        <action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowClusterCountAction">
+            <add-to-group group-id="Graph.DefaultGraphToolbar"/>
+        </action>
+        <action id="RGRAPH.ShowOuterReferences" class="ch.docksnet.rgraph.actions.ShowOuterReferencesAction">
+            <add-to-group group-id="Graph.DefaultGraphToolbar"/>
+        </action>
+        <action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.actions.MarkAction"></action>
+        <action id="RGRAPH.UnmarkNode" class="ch.docksnet.rgraph.actions.UnmarkAction"></action>
+        <action id="RGRAPH.UnmarkAll" class="ch.docksnet.rgraph.actions.UnmarkAllAction"></action>
+        <action id="RGRAPH.MarkCallees" class="ch.docksnet.rgraph.actions.MarkCalleesAction"></action>
+        <action id="RGRAPH.MarkCallers" class="ch.docksnet.rgraph.actions.MarkCallersAction"></action>
+        <action id="RGRAPH.DeleteMarked" class="ch.docksnet.rgraph.actions.DeleteMarkedAction"></action>
+        <action id="RGRAPH.IsolateMarked" class="ch.docksnet.rgraph.actions.IsolateMarkedAction"></action>
+    </actions>
 
-	<extensions defaultExtensionNs="com.intellij">
-		<diagram.Provider implementation="ch.docksnet.rgraph.ReferenceDiagramProvider"/>
-	</extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <diagram.Provider implementation="ch.docksnet.rgraph.ReferenceDiagramProvider"/>
+        <toolWindow
+                id="Package References"
+                anchor="bottom"
+                factoryClass="ch.docksnet.rgraph.toolwindow.ReferenceToolWindow"/>
+        <projectService serviceImplementation="ch.docksnet.rgraph.toolwindow.ProjectService" />
+    </extensions>
+
 
 </idea-plugin>

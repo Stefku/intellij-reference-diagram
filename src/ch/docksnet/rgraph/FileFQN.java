@@ -52,11 +52,11 @@ public class FileFQN {
     }
 
     public boolean samePackage(FileFQN otherFile) {
-        return packageName.equals(otherFile.packageName);
+        return this.packageName.equals(otherFile.packageName);
     }
 
     public boolean sameHierarchy(FileFQN otherFile) {
-        return packageName.startsWith(otherFile.packageName);
+        return this.packageName.startsWith(otherFile.packageName);
     }
 
     @Override
@@ -64,12 +64,17 @@ public class FileFQN {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FileFQN fileFQN = (FileFQN) o;
-        return packageName.equals(fileFQN.packageName) &&
-                fileName.equals(fileFQN.fileName);
+        return this.packageName.equals(fileFQN.packageName) &&
+                this.fileName.equals(fileFQN.fileName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(packageName, fileName);
+        return Objects.hash(this.packageName, this.fileName);
+    }
+
+    @Override
+    public String toString() {
+        return this.packageName + "." + this.fileName;
     }
 }

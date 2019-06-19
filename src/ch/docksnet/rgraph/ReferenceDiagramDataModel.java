@@ -16,48 +16,26 @@
 
 package ch.docksnet.rgraph;
 
-import java.awt.Shape;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import ch.docksnet.rgraph.toolwindow.ProjectService;
+import ch.docksnet.rgraph.toolwindow.ReferenceToolWindow;
 import ch.docksnet.utils.IncrementableSet;
-import ch.docksnet.utils.lcom.CalleesSubgraphAnalyzer;
-import ch.docksnet.utils.lcom.CallersSubgraphAnalyzer;
-import ch.docksnet.utils.lcom.ClusterAnalyzer;
-import ch.docksnet.utils.lcom.LCOMAnalyzerData;
-import ch.docksnet.utils.lcom.LCOMNode;
-import com.intellij.diagram.DiagramCategory;
-import com.intellij.diagram.DiagramDataModel;
-import com.intellij.diagram.DiagramEdge;
-import com.intellij.diagram.DiagramNode;
-import com.intellij.diagram.DiagramProvider;
-import com.intellij.diagram.DiagramRelationshipInfo;
-import com.intellij.diagram.DiagramRelationshipInfoAdapter;
+import ch.docksnet.utils.lcom.*;
+import com.intellij.diagram.*;
 import com.intellij.diagram.presentation.DiagramLineType;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassInitializer;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiJavaFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiReferenceExpression;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScopes;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 import static ch.docksnet.rgraph.PsiUtils.getFqn;
 
@@ -81,7 +59,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     public ReferenceDiagramDataModel(Project project, PsiClass psiClass) {
         super(project, ReferenceDiagramProvider.getInstance());
-        spManager = SmartPointerManager.getInstance(getProject());
+        this.spManager = SmartPointerManager.getInstance(getProject());
         init(psiClass);
     }
 
@@ -89,46 +67,46 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
      * Populates elementsAddedByUser with members of given PsiClass
      */
     private void init(PsiClass psiClass) {
-        myInitialElement = psiClass == null ? null : spManager.createSmartPsiElementPointer(psiClass);
+        this.myInitialElement = psiClass == null ? null : this.spManager.createSmartPsiElementPointer(psiClass);
         collectNodes(psiClass);
     }
 
     public void collectNodes(PsiClass psiClass) {
         for (PsiMethod psiMethod : psiClass.getMethods()) {
-            elementsAddedByUser.put(getFqn(psiMethod), spManager.createSmartPsiElementPointer((PsiElement) psiMethod));
+            this.elementsAddedByUser.put(getFqn(psiMethod), this.spManager.createSmartPsiElementPointer((PsiElement) psiMethod));
         }
 
         for (PsiField psiField : psiClass.getFields()) {
-            elementsAddedByUser.put(getFqn(psiField), spManager.createSmartPsiElementPointer((PsiElement) psiField));
+            this.elementsAddedByUser.put(getFqn(psiField), this.spManager.createSmartPsiElementPointer((PsiElement) psiField));
         }
 
         for (PsiClassInitializer psiClassInitializer : psiClass.getInitializers()) {
-            elementsAddedByUser.put(getFqn(psiClassInitializer), spManager.createSmartPsiElementPointer((PsiElement) psiClassInitializer));
+            this.elementsAddedByUser.put(getFqn(psiClassInitializer), this.spManager.createSmartPsiElementPointer((PsiElement) psiClassInitializer));
         }
 
         for (PsiClass innerClass : psiClass.getInnerClasses()) {
-            elementsAddedByUser.put(getFqn(innerClass), spManager.createSmartPsiElementPointer((PsiElement) innerClass));
+            this.elementsAddedByUser.put(getFqn(innerClass), this.spManager.createSmartPsiElementPointer((PsiElement) innerClass));
         }
     }
 
     @NotNull
     @Override
     public Collection<? extends DiagramNode<PsiElement>> getNodes() {
-        if (myNodes == null) {
+        if (this.myNodes == null) {
             throw new IllegalStateException("@NotNull method %s.%s must not return null");
         } else {
-            return myNodes;
+            return this.myNodes;
         }
     }
 
     @NotNull
     @Override
     public Collection<? extends DiagramEdge<PsiElement>> getEdges() {
-        if (myEdges == null) {
+        if (this.myEdges == null) {
             throw new IllegalStateException(String.format("@NotNull method %s.%s must not return null",
                     new Object[]{"com/intellij/uml/java/JavaUmlDataModel", "getEdges"}));
         } else {
-            return myEdges;
+            return this.myEdges;
         }
     }
 
@@ -140,7 +118,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     @Nullable
     public DiagramEdge<PsiElement> addEdge(final @NotNull DiagramNode<PsiElement> from, final @NotNull DiagramNode<PsiElement> to,
-            Long value) {
+                                           Long value) {
         final DiagramRelationshipInfo relationship;
         if (from.getIdentifyingElement() instanceof PsiField) {
             relationship = createEdgeFromField();
@@ -160,13 +138,13 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private void removeElement(PsiElement element) {
         DiagramNode node = findNode(element);
         if (node == null) {
-            elementsAddedByUser.remove(PsiUtils.getFqn(element));
+            this.elementsAddedByUser.remove(PsiUtils.getFqn(element));
         } else {
             PsiElement toRemove = (PsiElement) node.getIdentifyingElement();
-            myNodes.remove(node);
-            elementsRemovedByUser.put(PsiUtils.getFqn(element), spManager.createSmartPsiElementPointer
+            this.myNodes.remove(node);
+            this.elementsRemovedByUser.put(PsiUtils.getFqn(element), this.spManager.createSmartPsiElementPointer
                     (toRemove));
-            elementsAddedByUser.remove(PsiUtils.getFqn(element));
+            this.elementsAddedByUser.remove(PsiUtils.getFqn(element));
             removeAllEdgesFromOrTo(node);
         }
     }
@@ -174,14 +152,14 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private void removeAllEdgesFromOrTo(DiagramNode<PsiElement> node) {
         String removedNode = PsiUtils.getFqn(node.getIdentifyingElement());
         Set<DiagramEdge<PsiElement>> toRemove = new HashSet<>();
-        for (DiagramEdge<PsiElement> myEdge : myEdges) {
+        for (DiagramEdge<PsiElement> myEdge : this.myEdges) {
             if (PsiUtils.getFqn(myEdge.getSource().getIdentifyingElement()).equals(removedNode)) {
                 toRemove.add(myEdge);
             } else if (PsiUtils.getFqn(myEdge.getTarget().getIdentifyingElement()).equals(removedNode)) {
                 toRemove.add(myEdge);
             }
         }
-        myEdges.removeAll(toRemove);
+        this.myEdges.removeAll(toRemove);
     }
 
     @Override
@@ -189,6 +167,23 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         clearAll();
         updateDataModel();
         analyzeLcom4();
+        updateToolWindow();
+    }
+
+    private void updateToolWindow() {
+        ServiceManager.getService(getProject(), ProjectService.class)
+                .getSamePackageReferences()
+                .replaceContent(this.outerReferences.getReferencesSamePackage());
+
+        ServiceManager.getService(getProject(), ProjectService.class)
+                .getSameHierarchieReferences()
+                .replaceContent(this.outerReferences.getReferencesSameHierarchy());
+
+        ServiceManager.getService(getProject(), ProjectService.class)
+                .getOtherHierarchieReferences()
+                .replaceContent(this.outerReferences.getReferencesOtherHierarchy());
+
+        ToolWindowManager.getInstance(getProject()).getToolWindow(ReferenceToolWindow.ID).show(null);
     }
 
     private void analyzeLcom4() {
@@ -196,7 +191,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         Collection<LCOMNode> lcom4Nodes = lcomConverter.convert(getNodes(), getEdges());
         LCOMAnalyzerData lcomAnalyzerData = new LCOMAnalyzerData(lcom4Nodes);
         ClusterAnalyzer clusterAnalyzer = new ClusterAnalyzer(lcomAnalyzerData);
-        currentClusterCount = clusterAnalyzer.countCluster();
+        this.currentClusterCount = clusterAnalyzer.countCluster();
     }
 
     @NotNull
@@ -205,8 +200,8 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     private void clearAll() {
-        myNodes.clear();
-        myEdges.clear();
+        this.myNodes.clear();
+        this.myEdges.clear();
     }
 
     public synchronized void updateDataModel() {
@@ -215,19 +210,19 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
         for (PsiElement element : elements) {
             if (isAllowedToShow(element)) {
-                myNodes.add(getReferenceNode(provider, element));
+                this.myNodes.add(getReferenceNode(provider, element));
             }
         }
 
         PsiClass initialElement = getInitialElement();
         IncrementableSet<SourceTargetPair> relationships = resolveRelationships(initialElement);
-        outerReferences = getOuterReferences(initialElement);
+        this.outerReferences = getOuterReferences(initialElement);
         for (Map.Entry<SourceTargetPair, Long> sourceTargetPair : relationships.elements()) {
             SourceTargetPair key = sourceTargetPair.getKey();
             DiagramNode<PsiElement> source = findNode(key.getSource());
             DiagramNode<PsiElement> target = findNode(key.getTarget());
             if (source != null && target != null) {
-                myEdges.add(addEdge(source, target, sourceTargetPair.getValue()));
+                this.myEdges.add(addEdge(source, target, sourceTargetPair.getValue()));
             }
         }
     }
@@ -236,7 +231,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         OuterReferences outerReferences = new OuterReferences();
         FileFQN ownFile = FileFQN.from((PsiJavaFile) psiClass.getContainingFile());
 
-        for (DiagramNode<PsiElement> node : myNodes) {
+        for (DiagramNode<PsiElement> node : this.myNodes) {
             PsiElement callee = node.getIdentifyingElement();
             Collection<PsiReference> all = ReferencesSearch.search(callee, GlobalSearchScopes.projectProductionScope(getProject())).findAll();
             for (PsiReference psiReference : all) {
@@ -253,20 +248,20 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     @NotNull
     private ReferenceNode getReferenceNode(DiagramProvider provider, PsiElement element) {
-        if (myNodesPool.containsKey(element)) {
-            return (ReferenceNode) myNodesPool.get(element);
+        if (this.myNodesPool.containsKey(element)) {
+            return (ReferenceNode) this.myNodesPool.get(element);
         }
         ReferenceNode node = new ReferenceNode(element, provider);
-        myNodesPool.put(element, node);
+        this.myNodesPool.put(element, node);
         return node;
     }
 
     @Nullable
     public PsiClass getInitialElement() {
-        if (myInitialElement == null) {
+        if (this.myInitialElement == null) {
             return null;
         } else {
-            PsiClass element = myInitialElement.getElement();
+            PsiClass element = this.myInitialElement.getElement();
             if (element != null && element.isValid()) {
                 return element;
             } else {
@@ -279,7 +274,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     public IncrementableSet<SourceTargetPair> resolveRelationships(PsiClass psiClass) {
         IncrementableSet<SourceTargetPair> incrementableSet = new IncrementableSet<>();
 
-        for (DiagramNode<PsiElement> node : myNodes) {
+        for (DiagramNode<PsiElement> node : this.myNodes) {
             PsiElement callee = node.getIdentifyingElement();
 
             Collection<PsiReference> all = ReferencesSearch.search(callee, new LocalSearchScope
@@ -305,12 +300,12 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private Set<PsiElement> getElements() {
         Set<PsiElement> result = new HashSet<>();
 
-        for (SmartPsiElementPointer<PsiElement> psiElementPointer : elementsAddedByUser.values()) {
+        for (SmartPsiElementPointer<PsiElement> psiElementPointer : this.elementsAddedByUser.values()) {
             PsiElement element = psiElementPointer.getElement();
             result.add(element);
         }
 
-        for (SmartPsiElementPointer<PsiElement> psiElementPointer : elementsRemovedByUser.values()) {
+        for (SmartPsiElementPointer<PsiElement> psiElementPointer : this.elementsRemovedByUser.values()) {
             PsiElement element = psiElementPointer.getElement();
             result.remove(element);
         }
@@ -349,7 +344,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
      */
     @Nullable
     public DiagramNode<PsiElement> findNode(PsiElement psiElement) {
-        Iterator ptr = (new ArrayList(myNodes)).iterator();
+        Iterator ptr = (new ArrayList(this.myNodes)).iterator();
 
         while (ptr.hasNext()) {
             DiagramNode node = (DiagramNode) ptr.next();
@@ -367,10 +362,11 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     public void rebuild(PsiElement element) {
         super.rebuild(element);
-        elementsRemovedByUser.clear();
+        this.elementsRemovedByUser.clear();
         clearAll();
         init((PsiClass) element);
         refreshDataModel();
+
     }
 
     @NotNull
@@ -428,12 +424,12 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     public long getCurrentClusterCount() {
-        return currentClusterCount;
+        return this.currentClusterCount;
     }
 
     public void removeMarkedNodes() {
         List<ReferenceNode> toRemove = new ArrayList<>();
-        for (DiagramNode<PsiElement> myNode : myNodes) {
+        for (DiagramNode<PsiElement> myNode : this.myNodes) {
             if (myNode instanceof ReferenceNode) {
                 if (((ReferenceNode) myNode).isMarked()) {
                     toRemove.add((ReferenceNode) myNode);
@@ -451,7 +447,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     public void isolateMarkedNodes() {
         List<ReferenceNode> toRemove = new ArrayList<>();
-        for (DiagramNode<PsiElement> myNode : myNodes) {
+        for (DiagramNode<PsiElement> myNode : this.myNodes) {
             if (myNode instanceof ReferenceNode) {
                 if (!((ReferenceNode) myNode).isMarked()) {
                     toRemove.add((ReferenceNode) myNode);
@@ -469,7 +465,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     public void unmarkAllNodes() {
-        for (DiagramNode<PsiElement> myNode : myNodes) {
+        for (DiagramNode<PsiElement> myNode : this.myNodes) {
             if (myNode instanceof ReferenceNode) {
                 ((ReferenceNode) myNode).unsetMarked();
             }
@@ -534,6 +530,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     }
 
     public OuterReferences getOuterReferences() {
-        return outerReferences;
+        return this.outerReferences;
     }
 }
