@@ -57,15 +57,15 @@ public class ReferenceNode extends PsiDiagramNode<PsiElement> {
     }
 
     public boolean isMarked() {
-        return marked;
+        return this.marked;
     }
 
     public void setMarked() {
-        marked = true;
+        this.marked = true;
     }
 
     public void unsetMarked() {
-        marked = false;
+        this.marked = false;
     }
 
     public void switchMarked() {

@@ -42,7 +42,7 @@ public class ClassFQN {
     }
 
     public String getFQN() {
-        return fqn;
+        return this.fqn;
     }
 
 }

@@ -53,12 +53,12 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
 
     @Override
     public DiagramElementManager<PsiElement> getElementManager() {
-        return myElementManager;
+        return this.myElementManager;
     }
 
     @Override
     public DiagramVfsResolver<PsiElement> getVfsResolver() {
-        return myVfsResolver;
+        return this.myVfsResolver;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
     @NotNull
     @Override
     public DiagramExtras<PsiElement> getExtras() {
-        return myExtras;
+        return this.myExtras;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
 
     @Override
     public DiagramColorManager getColorManager() {
-        return myColorManager;
+        return this.myColorManager;
     }
 
     public static ReferenceDiagramProvider getInstance() {
@@ -91,6 +91,6 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
 
     @Override
     public DiagramNodeContentManager getNodeContentManager() {
-        return myUmlCategoryManager;
+        return this.myUmlCategoryManager;
     }
 }

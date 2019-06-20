@@ -43,29 +43,29 @@ public class LCOMConverter {
     public Collection<LCOMNode> convert(Collection<? extends DiagramNode<PsiElement>> nodes, Collection<? extends
             DiagramEdge<PsiElement>> edges) {
         for (DiagramNode<PsiElement> node : nodes) {
-            String fqn = vfsResolver.getQualifiedName(node.getIdentifyingElement());
+            String fqn = this.vfsResolver.getQualifiedName(node.getIdentifyingElement());
             LCOMNode.Type type = resolveType(node);
-            lcomNodeRegistry.put(fqn, new LCOMNode(fqn, type, (ReferenceNode) node));
+            this.lcomNodeRegistry.put(fqn, new LCOMNode(fqn, type, (ReferenceNode) node));
         }
 
         for (DiagramEdge<PsiElement> edge : edges) {
             ReferenceNode source = (ReferenceNode) edge.getSource();
             ReferenceNode target = (ReferenceNode) edge.getTarget();
-            String sourceFqn = vfsResolver.getQualifiedName(source.getIdentifyingElement());
-            String targetFqn = vfsResolver.getQualifiedName(target.getIdentifyingElement());
+            String sourceFqn = this.vfsResolver.getQualifiedName(source.getIdentifyingElement());
+            String targetFqn = this.vfsResolver.getQualifiedName(target.getIdentifyingElement());
 
             if (isSourceOrTargetNotRegistered(sourceFqn, targetFqn)) {
                 continue;
             }
 
-            lcomNodeRegistry.get(sourceFqn).addCallee(lcomNodeRegistry.get(targetFqn));
+            this.lcomNodeRegistry.get(sourceFqn).addCallee(this.lcomNodeRegistry.get(targetFqn));
         }
 
-        return lcomNodeRegistry.values();
+        return this.lcomNodeRegistry.values();
     }
 
     private boolean isSourceOrTargetNotRegistered(String sourceFqn, String targetFqn) {
-        return lcomNodeRegistry.get(sourceFqn) == null || lcomNodeRegistry.get(targetFqn) == null;
+        return this.lcomNodeRegistry.get(sourceFqn) == null || this.lcomNodeRegistry.get(targetFqn) == null;
     }
 
     public LCOMNode.Type resolveType(DiagramNode<PsiElement> referenceNode) {

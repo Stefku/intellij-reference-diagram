@@ -36,7 +36,7 @@ public class FieldFQN {
     }
 
     private String createFqn() {
-        return className + "#" + fieldName;
+        return this.className + "#" + this.fieldName;
     }
 
     public static FieldFQN create(String string) {
@@ -52,15 +52,15 @@ public class FieldFQN {
     }
 
     public String getClassName() {
-        return className;
+        return this.className;
     }
 
     public String getFieldName() {
-        return fieldName;
+        return this.fieldName;
     }
 
     public String getFQN() {
-        return fqn;
+        return this.fqn;
     }
 
     public static FieldFQN create(PsiField psiField) {

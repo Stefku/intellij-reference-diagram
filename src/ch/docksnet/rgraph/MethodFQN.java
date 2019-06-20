@@ -47,8 +47,8 @@ public class MethodFQN {
 
     @NotNull
     private String createFqn() {
-        final String parameterString = createParameterRepresentation(parameters);
-        return className + "#" + methodName + "(" + parameterString + ")";
+        final String parameterString = createParameterRepresentation(this.parameters);
+        return this.className + "#" + this.methodName + "(" + parameterString + ")";
     }
 
     @NotNull
@@ -107,19 +107,19 @@ public class MethodFQN {
     }
 
     public String getClassName() {
-        return className;
+        return this.className;
     }
 
     public String getMethodName() {
-        return methodName;
+        return this.methodName;
     }
 
     public List<String> getParameters() {
-        return parameters;
+        return this.parameters;
     }
 
     public String getFQN() {
-        return fqn;
+        return this.fqn;
     }
 
     public static class Builder {
@@ -138,7 +138,7 @@ public class MethodFQN {
         }
 
         public MethodFQN create() {
-            return new MethodFQN(className, methodName, Collections.unmodifiableList(parameters));
+            return new MethodFQN(this.className, this.methodName, Collections.unmodifiableList(this.parameters));
         }
 
     }
