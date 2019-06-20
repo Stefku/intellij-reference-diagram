@@ -17,34 +17,20 @@
 package ch.docksnet.rgraph.toolwindow;
 
 public class ProjectService {
-    private MyToolWindow otherHierarchieReferences;
-    private MyToolWindow sameHierarchieReferences;
-    private MyToolWindow samePackageReferences;
+    private ReferenceListToolWindow otherHierarchieReferences = new ReferenceListToolWindow();
+    private ReferenceListToolWindow sameHierarchieReferences = new ReferenceListToolWindow();
+    private ReferenceListToolWindow samePackageReferences = new ReferenceListToolWindow();
 
-    public MyToolWindow getOtherHierarchieReferences() {
+    public ReferenceListToolWindow getOtherHierarchieReferences() {
         return this.otherHierarchieReferences;
     }
 
-    public ProjectService setOtherHierarchieReferences(MyToolWindow otherHierarchieReferences) {
-        this.otherHierarchieReferences = otherHierarchieReferences;
-        return this;
-    }
-
-    public MyToolWindow getSameHierarchieReferences() {
+    public ReferenceListToolWindow getSameHierarchieReferences() {
         return this.sameHierarchieReferences;
     }
 
-    public ProjectService setSameHierarchieReferences(MyToolWindow sameHierarchieReferences) {
-        this.sameHierarchieReferences = sameHierarchieReferences;
-        return this;
-    }
-
-    public MyToolWindow getSamePackageReferences() {
+    public ReferenceListToolWindow getSamePackageReferences() {
         return this.samePackageReferences;
     }
 
-    public ProjectService setSamePackageReferences(MyToolWindow samePackageReferences) {
-        this.samePackageReferences = samePackageReferences;
-        return this;
-    }
 }

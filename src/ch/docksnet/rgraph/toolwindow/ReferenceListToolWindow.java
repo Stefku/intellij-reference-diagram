@@ -20,11 +20,11 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class MyToolWindow {
+public class ReferenceListToolWindow {
     private JPanel myToolWindowContent;
     DefaultListModel listModel;
 
-    public MyToolWindow() {
+    public ReferenceListToolWindow() {
         this.myToolWindowContent = new JPanel(new BorderLayout());
 
         this.listModel = new DefaultListModel();

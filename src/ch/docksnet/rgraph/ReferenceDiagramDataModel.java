@@ -22,6 +22,7 @@ import ch.docksnet.utils.IncrementableSet;
 import ch.docksnet.utils.lcom.*;
 import com.intellij.diagram.*;
 import com.intellij.diagram.presentation.DiagramLineType;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
@@ -183,7 +184,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
                 .getOtherHierarchieReferences()
                 .replaceContent(this.outerReferences.getReferencesOtherHierarchy());
 
-        ToolWindowManager.getInstance(getProject()).getToolWindow(ReferenceToolWindow.ID).show(null);
+        ApplicationManager.getApplication().invokeLater(() -> ToolWindowManager.getInstance(getProject()).getToolWindow(ReferenceToolWindow.ID).show(null));
     }
 
     private void analyzeLcom4() {

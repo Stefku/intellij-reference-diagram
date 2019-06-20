@@ -16,7 +16,6 @@
 
 package ch.docksnet.rgraph;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,9 +23,9 @@ import java.util.List;
  */
 public class OuterReferences {
 
-    private List<FileFQN> samePackage = new ArrayList<>();
-    private List<FileFQN> inHierarchy = new ArrayList<>();
-    private List<FileFQN> otherHierarchy = new ArrayList<>();
+    private ReferenceCount samePackage = new ReferenceCount();
+    private ReferenceCount inHierarchy = new ReferenceCount();
+    private ReferenceCount otherHierarchy = new ReferenceCount();
 
     public static OuterReferences empty() {
         return new OuterReferences();
@@ -37,42 +36,27 @@ public class OuterReferences {
             return;
         }
         if (ownFile.samePackage(otherFile)) {
-            this.samePackage.add(otherFile);
+            this.samePackage.increment(otherFile);
         } else if (ownFile.sameHierarchy(otherFile)) {
-            this.inHierarchy.add(otherFile);
+            this.inHierarchy.increment(otherFile);
         } else {
-            this.otherHierarchy.add(otherFile);
+            this.otherHierarchy.increment(otherFile);
         }
     }
 
     public List<String> getReferencesSamePackage() {
-        List<String> list = new ArrayList<>();
-        for (FileFQN it : this.samePackage) {
-            String s = it.toString();
-            list.add(s);
-        }
-        return list;
+        return this.samePackage.referenceList();
     }
 
     public List<String> getReferencesSameHierarchy() {
-        List<String> list = new ArrayList<>();
-        for (FileFQN it : this.inHierarchy) {
-            String s = it.toString();
-            list.add(s);
-        }
-        return list;
+        return this.inHierarchy.referenceList();
     }
 
     public List<String> getReferencesOtherHierarchy() {
-        List<String> list = new ArrayList<>();
-        for (FileFQN it : this.otherHierarchy) {
-            String s = it.toString();
-            list.add(s);
-        }
-        return list;
+        return this.otherHierarchy.referenceList();
     }
 
     public String toToolbarString() {
-        return "" + this.samePackage.size() + "/" + this.inHierarchy.size() + "/" + this.otherHierarchy.size();
+        return "" + this.samePackage.fileCount() + "/" + this.inHierarchy.fileCount() + "/" + this.otherHierarchy.fileCount();
     }
 }

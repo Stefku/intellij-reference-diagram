@@ -28,33 +28,30 @@ public class ReferenceToolWindow implements ToolWindowFactory {
 
     public static final String ID = "Package References";
 
-    private MyToolWindow samePackageReferences = new MyToolWindow();
-    private MyToolWindow sameHierarchieReferences = new MyToolWindow();
-    private MyToolWindow otherHierarchieReferences = new MyToolWindow();
-
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
 
         {
-            Content content = contentFactory.createContent(this.samePackageReferences.getContent(), "Same Package References", false);
+            ReferenceListToolWindow samePackageReferences = ServiceManager.getService(project, ProjectService.class)
+                    .getSamePackageReferences();
+            Content content = contentFactory.createContent(samePackageReferences.getContent(), "Same Package References", false);
             toolWindow.getContentManager().addContent(content);
         }
 
         {
-            Content content = contentFactory.createContent(this.sameHierarchieReferences.getContent(), "Same Hierarchy References", false);
+            ReferenceListToolWindow sameHierarchieReferences = ServiceManager.getService(project, ProjectService.class)
+                    .getSameHierarchieReferences();
+            Content content = contentFactory.createContent(sameHierarchieReferences.getContent(), "Same Hierarchy References", false);
             toolWindow.getContentManager().addContent(content);
         }
 
         {
-            Content content = contentFactory.createContent(this.otherHierarchieReferences.getContent(), "Other Hierarchy References", false);
+            ReferenceListToolWindow otherHierarchieReferences = ServiceManager.getService(project, ProjectService.class)
+                    .getOtherHierarchieReferences();
+            Content content = contentFactory.createContent(otherHierarchieReferences.getContent(), "Other Hierarchy References", false);
             toolWindow.getContentManager().addContent(content);
         }
-
-        ServiceManager.getService(project, ProjectService.class)
-                .setSamePackageReferences(this.samePackageReferences)
-                .setSameHierarchieReferences(this.sameHierarchieReferences)
-                .setOtherHierarchieReferences(this.otherHierarchieReferences);
     }
 
     @Override
@@ -69,6 +66,6 @@ public class ReferenceToolWindow implements ToolWindowFactory {
 
     @Override
     public boolean isDoNotActivateOnStart() {
-        return false;
+        return true;
     }
 }

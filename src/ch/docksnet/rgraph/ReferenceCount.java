@@ -16,15 +16,31 @@
 
 package ch.docksnet.rgraph;
 
-public class ReferenceCount {
-    private final FileFQN fileFQN;
-    private int count;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    public ReferenceCount(FileFQN fileFQN) {
-        this.fileFQN = fileFQN;
+public class ReferenceCount {
+    private final Map<FileFQN, Integer> references = new HashMap<>();
+
+    public void increment(FileFQN fileFQN) {
+        if (!this.references.containsKey(fileFQN)) {
+            this.references.put(fileFQN, 0);
+        }
+        this.references.put(fileFQN, this.references.get(fileFQN) + 1);
     }
 
-    public void increment() {
-        this.count += 1;
+    public List<String> referenceList() {
+        List<String> list = new ArrayList<>();
+        for (FileFQN it : this.references.keySet()) {
+            int count = this.references.get(it);
+            list.add(it.toString() + " (" + count + ")");
+        }
+        return list;
+    }
+
+    public int fileCount() {
+        return this.references.size();
     }
 }
