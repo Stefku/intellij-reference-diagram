@@ -32,26 +32,14 @@ public class ReferenceToolWindow implements ToolWindowFactory {
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
 
-        {
-            ReferenceListToolWindow referenceListToolWindow = ServiceManager.getService(project, ProjectService.class)
-                    .getSamePackageReferences();
-            Content content = contentFactory.createContent(referenceListToolWindow.getContent(), referenceListToolWindow.getName(), false);
-            toolWindow.getContentManager().addContent(content);
-        }
+        create(toolWindow, contentFactory, ServiceManager.getService(project, ProjectService.class).getSamePackageReferences());
+        create(toolWindow, contentFactory, ServiceManager.getService(project, ProjectService.class).getSameHierarchieReferences());
+        create(toolWindow, contentFactory, ServiceManager.getService(project, ProjectService.class).getOtherHierarchieReferences());
+    }
 
-        {
-            ReferenceListToolWindow referenceListToolWindow = ServiceManager.getService(project, ProjectService.class)
-                    .getSameHierarchieReferences();
-            Content content = contentFactory.createContent(referenceListToolWindow.getContent(), referenceListToolWindow.getName(), false);
-            toolWindow.getContentManager().addContent(content);
-        }
-
-        {
-            ReferenceListToolWindow referenceListToolWindow = ServiceManager.getService(project, ProjectService.class)
-                    .getOtherHierarchieReferences();
-            Content content = contentFactory.createContent(referenceListToolWindow.getContent(), referenceListToolWindow.getName(), false);
-            toolWindow.getContentManager().addContent(content);
-        }
+    private void create(@NotNull ToolWindow toolWindow, ContentFactory contentFactory, ReferenceListToolWindow window) {
+        Content content = contentFactory.createContent(window.getContent(), window.getName(), false);
+        toolWindow.getContentManager().addContent(content);
     }
 
     @Override
