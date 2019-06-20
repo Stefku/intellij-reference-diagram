@@ -35,21 +35,21 @@ public class ReferenceToolWindow implements ToolWindowFactory {
         {
             ReferenceListToolWindow samePackageReferences = ServiceManager.getService(project, ProjectService.class)
                     .getSamePackageReferences();
-            Content content = contentFactory.createContent(samePackageReferences.getContent(), "Same Package References", false);
+            Content content = contentFactory.createContent(samePackageReferences.getContent(), "Same Package", false);
             toolWindow.getContentManager().addContent(content);
         }
 
         {
             ReferenceListToolWindow sameHierarchieReferences = ServiceManager.getService(project, ProjectService.class)
                     .getSameHierarchieReferences();
-            Content content = contentFactory.createContent(sameHierarchieReferences.getContent(), "Same Hierarchy References", false);
+            Content content = contentFactory.createContent(sameHierarchieReferences.getContent(), "Same Hierarchy", false);
             toolWindow.getContentManager().addContent(content);
         }
 
         {
             ReferenceListToolWindow otherHierarchieReferences = ServiceManager.getService(project, ProjectService.class)
                     .getOtherHierarchieReferences();
-            Content content = contentFactory.createContent(otherHierarchieReferences.getContent(), "Other Hierarchy References", false);
+            Content content = contentFactory.createContent(otherHierarchieReferences.getContent(), "Other Hierarchy", false);
             toolWindow.getContentManager().addContent(content);
         }
     }
