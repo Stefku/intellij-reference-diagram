@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package ch.docksnet.rgraph.actions;
 
-import ch.docksnet.rgraph.OuterReferences;
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -37,7 +36,7 @@ public class ShowClusterCountAction extends DiagramAction {
 
     @Override
     public String getActionName() {
-        return "show PkgRefs";
+        return "Show Cluster Count";
     }
 
     @Override
@@ -45,8 +44,8 @@ public class ShowClusterCountAction extends DiagramAction {
         if (getDataModel(e) instanceof ReferenceDiagramDataModel) {
             e.getPresentation().setVisible(true);
             e.getPresentation().setEnabled(false);
-            OuterReferences outerReferences = ((ReferenceDiagramDataModel) getDataModel(e)).getOuterReferences();
-            e.getPresentation().setText("PkgRefs: " + outerReferences.toToolbarString());
+            long currentClusterCount = ((ReferenceDiagramDataModel) getDataModel(e)).getCurrentClusterCount();
+            e.getPresentation().setText("Cluster Count: " + currentClusterCount);
         } else {
             e.getPresentation().setVisible(false);
         }

@@ -183,8 +183,6 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
         ServiceManager.getService(getProject(), ProjectService.class)
                 .getOtherHierarchieReferences()
                 .replaceContent(this.outerReferences.getReferencesOtherHierarchy());
-
-        ApplicationManager.getApplication().invokeLater(() -> ToolWindowManager.getInstance(getProject()).getToolWindow(ReferenceToolWindow.ID).show(null));
     }
 
     private void analyzeLcom4() {

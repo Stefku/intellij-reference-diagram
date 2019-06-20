@@ -92,10 +92,10 @@
     </project-components>
 
     <actions>
-        <action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowClusterCountAction">
+        <action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowOuterReferencesAction">
             <add-to-group group-id="Graph.DefaultGraphToolbar"/>
         </action>
-        <action id="RGRAPH.ShowOuterReferences" class="ch.docksnet.rgraph.actions.ShowOuterReferencesAction">
+        <action id="RGRAPH.ShowOuterReferences" class="ch.docksnet.rgraph.actions.ShowClusterCountAction">
             <add-to-group group-id="Graph.DefaultGraphToolbar"/>
         </action>
         <action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.actions.MarkAction"></action>

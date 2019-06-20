@@ -29,8 +29,8 @@ import ch.docksnet.rgraph.actions.IsolateMarkedAction;
 import ch.docksnet.rgraph.actions.MarkAction;
 import ch.docksnet.rgraph.actions.MarkCalleesAction;
 import ch.docksnet.rgraph.actions.MarkCallersAction;
-import ch.docksnet.rgraph.actions.ShowClusterCountAction;
 import ch.docksnet.rgraph.actions.ShowOuterReferencesAction;
+import ch.docksnet.rgraph.actions.ShowClusterCountAction;
 import ch.docksnet.rgraph.actions.UnmarkAction;
 import ch.docksnet.rgraph.actions.UnmarkAllAction;
 import com.intellij.diagram.DiagramBuilder;
@@ -63,8 +63,8 @@ public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
     @Override
     public List<AnAction> getExtraActions() {
         final List<AnAction> result = new ArrayList<>();
-        result.add(new ShowClusterCountAction());
         result.add(new ShowOuterReferencesAction());
+        result.add(new ShowClusterCountAction());
         result.add(new MarkAction());
         result.add(new UnmarkAction());
         result.add(new UnmarkAllAction());

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Stefan Zeller
+ * Copyright (C) 2015 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,14 @@
 
 package ch.docksnet.rgraph.actions;
 
+import ch.docksnet.rgraph.OuterReferences;
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
+import ch.docksnet.rgraph.toolwindow.ReferenceToolWindow;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindowManager;
 
 /**
  * @author Stefan Zeller
@@ -27,6 +32,12 @@ public class ShowOuterReferencesAction extends DiagramAction {
 
     @Override
     public void perform(AnActionEvent e) {
+        Project project = e.getProject();
+        ApplicationManager.getApplication().invokeLater(
+                () -> ToolWindowManager.getInstance(project).
+                        getToolWindow(ReferenceToolWindow.ID)
+                        .show(null)
+        );
     }
 
     @Override
@@ -36,7 +47,7 @@ public class ShowOuterReferencesAction extends DiagramAction {
 
     @Override
     public String getActionName() {
-        return "Show Cluster Count";
+        return "show PkgRefs";
     }
 
     @Override
@@ -44,8 +55,8 @@ public class ShowOuterReferencesAction extends DiagramAction {
         if (getDataModel(e) instanceof ReferenceDiagramDataModel) {
             e.getPresentation().setVisible(true);
             e.getPresentation().setEnabled(false);
-            long currentClusterCount = ((ReferenceDiagramDataModel) getDataModel(e)).getCurrentClusterCount();
-            e.getPresentation().setText("Cluster Count: " + currentClusterCount);
+            OuterReferences outerReferences = ((ReferenceDiagramDataModel) getDataModel(e)).getOuterReferences();
+            e.getPresentation().setText("PkgRefs: " + outerReferences.toToolbarString());
         } else {
             e.getPresentation().setVisible(false);
         }
