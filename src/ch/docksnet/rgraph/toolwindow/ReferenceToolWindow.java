@@ -33,23 +33,23 @@ public class ReferenceToolWindow implements ToolWindowFactory {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
 
         {
-            ReferenceListToolWindow samePackageReferences = ServiceManager.getService(project, ProjectService.class)
+            ReferenceListToolWindow referenceListToolWindow = ServiceManager.getService(project, ProjectService.class)
                     .getSamePackageReferences();
-            Content content = contentFactory.createContent(samePackageReferences.getContent(), "Same Package", false);
+            Content content = contentFactory.createContent(referenceListToolWindow.getContent(), referenceListToolWindow.getName(), false);
             toolWindow.getContentManager().addContent(content);
         }
 
         {
-            ReferenceListToolWindow sameHierarchieReferences = ServiceManager.getService(project, ProjectService.class)
+            ReferenceListToolWindow referenceListToolWindow = ServiceManager.getService(project, ProjectService.class)
                     .getSameHierarchieReferences();
-            Content content = contentFactory.createContent(sameHierarchieReferences.getContent(), "Same Hierarchy", false);
+            Content content = contentFactory.createContent(referenceListToolWindow.getContent(), referenceListToolWindow.getName(), false);
             toolWindow.getContentManager().addContent(content);
         }
 
         {
-            ReferenceListToolWindow otherHierarchieReferences = ServiceManager.getService(project, ProjectService.class)
+            ReferenceListToolWindow referenceListToolWindow = ServiceManager.getService(project, ProjectService.class)
                     .getOtherHierarchieReferences();
-            Content content = contentFactory.createContent(otherHierarchieReferences.getContent(), "Other Hierarchy", false);
+            Content content = contentFactory.createContent(referenceListToolWindow.getContent(), referenceListToolWindow.getName(), false);
             toolWindow.getContentManager().addContent(content);
         }
     }

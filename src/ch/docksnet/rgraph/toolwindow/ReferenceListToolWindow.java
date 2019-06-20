@@ -22,9 +22,11 @@ import java.awt.*;
 
 public class ReferenceListToolWindow {
     private JPanel myToolWindowContent;
-    DefaultListModel listModel;
+    private DefaultListModel listModel;
+    private final String name;
 
-    public ReferenceListToolWindow() {
+    ReferenceListToolWindow(String name) {
+        this.name = name;
         this.myToolWindowContent = new JPanel(new BorderLayout());
 
         this.listModel = new DefaultListModel();
@@ -37,7 +39,7 @@ public class ReferenceListToolWindow {
     }
 
 
-    public JPanel getContent() {
+    JPanel getContent() {
         return this.myToolWindowContent;
     }
 
@@ -48,4 +50,7 @@ public class ReferenceListToolWindow {
         }
     }
 
+    String getName() {
+        return this.name + " (" + this.listModel.size() + ")";
+    }
 }

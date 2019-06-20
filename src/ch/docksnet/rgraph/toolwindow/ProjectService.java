@@ -17,9 +17,9 @@
 package ch.docksnet.rgraph.toolwindow;
 
 public class ProjectService {
-    private ReferenceListToolWindow otherHierarchieReferences = new ReferenceListToolWindow();
-    private ReferenceListToolWindow sameHierarchieReferences = new ReferenceListToolWindow();
-    private ReferenceListToolWindow samePackageReferences = new ReferenceListToolWindow();
+    private ReferenceListToolWindow otherHierarchieReferences = new ReferenceListToolWindow("Other Hierarchy");
+    private ReferenceListToolWindow sameHierarchieReferences = new ReferenceListToolWindow("Same Hierarchy");
+    private ReferenceListToolWindow samePackageReferences = new ReferenceListToolWindow("Same Package");
 
     public ReferenceListToolWindow getOtherHierarchieReferences() {
         return this.otherHierarchieReferences;
