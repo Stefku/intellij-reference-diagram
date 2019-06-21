@@ -16,9 +16,6 @@
 
 package ch.docksnet.rgraph;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnonymousClass;
@@ -30,26 +27,16 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * @author Stefan Zeller
  */
-public class PsiUtils {
+class PsiUtils {
 
     @Nullable
-    public static PsiClass getClassFromHierarchy(PsiElement psiElement) {
-        PsiElement parent = psiElement.getParent();
-        if (parent == null) {
-            return null;
-        }
-        if (parent instanceof PsiClass && !(parent instanceof PsiAnonymousClass)) {
-            return ((PsiClass) parent);
-        } else {
-            return getClassFromHierarchy(parent);
-        }
-    }
-
-    @Nullable
-    public static PsiElement getRootPsiElement(PsiClass psiClass, PsiElement psiElement) {
+    static PsiElement getRootPsiElement(PsiClass psiClass, PsiElement psiElement) {
         return getRootPsiElementWithStack(psiClass, psiElement, new LinkedList<PsiElement>());
     }
 
@@ -128,12 +115,12 @@ public class PsiUtils {
         return false;
     }
 
-    public static PsiClass getPsiClass(String classFQN, Project project) {
+    static PsiClass getPsiClass(String classFQN, Project project) {
         return JavaPsiFacade.getInstance(project).findClass(classFQN, GlobalSearchScope
                 .projectScope(project));
     }
 
-    public static String getName(PsiClassInitializer psiClassInitializer) {
+    private static String getName(PsiClassInitializer psiClassInitializer) {
         if (psiClassInitializer.getModifierList().hasModifierProperty("static")) {
             return "[static init]";
         } else {
@@ -141,7 +128,7 @@ public class PsiUtils {
         }
     }
 
-    public static String getPresentableName(PsiElement psiElement) {
+    static String getPresentableName(PsiElement psiElement) {
         PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
 
             @Override
@@ -185,7 +172,7 @@ public class PsiUtils {
         return psiElementDispatcher.dispatch(psiElement);
     }
 
-    public static String getFqn(PsiElement psiElement) {
+    static String getFqn(PsiElement psiElement) {
         PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
 
             @Override

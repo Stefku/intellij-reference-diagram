@@ -28,25 +28,25 @@ public class IncrementableSet<T> {
     private final HashMap<T, Long> map = new HashMap<>();
 
     public long get(T element) {
-        if (map.containsKey(element)) {
-            return map.get(element);
+        if (this.map.containsKey(element)) {
+            return this.map.get(element);
         } else {
             return 0;
         }
     }
 
     public void increment(T element) {
-        if (map.containsKey(element)) {
-            long count = map.get(element);
+        if (this.map.containsKey(element)) {
+            long count = this.map.get(element);
             count += 1;
-            map.put(element, count);
+            this.map.put(element, count);
         } else {
-            map.put(element, 1L);
+            this.map.put(element, 1L);
         }
     }
 
     public Set<Map.Entry<T, Long>> elements() {
-        return map.entrySet();
+        return this.map.entrySet();
     }
 
 }

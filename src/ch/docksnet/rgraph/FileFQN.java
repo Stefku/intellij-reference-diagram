@@ -18,6 +18,7 @@ package ch.docksnet.rgraph;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.util.PsiTreeUtil;
 
 import java.util.Objects;
 
@@ -36,26 +37,23 @@ public class FileFQN {
         this.fileName = fileName;
     }
 
-    public static FileFQN from(PsiJavaFile psiJavaFile) {
+    static FileFQN from(PsiJavaFile psiJavaFile) {
         return new FileFQN(psiJavaFile.getPackageName(), psiJavaFile.getName());
     }
 
-    public static FileFQN resolveHierarchically(PsiElement psiElement) {
-        if (psiElement instanceof PsiJavaFile) {
-            return from((PsiJavaFile) psiElement);
-        }
-        PsiElement parent = psiElement.getParent();
-        if (parent == null) {
+    static FileFQN resolveHierarchically(PsiElement psiElement) {
+        PsiJavaFile psiJavaFile = PsiTreeUtil.getParentOfType(psiElement, PsiJavaFile.class, true);
+        if (psiJavaFile == null) {
             return null;
         }
-        return resolveHierarchically(parent);
+        return from((PsiJavaFile) psiJavaFile);
     }
 
-    public boolean samePackage(FileFQN otherFile) {
+    boolean samePackage(FileFQN otherFile) {
         return this.packageName.equals(otherFile.packageName);
     }
 
-    public boolean sameHierarchy(FileFQN otherFile) {
+    boolean sameHierarchy(FileFQN otherFile) {
         return this.packageName.startsWith(otherFile.packageName);
     }
 
