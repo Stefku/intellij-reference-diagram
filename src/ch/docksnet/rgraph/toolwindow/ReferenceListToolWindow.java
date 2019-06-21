@@ -26,6 +26,9 @@ import com.intellij.util.AstLoadingFilter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -54,10 +57,10 @@ public class ReferenceListToolWindow {
         ));
 
         MouseListener mouseListener = new MouseAdapter() {
-            public void mouseClicked(MouseEvent mouseEvent) {
-                JList<String> theList = (JList) mouseEvent.getSource();
-                if (mouseEvent.getClickCount() == 2) {
-                    int index = theList.locationToIndex(mouseEvent.getPoint());
+            public void mouseClicked(MouseEvent event) {
+                JList<String> theList = (JList) event.getSource();
+                if (event.getClickCount() == 2) {
+                    int index = theList.locationToIndex(event.getPoint());
                     if (index >= 0) {
                         Object o = theList.getModel().getElementAt(index);
                         if (o instanceof PsiElement) {
@@ -68,6 +71,20 @@ public class ReferenceListToolWindow {
             }
         };
         myList.addMouseListener(mouseListener);
+
+        KeyListener keyListener = new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent event) {
+                JList<String> theList = (JList) event.getSource();
+                if (event.getExtendedKeyCode() == KeyEvent.VK_ENTER) {
+                    Object o = theList.getSelectedValue();
+                    if (o instanceof PsiElement) {
+                        PsiUtils.navigate((PsiElement) o, project);
+                    }
+                }
+            }
+        };
+        myList.addKeyListener(keyListener);
     }
 
 
