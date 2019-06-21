@@ -44,15 +44,15 @@ public class OuterReferences {
         }
     }
 
-    public List<String> getReferencesSamePackage() {
+    public List<FileFQNReference> getReferencesSamePackage() {
         return this.samePackage.referenceList();
     }
 
-    public List<String> getReferencesSameHierarchy() {
+    public List<FileFQNReference> getReferencesSameHierarchy() {
         return this.inHierarchy.referenceList();
     }
 
-    public List<String> getReferencesOtherHierarchy() {
+    public List<FileFQNReference> getReferencesOtherHierarchy() {
         return this.otherHierarchy.referenceList();
     }
 

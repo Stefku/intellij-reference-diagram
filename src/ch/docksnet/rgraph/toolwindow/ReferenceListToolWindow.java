@@ -16,6 +16,11 @@
 
 package ch.docksnet.rgraph.toolwindow;
 
+import ch.docksnet.rgraph.FileFQNReference;
+import com.intellij.ide.util.gotoByName.GotoFileCellRenderer;
+import com.intellij.ui.components.JBList;
+import com.intellij.util.AstLoadingFilter;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -30,12 +35,31 @@ public class ReferenceListToolWindow {
         this.myToolWindowContent = new JPanel(new BorderLayout());
 
         this.listModel = new DefaultListModel();
-        JList list = new JList(this.listModel);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setLayoutOrientation(JList.VERTICAL);
-        list.setVisibleRowCount(5);
-        JScrollPane listScrollPane = new JScrollPane(list);
+        JList<Object> myList = new JBList<>(this.listModel);
+        myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        myList.setLayoutOrientation(JList.VERTICAL);
+        myList.setVisibleRowCount(5);
+        JScrollPane listScrollPane = new JScrollPane(myList);
         this.myToolWindowContent.add(listScrollPane, BorderLayout.CENTER);
+
+        // kind of stolen from com.intellij.ide.util.gotoByName.ChooseByNameBase
+        myList.setCellRenderer((list, value, index, isSelected, cellHasFocus) -> AstLoadingFilter.disallowTreeLoading(
+                () -> new GotoFileCellRenderer(500).getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
+        ));
+
+//        MouseListener mouseListener = new MouseAdapter() {
+//            public void mouseClicked(MouseEvent mouseEvent) {
+//                JList<String> theList = (JList) mouseEvent.getSource();
+//                if (mouseEvent.getClickCount() == 2) {
+//                    int index = theList.locationToIndex(mouseEvent.getPoint());
+//                    if (index >= 0) {
+//                        Object o = theList.getModel().getElementAt(index);
+//                        PsiUtils.navigate(o, );
+//                    }
+//                }
+//            }
+//        };
+//        myList.addMouseListener(mouseListener);
     }
 
 
@@ -43,14 +67,16 @@ public class ReferenceListToolWindow {
         return this.myToolWindowContent;
     }
 
-    public void replaceContent(java.util.List<String> entries) {
+    public void replaceContent(java.util.List<FileFQNReference> entries) {
+        // TODO update name of tab
         this.listModel.clear();
-        for (String entry : entries) {
-            this.listModel.addElement(entry);
+        for (FileFQNReference entry : entries) {
+            this.listModel.addElement(entry.getPsiElement());
         }
     }
 
     String getName() {
         return this.name + " (" + this.listModel.size() + ")";
     }
+
 }

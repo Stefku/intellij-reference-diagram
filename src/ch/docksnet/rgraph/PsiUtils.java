@@ -16,13 +16,19 @@
 
 package ch.docksnet.rgraph;
 
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnonymousClass;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +39,7 @@ import java.util.List;
 /**
  * @author Stefan Zeller
  */
-class PsiUtils {
+public class PsiUtils {
 
     @Nullable
     static PsiElement getRootPsiElement(PsiClass psiClass, PsiElement psiElement) {
@@ -212,6 +218,26 @@ class PsiUtils {
         };
 
         return psiElementDispatcher.dispatch(psiElement);
+    }
+
+    public static void navigate(PsiJavaFile psiJavaFile, Project project) {
+        ApplicationManager.getApplication().invokeLater(
+                () -> {
+                    ApplicationManager.getApplication().assertIsDispatchThread();
+                    Navigatable n = (Navigatable)psiJavaFile;
+                    //this is for better cursor position
+                    if (psiJavaFile instanceof PsiFile) {
+                        VirtualFile file = ((PsiFile)psiJavaFile).getVirtualFile();
+                        if (file == null) return;
+                        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, 0, 0);
+                        n = descriptor.setUseCurrentWindow(true);
+                    }
+
+                    if (n.canNavigate()) {
+                        n.navigate(true);
+                    }
+                }
+        );
     }
 
 }

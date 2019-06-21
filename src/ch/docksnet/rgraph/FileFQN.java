@@ -25,8 +25,10 @@ import java.util.Objects;
 public class FileFQN {
     private final String packageName;
     private final String fileName;
+    private final PsiJavaFile psiJavaFile;
 
-    private FileFQN(String packageName, String fileName) {
+    private FileFQN(String packageName, String fileName, PsiJavaFile psiJavaFile) {
+        this.psiJavaFile = psiJavaFile;
         if (packageName == null) {
             throw new IllegalArgumentException("packageName: null not allowed");
         }
@@ -38,7 +40,7 @@ public class FileFQN {
     }
 
     static FileFQN from(PsiJavaFile psiJavaFile) {
-        return new FileFQN(psiJavaFile.getPackageName(), psiJavaFile.getName());
+        return new FileFQN(psiJavaFile.getPackageName(), psiJavaFile.getName(), psiJavaFile);
     }
 
     static FileFQN resolveHierarchically(PsiElement psiElement) {
@@ -74,5 +76,9 @@ public class FileFQN {
     @Override
     public String toString() {
         return this.packageName + "." + this.fileName;
+    }
+
+    public PsiJavaFile getPsiJavaFile() {
+        return this.psiJavaFile;
     }
 }

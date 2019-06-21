@@ -31,11 +31,11 @@ public class ReferenceCount {
         this.references.put(fileFQN, this.references.get(fileFQN) + 1);
     }
 
-    public List<String> referenceList() {
-        List<String> list = new ArrayList<>();
+    public List<FileFQNReference> referenceList() {
+        List<FileFQNReference> list = new ArrayList<>();
         for (FileFQN it : this.references.keySet()) {
             int count = this.references.get(it);
-            list.add(it.toString() + " (" + count + ")");
+            list.add(new FileFQNReference(it, count));
         }
         return list;
     }
