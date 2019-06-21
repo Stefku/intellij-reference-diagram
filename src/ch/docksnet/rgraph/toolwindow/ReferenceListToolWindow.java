@@ -101,7 +101,7 @@ public class ReferenceListToolWindow {
     }
 
     String getName() {
-        return this.name + " (" + this.listModel.size() + ")";
+        return this.name;
     }
 
 }
