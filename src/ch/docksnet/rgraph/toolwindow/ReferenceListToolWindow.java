@@ -17,12 +17,18 @@
 package ch.docksnet.rgraph.toolwindow;
 
 import ch.docksnet.rgraph.FileFQNReference;
+import ch.docksnet.rgraph.PsiUtils;
 import com.intellij.ide.util.gotoByName.GotoFileCellRenderer;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.AstLoadingFilter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 
 public class ReferenceListToolWindow {
@@ -30,7 +36,7 @@ public class ReferenceListToolWindow {
     private DefaultListModel listModel;
     private final String name;
 
-    ReferenceListToolWindow(String name) {
+    ReferenceListToolWindow(String name, Project project) {
         this.name = name;
         this.myToolWindowContent = new JPanel(new BorderLayout());
 
@@ -47,19 +53,21 @@ public class ReferenceListToolWindow {
                 () -> new GotoFileCellRenderer(500).getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
         ));
 
-//        MouseListener mouseListener = new MouseAdapter() {
-//            public void mouseClicked(MouseEvent mouseEvent) {
-//                JList<String> theList = (JList) mouseEvent.getSource();
-//                if (mouseEvent.getClickCount() == 2) {
-//                    int index = theList.locationToIndex(mouseEvent.getPoint());
-//                    if (index >= 0) {
-//                        Object o = theList.getModel().getElementAt(index);
-//                        PsiUtils.navigate(o, );
-//                    }
-//                }
-//            }
-//        };
-//        myList.addMouseListener(mouseListener);
+        MouseListener mouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent mouseEvent) {
+                JList<String> theList = (JList) mouseEvent.getSource();
+                if (mouseEvent.getClickCount() == 2) {
+                    int index = theList.locationToIndex(mouseEvent.getPoint());
+                    if (index >= 0) {
+                        Object o = theList.getModel().getElementAt(index);
+                        if (o instanceof PsiElement) {
+                            PsiUtils.navigate((PsiElement) o, project);
+                        }
+                    }
+                }
+            }
+        };
+        myList.addMouseListener(mouseListener);
     }
 
 

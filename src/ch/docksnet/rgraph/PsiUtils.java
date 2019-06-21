@@ -220,14 +220,14 @@ public class PsiUtils {
         return psiElementDispatcher.dispatch(psiElement);
     }
 
-    public static void navigate(PsiJavaFile psiJavaFile, Project project) {
+    public static void navigate(PsiElement psiElement, Project project) {
         ApplicationManager.getApplication().invokeLater(
                 () -> {
                     ApplicationManager.getApplication().assertIsDispatchThread();
-                    Navigatable n = (Navigatable)psiJavaFile;
+                    Navigatable n = (Navigatable)psiElement;
                     //this is for better cursor position
-                    if (psiJavaFile instanceof PsiFile) {
-                        VirtualFile file = ((PsiFile)psiJavaFile).getVirtualFile();
+                    if (psiElement instanceof PsiFile) {
+                        VirtualFile file = ((PsiFile)psiElement).getVirtualFile();
                         if (file == null) return;
                         OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, 0, 0);
                         n = descriptor.setUseCurrentWindow(true);

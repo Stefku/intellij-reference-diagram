@@ -16,10 +16,18 @@
 
 package ch.docksnet.rgraph.toolwindow;
 
+import com.intellij.openapi.project.Project;
+
 public class ProjectService {
-    private ReferenceListToolWindow otherHierarchieReferences = new ReferenceListToolWindow("Other Hierarchy");
-    private ReferenceListToolWindow sameHierarchieReferences = new ReferenceListToolWindow("Same Hierarchy");
-    private ReferenceListToolWindow samePackageReferences = new ReferenceListToolWindow("Same Package");
+    private final ReferenceListToolWindow otherHierarchieReferences;
+    private final ReferenceListToolWindow sameHierarchieReferences;
+    private final ReferenceListToolWindow samePackageReferences;
+
+    public ProjectService(Project project) {
+        this.otherHierarchieReferences = new ReferenceListToolWindow("Other Hierarchy", project);
+        this.sameHierarchieReferences = new ReferenceListToolWindow("Same Hierarchy", project);
+        this.samePackageReferences = new ReferenceListToolWindow("Same Package", project);
+    }
 
     public ReferenceListToolWindow getOtherHierarchieReferences() {
         return this.otherHierarchieReferences;
