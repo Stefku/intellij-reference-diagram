@@ -32,12 +32,14 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.function.Consumer;
 
 
 public class ReferenceListToolWindow {
     private JPanel myToolWindowContent;
     private DefaultListModel listModel;
     private final String name;
+    private Consumer<String> updateTabNameCallback = noop -> {};
 
     ReferenceListToolWindow(String name, Project project) {
         this.name = name;
@@ -93,15 +95,19 @@ public class ReferenceListToolWindow {
     }
 
     public void replaceContent(java.util.List<FileFQNReference> entries) {
-        // TODO update name of tab
         this.listModel.clear();
         for (FileFQNReference entry : entries) {
             this.listModel.addElement(entry.getPsiElement());
         }
+        this.updateTabNameCallback.accept(this.name + "(" + entries.size() + ")");
     }
 
     String getName() {
         return this.name;
+    }
+
+    public void setUpdateTabNameCallback(Consumer<String> updateTabNameCallback) {
+        this.updateTabNameCallback = updateTabNameCallback;
     }
 
 }

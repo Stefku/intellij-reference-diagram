@@ -16,6 +16,7 @@
 
 package ch.docksnet.rgraph.toolwindow;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -39,6 +40,12 @@ public class ReferenceToolWindow implements ToolWindowFactory {
 
     private void create(@NotNull ToolWindow toolWindow, ContentFactory contentFactory, ReferenceListToolWindow window) {
         Content content = contentFactory.createContent(window.getContent(), window.getName(), false);
+        window.setUpdateTabNameCallback(newName -> {
+            ApplicationManager.getApplication().invokeLater(
+                    () -> {
+                        content.setDisplayName(newName);
+                    });
+        });
         toolWindow.getContentManager().addContent(content);
     }
 
