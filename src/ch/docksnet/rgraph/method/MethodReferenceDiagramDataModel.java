@@ -17,6 +17,7 @@
 package ch.docksnet.rgraph.method;
 
 import ch.docksnet.rgraph.ProjectService;
+import ch.docksnet.rgraph.PsiUtils;
 import ch.docksnet.rgraph.ReferenceDiagramProvider;
 import ch.docksnet.utils.IncrementableSet;
 import ch.docksnet.utils.lcom.*;
@@ -36,7 +37,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 
-import static ch.docksnet.rgraph.method.PsiUtils.getFqn;
+import static ch.docksnet.rgraph.PsiUtils.getFqn;
 
 /**
  * @author Stefan Zeller

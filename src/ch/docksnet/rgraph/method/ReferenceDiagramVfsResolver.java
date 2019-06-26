@@ -18,6 +18,7 @@ package ch.docksnet.rgraph.method;
 
 import java.util.List;
 
+import ch.docksnet.rgraph.PsiUtils;
 import com.intellij.diagram.DiagramVfsResolver;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;

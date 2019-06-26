@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method;
+package ch.docksnet.rgraph;
 
+import ch.docksnet.rgraph.method.ClassFQN;
+import ch.docksnet.rgraph.method.FieldFQN;
+import ch.docksnet.rgraph.method.MethodFQN;
+import ch.docksnet.rgraph.method.PsiElementDispatcher;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -41,7 +45,7 @@ import java.util.List;
 public class PsiUtils {
 
     @Nullable
-    static PsiElement getRootPsiElement(PsiClass psiClass, PsiElement psiElement) {
+    public static PsiElement getRootPsiElement(PsiClass psiClass, PsiElement psiElement) {
         return getRootPsiElementWithStack(psiClass, psiElement, new LinkedList<PsiElement>());
     }
 
@@ -120,7 +124,7 @@ public class PsiUtils {
         return false;
     }
 
-    static PsiClass getPsiClass(String classFQN, Project project) {
+    public static PsiClass getPsiClass(String classFQN, Project project) {
         return JavaPsiFacade.getInstance(project).findClass(classFQN, GlobalSearchScope
                 .projectScope(project));
     }
@@ -133,7 +137,7 @@ public class PsiUtils {
         }
     }
 
-    static String getPresentableName(PsiElement psiElement) {
+    public static String getPresentableName(PsiElement psiElement) {
         PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
 
             @Override
@@ -177,7 +181,7 @@ public class PsiUtils {
         return psiElementDispatcher.dispatch(psiElement);
     }
 
-    static String getFqn(PsiElement psiElement) {
+    public static String getFqn(PsiElement psiElement) {
         PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
 
             @Override
