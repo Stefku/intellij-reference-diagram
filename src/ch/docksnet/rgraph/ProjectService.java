@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.toolwindow;
+package ch.docksnet.rgraph;
 
+import ch.docksnet.rgraph.toolwindow.ReferenceListToolWindow;
 import com.intellij.openapi.project.Project;
 
 public class ProjectService {

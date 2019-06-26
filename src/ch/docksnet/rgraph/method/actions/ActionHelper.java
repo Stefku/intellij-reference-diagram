@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
+package ch.docksnet.rgraph.method.actions;
 
-import com.intellij.diagram.DiagramEdgeBase;
-import com.intellij.diagram.DiagramNode;
-import com.intellij.diagram.DiagramRelationshipInfo;
-import com.intellij.psi.PsiElement;
+import com.intellij.diagram.DiagramAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
  * @author Stefan Zeller
  */
-public class ReferenceEdge extends DiagramEdgeBase<PsiElement> {
+public class ActionHelper {
 
-
-    public ReferenceEdge(DiagramNode<PsiElement> source, DiagramNode<PsiElement> target,
-            DiagramRelationshipInfo relationship) {
-        super(source, target, relationship);
-    }
-
-    enum Type {
-        FIELD_TO_METHOD, REFERENCE
+    public static void enableIfNodesSelected(AnActionEvent e) {
+        if (!DiagramAction.getSelectedNodes(e).isEmpty()) {
+            e.getPresentation().setEnabled(true);
+        } else {
+            e.getPresentation().setEnabled(false);
+        }
     }
 
 }

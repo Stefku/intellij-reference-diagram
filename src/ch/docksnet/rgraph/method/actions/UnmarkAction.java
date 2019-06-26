@@ -14,36 +14,37 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.actions;
+package ch.docksnet.rgraph.method.actions;
 
-import ch.docksnet.rgraph.ReferenceDiagramDataModel;
+import ch.docksnet.rgraph.method.ReferenceNode;
 import com.intellij.diagram.DiagramAction;
-import com.intellij.diagram.DiagramDataModel;
+import com.intellij.diagram.DiagramNode;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
  * @author Stefan Zeller
  */
-public class IsolateMarkedAction extends DiagramAction {
+public class UnmarkAction extends DiagramAction {
 
     @Override
     public void perform(AnActionEvent e) {
-        DiagramDataModel dataModel = getDataModel(e);
-        if (dataModel instanceof ReferenceDiagramDataModel) {
-            ((ReferenceDiagramDataModel) dataModel).isolateMarkedNodes();
+        for (DiagramNode diagramNode : getSelectedNodes(e)) {
+            if (diagramNode instanceof ReferenceNode) {
+                ((ReferenceNode) diagramNode).unsetMarked();
+            }
         }
         getBuilder(e).getPresentationModel().update();
     }
 
     @Override
     public String getActionName() {
-        return "Isolate Marked";
+        return "Unmark Selected";
     }
 
     @Override
     public void update(AnActionEvent e) {
         e.getPresentation().setVisible(true);
-        e.getPresentation().setEnabled(true);
+        ActionHelper.enableIfNodesSelected(e);
         e.getPresentation().setText(getActionName());
         super.update(e);
     }

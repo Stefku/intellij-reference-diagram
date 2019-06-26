@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
+package ch.docksnet.rgraph.method;
 
+import com.intellij.diagram.DiagramEdgeBase;
+import com.intellij.diagram.DiagramNode;
+import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.psi.PsiElement;
 
-public class FileFQNReference {
-    private final FileFQN fileFQN;
-    private final int referencesCount;
+/**
+ * @author Stefan Zeller
+ */
+public class ReferenceEdge extends DiagramEdgeBase<PsiElement> {
 
-    public FileFQNReference(FileFQN fileFQN, int referencesCount) {
-        this.fileFQN = fileFQN;
-        this.referencesCount = referencesCount;
+
+    public ReferenceEdge(DiagramNode<PsiElement> source, DiagramNode<PsiElement> target,
+            DiagramRelationshipInfo relationship) {
+        super(source, target, relationship);
     }
 
-    public PsiElement getPsiElement() {
-        return this.fileFQN.getPsiJavaFile();
+    enum Type {
+        FIELD_TO_METHOD, REFERENCE
     }
+
 }

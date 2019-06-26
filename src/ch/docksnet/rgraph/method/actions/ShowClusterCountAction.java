@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,41 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.actions;
+package ch.docksnet.rgraph.method.actions;
 
-import ch.docksnet.rgraph.ReferenceDiagramDataModel;
+import ch.docksnet.rgraph.method.ReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
-import com.intellij.diagram.DiagramDataModel;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
  * @author Stefan Zeller
  */
-public class UnmarkAllAction extends DiagramAction {
+public class ShowClusterCountAction extends DiagramAction {
 
     @Override
     public void perform(AnActionEvent e) {
-        DiagramDataModel dataModel = getDataModel(e);
-        if (dataModel instanceof ReferenceDiagramDataModel) {
-            ((ReferenceDiagramDataModel) dataModel).unmarkAllNodes();
-        }
-        getBuilder(e).getPresentationModel().update();
+    }
+
+    @Override
+    public boolean displayTextInToolbar() {
+        return true;
     }
 
     @Override
     public String getActionName() {
-        return "Unmark All";
+        return "Show Cluster Count";
     }
 
     @Override
     public void update(AnActionEvent e) {
-        e.getPresentation().setVisible(true);
-        e.getPresentation().setEnabled(true);
-        e.getPresentation().setText(getActionName());
+        if (getDataModel(e) instanceof ReferenceDiagramDataModel) {
+            e.getPresentation().setVisible(true);
+            e.getPresentation().setEnabled(false);
+            long currentClusterCount = ((ReferenceDiagramDataModel) getDataModel(e)).getCurrentClusterCount();
+            e.getPresentation().setText("Cluster Count: " + currentClusterCount);
+        } else {
+            e.getPresentation().setVisible(false);
+        }
         super.update(e);
     }
 

@@ -16,6 +16,7 @@
 
 package ch.docksnet.rgraph.toolwindow;
 
+import ch.docksnet.rgraph.ProjectService;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;

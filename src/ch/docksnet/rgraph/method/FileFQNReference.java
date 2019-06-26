@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.actions;
+package ch.docksnet.rgraph.method;
 
-import com.intellij.diagram.DiagramAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.psi.PsiElement;
 
-/**
- * @author Stefan Zeller
- */
-public class ActionHelper {
+public class FileFQNReference {
+    private final FileFQN fileFQN;
+    private final int referencesCount;
 
-    public static void enableIfNodesSelected(AnActionEvent e) {
-        if (!DiagramAction.getSelectedNodes(e).isEmpty()) {
-            e.getPresentation().setEnabled(true);
-        } else {
-            e.getPresentation().setEnabled(false);
-        }
+    public FileFQNReference(FileFQN fileFQN, int referencesCount) {
+        this.fileFQN = fileFQN;
+        this.referencesCount = referencesCount;
     }
 
+    public PsiElement getPsiElement() {
+        return this.fileFQN.getPsiJavaFile();
+    }
 }

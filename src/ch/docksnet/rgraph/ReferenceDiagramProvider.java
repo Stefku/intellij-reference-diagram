@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,12 @@
 
 package ch.docksnet.rgraph;
 
+import ch.docksnet.rgraph.method.ReferenceDiagramColorManager;
+import ch.docksnet.rgraph.method.ReferenceDiagramDataModel;
+import ch.docksnet.rgraph.method.ReferenceDiagramElementManager;
+import ch.docksnet.rgraph.method.ReferenceDiagramExtras;
+import ch.docksnet.rgraph.method.ReferenceDiagramVfsResolver;
+import ch.docksnet.rgraph.method.ReferenceUmlCategoryManager;
 import ch.docksnet.utils.PreConditionUtil;
 import com.intellij.diagram.BaseDiagramProvider;
 import com.intellij.diagram.DiagramColorManager;
@@ -38,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
 
-    public static final String ID = "ReferenceDiagramProvider";
+    private static final String ID = "ReferenceDiagramProvider";
     private final DiagramElementManager<PsiElement> myElementManager = new ReferenceDiagramElementManager();
     private final DiagramVfsResolver<PsiElement> myVfsResolver = new ReferenceDiagramVfsResolver();
     private final ReferenceDiagramExtras myExtras = new ReferenceDiagramExtras();

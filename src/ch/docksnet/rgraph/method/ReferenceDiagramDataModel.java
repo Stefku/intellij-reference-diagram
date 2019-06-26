@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
+package ch.docksnet.rgraph.method;
 
-import ch.docksnet.rgraph.toolwindow.ProjectService;
+import ch.docksnet.rgraph.ProjectService;
+import ch.docksnet.rgraph.ReferenceDiagramProvider;
 import ch.docksnet.utils.IncrementableSet;
 import ch.docksnet.utils.lcom.*;
 import com.intellij.diagram.*;
@@ -35,7 +36,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 
-import static ch.docksnet.rgraph.PsiUtils.getFqn;
+import static ch.docksnet.rgraph.method.PsiUtils.getFqn;
 
 /**
  * @author Stefan Zeller

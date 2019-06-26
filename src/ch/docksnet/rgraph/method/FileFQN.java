@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
+package ch.docksnet.rgraph.method;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;

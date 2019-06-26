@@ -16,8 +16,8 @@
 
 package ch.docksnet.rgraph.toolwindow;
 
-import ch.docksnet.rgraph.FileFQNReference;
-import ch.docksnet.rgraph.PsiUtils;
+import ch.docksnet.rgraph.method.FileFQNReference;
+import ch.docksnet.rgraph.method.PsiUtils;
 import com.intellij.ide.util.gotoByName.GotoFileCellRenderer;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
+package ch.docksnet.rgraph.method;
 
 import java.util.ArrayList;
 import java.util.HashMap;

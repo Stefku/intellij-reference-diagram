@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
+package ch.docksnet.rgraph.method;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -24,15 +24,15 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
-import ch.docksnet.rgraph.actions.DeleteMarkedAction;
-import ch.docksnet.rgraph.actions.IsolateMarkedAction;
-import ch.docksnet.rgraph.actions.MarkAction;
-import ch.docksnet.rgraph.actions.MarkCalleesAction;
-import ch.docksnet.rgraph.actions.MarkCallersAction;
-import ch.docksnet.rgraph.actions.ShowOuterReferencesAction;
-import ch.docksnet.rgraph.actions.ShowClusterCountAction;
-import ch.docksnet.rgraph.actions.UnmarkAction;
-import ch.docksnet.rgraph.actions.UnmarkAllAction;
+import ch.docksnet.rgraph.method.actions.DeleteMarkedAction;
+import ch.docksnet.rgraph.method.actions.IsolateMarkedAction;
+import ch.docksnet.rgraph.method.actions.MarkAction;
+import ch.docksnet.rgraph.method.actions.MarkCalleesAction;
+import ch.docksnet.rgraph.method.actions.MarkCallersAction;
+import ch.docksnet.rgraph.method.actions.ShowOuterReferencesAction;
+import ch.docksnet.rgraph.method.actions.ShowClusterCountAction;
+import ch.docksnet.rgraph.method.actions.UnmarkAction;
+import ch.docksnet.rgraph.method.actions.UnmarkAllAction;
 import com.intellij.diagram.DiagramBuilder;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.extras.DiagramExtras;
