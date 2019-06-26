@@ -17,7 +17,7 @@
 package ch.docksnet.rgraph;
 
 import ch.docksnet.rgraph.method.ReferenceDiagramColorManager;
-import ch.docksnet.rgraph.method.ReferenceDiagramDataModel;
+import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
 import ch.docksnet.rgraph.method.ReferenceDiagramElementManager;
 import ch.docksnet.rgraph.method.ReferenceDiagramExtras;
 import ch.docksnet.rgraph.method.ReferenceDiagramVfsResolver;
@@ -79,11 +79,11 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
     }
 
     @Override
-    public ReferenceDiagramDataModel createDataModel(@NotNull Project project, @Nullable PsiElement
+    public MethodReferenceDiagramDataModel createDataModel(@NotNull Project project, @Nullable PsiElement
             psiElement, @Nullable VirtualFile virtualFile, DiagramPresentationModel model) {
         PreConditionUtil.assertTrue(psiElement instanceof PsiClass, "PsiElement" +
                 ".psiElement must be a PsiClass");
-        return new ReferenceDiagramDataModel(project, (PsiClass) psiElement);
+        return new MethodReferenceDiagramDataModel(project, (PsiClass) psiElement);
     }
 
     @Override

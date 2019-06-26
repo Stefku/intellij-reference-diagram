@@ -16,7 +16,7 @@
 
 package ch.docksnet.rgraph.method.actions;
 
-import ch.docksnet.rgraph.method.ReferenceDiagramDataModel;
+import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -29,8 +29,8 @@ public class IsolateMarkedAction extends DiagramAction {
     @Override
     public void perform(AnActionEvent e) {
         DiagramDataModel dataModel = getDataModel(e);
-        if (dataModel instanceof ReferenceDiagramDataModel) {
-            ((ReferenceDiagramDataModel) dataModel).isolateMarkedNodes();
+        if (dataModel instanceof MethodReferenceDiagramDataModel) {
+            ((MethodReferenceDiagramDataModel) dataModel).isolateMarkedNodes();
         }
         getBuilder(e).getPresentationModel().update();
     }

@@ -18,7 +18,7 @@ package ch.docksnet.rgraph.method.actions;
 
 import java.util.List;
 
-import ch.docksnet.rgraph.method.ReferenceDiagramDataModel;
+import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramNode;
@@ -34,8 +34,8 @@ public class MarkCalleesAction extends DiagramAction {
         List<DiagramNode> selectedNodes = getSelectedNodes(e);
 
         DiagramDataModel dataModel = getDataModel(e);
-        if (dataModel instanceof ReferenceDiagramDataModel) {
-            ((ReferenceDiagramDataModel) dataModel).markCallees(selectedNodes);
+        if (dataModel instanceof MethodReferenceDiagramDataModel) {
+            ((MethodReferenceDiagramDataModel) dataModel).markCallees(selectedNodes);
         }
         getBuilder(e).getPresentationModel().update();
     }

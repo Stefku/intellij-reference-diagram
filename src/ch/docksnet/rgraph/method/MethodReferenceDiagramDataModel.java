@@ -41,7 +41,7 @@ import static ch.docksnet.rgraph.method.PsiUtils.getFqn;
 /**
  * @author Stefan Zeller
  */
-public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
+public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
     private final Map<String, SmartPsiElementPointer<PsiElement>> elementsAddedByUser = new HashMap();
     private final Map<String, SmartPsiElementPointer<PsiElement>> elementsRemovedByUser = new HashMap();
@@ -56,7 +56,7 @@ public class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
     private long currentClusterCount = 0;
     private OuterReferences outerReferences = OuterReferences.empty();
 
-    ReferenceDiagramDataModel(Project project, PsiClass psiClass) {
+    public MethodReferenceDiagramDataModel(Project project, PsiClass psiClass) {
         super(project, ReferenceDiagramProvider.getInstance());
         this.spManager = SmartPointerManager.getInstance(getProject());
         init(psiClass);
