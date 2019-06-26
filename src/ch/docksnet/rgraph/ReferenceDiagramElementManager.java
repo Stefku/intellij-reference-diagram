@@ -22,6 +22,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.SimpleColoredText;
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +42,10 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
     public PsiElement findInDataContext(DataContext context) {
 
         if (CommonDataKeys.PSI_ELEMENT.getData(context) instanceof PsiClass) {
+            return CommonDataKeys.PSI_ELEMENT.getData(context);
+        }
+
+        if (CommonDataKeys.PSI_ELEMENT.getData(context) instanceof PsiJavaDirectoryImpl) {
             return CommonDataKeys.PSI_ELEMENT.getData(context);
         }
 

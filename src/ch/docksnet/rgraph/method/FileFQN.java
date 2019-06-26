@@ -51,6 +51,10 @@ public class FileFQN {
         return from((PsiJavaFile) psiJavaFile);
     }
 
+    public static FileFQN create(PsiJavaFile psiJavaFile) {
+        return from(psiJavaFile);
+    }
+
     boolean samePackage(FileFQN otherFile) {
         return this.packageName.equals(otherFile.packageName);
     }
@@ -80,5 +84,9 @@ public class FileFQN {
 
     public PsiJavaFile getPsiJavaFile() {
         return this.psiJavaFile;
+    }
+
+    public String getFQN() {
+        return this.toString();
     }
 }

@@ -16,6 +16,7 @@
 
 package ch.docksnet.rgraph;
 
+import ch.docksnet.rgraph.directory.PackageReferenceDiagramDataModel;
 import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
 import ch.docksnet.rgraph.method.ReferenceDiagramColorManager;
 import ch.docksnet.rgraph.method.ReferenceDiagramExtras;
@@ -23,6 +24,7 @@ import ch.docksnet.rgraph.method.ReferenceDiagramVfsResolver;
 import ch.docksnet.rgraph.method.ReferenceUmlCategoryManager;
 import com.intellij.diagram.BaseDiagramProvider;
 import com.intellij.diagram.DiagramColorManager;
+import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramElementManager;
 import com.intellij.diagram.DiagramNodeContentManager;
 import com.intellij.diagram.DiagramPresentationModel;
@@ -33,6 +35,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,7 +70,7 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
 
     @Override
     public String getPresentableName() {
-        return "Method Reference Diagram";
+        return "Java Reference Diagram";
     }
 
     @NotNull
@@ -77,10 +80,13 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
     }
 
     @Override
-    public MethodReferenceDiagramDataModel createDataModel(@NotNull Project project, @Nullable PsiElement
+    public DiagramDataModel createDataModel(@NotNull Project project, @Nullable PsiElement
             psiElement, @Nullable VirtualFile virtualFile, DiagramPresentationModel model) {
         if (psiElement instanceof PsiClass) {
             return new MethodReferenceDiagramDataModel(project, (PsiClass) psiElement);
+        }
+        if (psiElement instanceof PsiJavaDirectoryImpl) {
+            return new PackageReferenceDiagramDataModel(project, (PsiJavaDirectoryImpl) psiElement);
         }
         return null;
     }

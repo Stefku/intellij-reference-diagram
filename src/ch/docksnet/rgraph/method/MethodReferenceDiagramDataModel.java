@@ -190,6 +190,7 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
     }
 
     @NotNull
+    @Override
     public ModificationTracker getModificationTracker() {
         return PsiManager.getInstance(getProject()).getModificationTracker();
     }
@@ -320,6 +321,7 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
         return false;
     }
 
+    @Override
     public void dispose() {
     }
 
@@ -329,6 +331,7 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
         return null;
     }
 
+    @Override
     public boolean hasElement(PsiElement element) {
         return findNode(element) != null;
     }
@@ -351,17 +354,18 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
         return null;
     }
 
+    @Override
     public boolean isPsiListener() {
         return true;
     }
 
+    @Override
     public void rebuild(PsiElement element) {
         super.rebuild(element);
         this.elementsRemovedByUser.clear();
         clearAll();
         init((PsiClass) element);
         refreshDataModel();
-
     }
 
     @NotNull

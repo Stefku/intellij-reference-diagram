@@ -16,30 +16,30 @@
 
 package ch.docksnet.rgraph.method;
 
-import com.intellij.psi.PsiClass;
+import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 
 /**
  * @author Stefan Zeller
  */
-public class ClassFQN {
+public class PackageFQN {
     private final String fqn;
 
-    private ClassFQN(String fqn) {
+    private PackageFQN(String fqn) {
         this.fqn = fqn;
     }
 
-    public static ClassFQN create(String string) {
-        return new ClassFQN(string);
+    public static PackageFQN create(String string) {
+        return new PackageFQN(string);
     }
 
-    public static ClassFQN create(PsiClass psiClass) {
-        String className = psiClass.getQualifiedName();
-        return new ClassFQN(className);
+    public static PackageFQN create(PsiJavaDirectoryImpl psiJavaDirectory) {
+        String className = psiJavaDirectory.getPresentation().getLocationString();
+        return new PackageFQN(className);
     }
 
-    public static boolean isClassFQN(String string) {
+    static boolean isPackage(String string) {
         String[] split = string.split("\\.");
-        if (Character.isUpperCase(split[split.length - 1].charAt(0))) {
+        if (Character.isLowerCase(split[split.length - 1].charAt(0))) {
             return true;
         }
         return false;

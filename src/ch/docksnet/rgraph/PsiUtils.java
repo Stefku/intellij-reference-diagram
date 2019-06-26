@@ -18,7 +18,9 @@ package ch.docksnet.rgraph;
 
 import ch.docksnet.rgraph.method.ClassFQN;
 import ch.docksnet.rgraph.method.FieldFQN;
+import ch.docksnet.rgraph.method.FileFQN;
 import ch.docksnet.rgraph.method.MethodFQN;
+import ch.docksnet.rgraph.method.PackageFQN;
 import ch.docksnet.rgraph.method.PsiElementDispatcher;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
@@ -29,10 +31,13 @@ import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnonymousClass;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.Nullable;
 
@@ -129,6 +134,10 @@ public class PsiUtils {
                 .projectScope(project));
     }
 
+    public static PsiDirectory getPsiJavaDirectory(String packageFQN, Project project) {
+        return JavaPsiFacade.getInstance(project).findPackage("ch.sbb.aps.safetylogic.interfaces.l0").getDirectories()[0];
+    }
+
     private static String getName(PsiClassInitializer psiClassInitializer) {
         if (psiClassInitializer.getModifierList().hasModifierProperty("static")) {
             return "[static init]";
@@ -176,6 +185,16 @@ public class PsiUtils {
             public String processEnum(PsiClass anEnum) {
                 return anEnum.getName();
             }
+
+            @Override
+            public String processPackage(PsiJavaDirectoryImpl aPackage) {
+                return aPackage.getName();
+            }
+
+            @Override
+            public String processFile(PsiJavaFile aFile) {
+                return aFile.getName();
+            }
         };
 
         return psiElementDispatcher.dispatch(psiElement);
@@ -217,6 +236,16 @@ public class PsiUtils {
             @Override
             public String processEnum(PsiClass anEnum) {
                 return ClassFQN.create(anEnum).getFQN();
+            }
+
+            @Override
+            public String processPackage(PsiJavaDirectoryImpl aPackage) {
+                return PackageFQN.create(aPackage).getFQN();
+            }
+
+            @Override
+            public String processFile(PsiJavaFile psiElement) {
+                return FileFQN.create(psiElement).getFQN();
             }
         };
 

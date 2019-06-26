@@ -67,8 +67,10 @@ public class ReferenceDiagramVfsResolver implements DiagramVfsResolver<PsiElemen
 
         } else if (ClassFQN.isClassFQN(fqn)) {
             ClassFQN classFQN = ClassFQN.create(fqn);
-            PsiClass psiClass = PsiUtils.getPsiClass(classFQN.getFQN(), project);
-            return psiClass;
+            return PsiUtils.getPsiClass(classFQN.getFQN(), project);
+        } else if (PackageFQN.isPackage(fqn)) {
+            PackageFQN packageFQN = PackageFQN.create(fqn);
+            return PsiUtils.getPsiJavaDirectory(packageFQN.getFQN(), project);
         }
         throw new IllegalStateException("Cannot processs fqn: " + fqn);
     }
