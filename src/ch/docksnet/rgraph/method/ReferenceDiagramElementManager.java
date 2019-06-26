@@ -40,6 +40,10 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
     @Override
     public PsiElement findInDataContext(DataContext context) {
 
+        if (CommonDataKeys.PSI_ELEMENT.getData(context) instanceof PsiClass) {
+            return CommonDataKeys.PSI_ELEMENT.getData(context);
+        }
+
         if (CommonDataKeys.PSI_FILE.getData(context) == null) {
             return null;
         }

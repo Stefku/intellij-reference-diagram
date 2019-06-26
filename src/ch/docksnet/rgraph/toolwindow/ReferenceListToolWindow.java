@@ -39,9 +39,10 @@ public class ReferenceListToolWindow {
     private JPanel myToolWindowContent;
     private DefaultListModel listModel;
     private final String name;
-    private Consumer<String> updateTabNameCallback = noop -> {};
+    private Consumer<String> updateTabNameCallback = noop -> {
+    };
 
-    ReferenceListToolWindow(String name, Project project) {
+    public ReferenceListToolWindow(String name, Project project) {
         this.name = name;
         this.myToolWindowContent = new JPanel(new BorderLayout());
 
@@ -99,11 +100,11 @@ public class ReferenceListToolWindow {
         for (FileFQNReference entry : entries) {
             this.listModel.addElement(entry.getPsiElement());
         }
-        this.updateTabNameCallback.accept(this.name + "(" + entries.size() + ")");
+        this.updateTabNameCallback.accept(this.getName());
     }
 
     String getName() {
-        return this.name;
+        return this.name + "(" + this.listModel.size() + ")";
     }
 
     public void setUpdateTabNameCallback(Consumer<String> updateTabNameCallback) {
