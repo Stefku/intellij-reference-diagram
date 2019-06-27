@@ -27,6 +27,7 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.source.tree.CompositePsiElement;
 import com.intellij.psi.search.GlobalSearchScopes;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
@@ -114,8 +115,8 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
     }
 
     @Nullable
-    private DiagramEdge<PsiElement> addEdge(final @NotNull DiagramNode<PsiElement> from, final @NotNull DiagramNode<PsiElement> to,
-                                            Long value) {
+    private DiagramEdge<PsiElement> toEdge(final @NotNull DiagramNode<PsiElement> from, final @NotNull DiagramNode<PsiElement> to,
+                                           Long value) {
         final DiagramRelationshipInfo relationship;
         if (from.getIdentifyingElement() instanceof PsiField) {
             relationship = createEdgeFromField();
@@ -218,7 +219,7 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
             DiagramNode<PsiElement> source = findNode(key.getSource());
             DiagramNode<PsiElement> target = findNode(key.getTarget());
             if (source != null && target != null) {
-                this.edges.add(addEdge(source, target, sourceTargetPair.getValue()));
+                this.edges.add(toEdge(source, target, sourceTargetPair.getValue()));
             }
         }
     }
@@ -277,11 +278,10 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
                     (psiClass)).findAll();
 
             for (PsiReference psiReference : all) {
-                if (!(psiReference instanceof PsiReferenceExpression)) {
+                if (!(psiReference instanceof CompositePsiElement)) {
                     continue;
                 }
-                PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
-                PsiElement caller = PsiUtils.getRootPsiElement(psiClass, referenceExpression);
+                PsiElement caller = PsiUtils.getRootPsiElement(psiClass, (CompositePsiElement) psiReference);
 
                 if (caller == null) {
                     continue;

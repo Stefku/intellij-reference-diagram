@@ -18,24 +18,33 @@ package ch.docksnet.rgraph.directory;
 
 import ch.docksnet.rgraph.PsiUtils;
 import ch.docksnet.rgraph.ReferenceDiagramProvider;
-import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
+import ch.docksnet.rgraph.method.ReferenceEdge;
 import ch.docksnet.rgraph.method.ReferenceNode;
+import ch.docksnet.rgraph.method.SourceTargetPair;
+import ch.docksnet.utils.IncrementableSet;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramProvider;
+import com.intellij.diagram.DiagramRelationshipInfo;
+import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
+import com.intellij.psi.impl.source.tree.CompositePsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.searches.ReferencesSearch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -123,6 +132,16 @@ public class PackageReferenceDiagramDataModel extends DiagramDataModel<PsiElemen
                 this.nodes.add(getReferenceNode(provider, element));
             }
         }
+
+        IncrementableSet<SourceTargetPair> relationships = resolveRelationships();
+        for (Map.Entry<SourceTargetPair, Long> sourceTargetPair : relationships.elements()) {
+            SourceTargetPair key = sourceTargetPair.getKey();
+            DiagramNode<PsiElement> source = findNode(key.getSource().getContainingFile());
+            DiagramNode<PsiElement> target = findNode(key.getTarget());
+            if (source != null && target != null) {
+                this.edges.add(toEdge(source, target, sourceTargetPair.getValue()));
+            }
+        }
     }
 
     private Set<PsiElement> getElements() {
@@ -151,8 +170,76 @@ public class PackageReferenceDiagramDataModel extends DiagramDataModel<PsiElemen
         return node;
     }
 
+    @Nullable
+    private DiagramEdge<PsiElement> toEdge(final @NotNull DiagramNode<PsiElement> from, final @NotNull DiagramNode<PsiElement> to,
+                                           Long value) {
+        final DiagramRelationshipInfo relationship = createEdgeFromNonField(value == null ? 0 : value);
+        return new ReferenceEdge(from, to, relationship);
+    }
+
+    @NotNull
+    private DiagramRelationshipInfo createEdgeFromNonField(final long count) {
+        DiagramRelationshipInfo r;
+        r = new DiagramRelationshipInfoAdapter(ReferenceEdge.Type.REFERENCE.name()) {
+            @Override
+            public Shape getStartArrow() {
+                return STANDARD;
+            }
+
+            @Override
+            public String getToLabel() {
+                if (count == 1) {
+                    return "";
+                } else {
+                    return Long.toString(count);
+                }
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (!(obj instanceof DiagramRelationshipInfoAdapter)) {
+                    return false;
+                }
+                return toString().equals(obj.toString()) && getToLabel().equals(((DiagramRelationshipInfoAdapter) obj).getToLabel());
+            }
+        };
+        return r;
+    }
+
     private boolean isAllowedToShow(PsiElement element) {
         return true;
+    }
+
+    @NotNull
+    private IncrementableSet<SourceTargetPair> resolveRelationships() {
+        IncrementableSet<SourceTargetPair> incrementableSet = new IncrementableSet<>();
+
+        for (DiagramNode<PsiElement> node : this.nodes) {
+            PsiElement callee = node.getIdentifyingElement();
+
+
+            if (callee instanceof PsiJavaFile) {
+                PsiClass[] classes = ((PsiJavaFile) callee).getClasses();
+                for (PsiClass psiClass : classes) {
+                    Collection<PsiReference> references = ReferencesSearch.search(psiClass, GlobalSearchScope.projectScope(getProject())).findAll();
+
+                    for (PsiReference psiReference : references) {
+                        if (!(psiReference instanceof CompositePsiElement)) {
+                            continue;
+                        }
+                        PsiElement caller = ((CompositePsiElement) psiReference).getContainingFile();
+
+                        if (caller == null) {
+                            continue;
+                        }
+
+                        incrementableSet.increment(new SourceTargetPair(caller, callee));
+                    }
+
+                }
+            }
+        }
+        return incrementableSet;
     }
 
     @NotNull

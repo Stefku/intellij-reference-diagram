@@ -38,6 +38,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
+import com.intellij.psi.impl.source.tree.CompositePsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,7 +51,7 @@ import java.util.List;
 public class PsiUtils {
 
     @Nullable
-    public static PsiElement getRootPsiElement(PsiClass psiClass, PsiElement psiElement) {
+    public static PsiElement getRootPsiElement(PsiClass psiClass, CompositePsiElement psiElement) {
         return getRootPsiElementWithStack(psiClass, psiElement, new LinkedList<PsiElement>());
     }
 
@@ -135,7 +136,7 @@ public class PsiUtils {
     }
 
     public static PsiDirectory getPsiJavaDirectory(String packageFQN, Project project) {
-        return JavaPsiFacade.getInstance(project).findPackage("ch.sbb.aps.safetylogic.interfaces.l0").getDirectories()[0];
+        return JavaPsiFacade.getInstance(project).findPackage(packageFQN).getDirectories()[0];
     }
 
     private static String getName(PsiClassInitializer psiClassInitializer) {

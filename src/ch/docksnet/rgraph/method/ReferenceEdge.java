@@ -32,7 +32,7 @@ public class ReferenceEdge extends DiagramEdgeBase<PsiElement> {
         super(source, target, relationship);
     }
 
-    enum Type {
+    public enum Type {
         FIELD_TO_METHOD, REFERENCE
     }
 
