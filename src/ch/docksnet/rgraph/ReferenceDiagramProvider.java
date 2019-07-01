@@ -18,10 +18,6 @@ package ch.docksnet.rgraph;
 
 import ch.docksnet.rgraph.directory.PackageReferenceDiagramDataModel;
 import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
-import ch.docksnet.rgraph.method.ReferenceDiagramColorManager;
-import ch.docksnet.rgraph.method.ReferenceDiagramExtras;
-import ch.docksnet.rgraph.method.ReferenceDiagramVfsResolver;
-import ch.docksnet.rgraph.method.ReferenceUmlCategoryManager;
 import com.intellij.diagram.BaseDiagramProvider;
 import com.intellij.diagram.DiagramColorManager;
 import com.intellij.diagram.DiagramDataModel;

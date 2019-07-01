@@ -16,6 +16,9 @@
 
 package ch.docksnet.rgraph.method;
 
+import ch.docksnet.rgraph.fqn.FileFQN;
+import ch.docksnet.rgraph.fqn.FileFQNReference;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

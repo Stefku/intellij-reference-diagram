@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method;
+package ch.docksnet.rgraph;
 
-import java.util.List;
-
-import ch.docksnet.rgraph.PsiUtils;
+import ch.docksnet.rgraph.fqn.ClassFQN;
+import ch.docksnet.rgraph.fqn.FieldFQN;
+import ch.docksnet.rgraph.fqn.MethodFQN;
+import ch.docksnet.rgraph.fqn.PackageFQN;
 import com.intellij.diagram.DiagramVfsResolver;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -26,6 +27,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * @author Stefan Zeller

@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method;
+package ch.docksnet.rgraph.fqn;
 
-import java.util.Objects;
+import com.intellij.psi.PsiElement;
 
-public abstract class FQN {
-    abstract public String getFQN();
+public class FileFQNReference {
+    private final FileFQN fileFQN;
+    private final int referencesCount;
 
-    @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof FQN)) {
-            return false;
-        }
-        FQN otherFqn = (FQN) other;
-        return Objects.equals(this.getFQN(), otherFqn.getFQN());
+    public FileFQNReference(FileFQN fileFQN, int referencesCount) {
+        this.fileFQN = fileFQN;
+        this.referencesCount = referencesCount;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getFQN());
+    public PsiElement getPsiElement() {
+        return this.fileFQN.getPsiJavaFile();
     }
 }

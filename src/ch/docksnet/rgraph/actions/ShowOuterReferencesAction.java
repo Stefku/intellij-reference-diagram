@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method.actions;
+package ch.docksnet.rgraph.actions;
 
-import ch.docksnet.rgraph.method.OuterReferences;
 import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
+import ch.docksnet.rgraph.method.OuterReferences;
 import ch.docksnet.rgraph.toolwindow.ReferenceToolWindow;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;

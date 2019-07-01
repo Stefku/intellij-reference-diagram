@@ -16,8 +16,6 @@
 
 package ch.docksnet.rgraph.method;
 
-import javax.swing.*;
-
 import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.PsiDiagramNode;
 import com.intellij.openapi.util.Iconable;
@@ -25,6 +23,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import icons.UmlIcons;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 /**
  * @author Stefan Zeller

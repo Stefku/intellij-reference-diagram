@@ -95,19 +95,19 @@
     </project-components>
 
     <actions>
-        <action id="RGRAPH.ShowOuterReferences" class="ch.docksnet.rgraph.method.actions.ShowClusterCountAction">
+        <action id="RGRAPH.ShowOuterReferences" class="ch.docksnet.rgraph.actions.ShowClusterCountAction">
             <add-to-group group-id="Graph.DefaultGraphToolbar"/>
         </action>
-        <action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.method.actions.ShowOuterReferencesAction">
+        <action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowOuterReferencesAction">
             <add-to-group group-id="Graph.DefaultGraphToolbar"/>
         </action>
-        <action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.method.actions.MarkAction"></action>
-        <action id="RGRAPH.UnmarkNode" class="ch.docksnet.rgraph.method.actions.UnmarkAction"></action>
-        <action id="RGRAPH.UnmarkAll" class="ch.docksnet.rgraph.method.actions.UnmarkAllAction"></action>
-        <action id="RGRAPH.MarkCallees" class="ch.docksnet.rgraph.method.actions.MarkCalleesAction"></action>
-        <action id="RGRAPH.MarkCallers" class="ch.docksnet.rgraph.method.actions.MarkCallersAction"></action>
-        <action id="RGRAPH.DeleteMarked" class="ch.docksnet.rgraph.method.actions.DeleteMarkedAction"></action>
-        <action id="RGRAPH.IsolateMarked" class="ch.docksnet.rgraph.method.actions.IsolateMarkedAction"></action>
+        <action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.actions.MarkAction"></action>
+        <action id="RGRAPH.UnmarkNode" class="ch.docksnet.rgraph.actions.UnmarkAction"></action>
+        <action id="RGRAPH.UnmarkAll" class="ch.docksnet.rgraph.actions.UnmarkAllAction"></action>
+        <action id="RGRAPH.MarkCallees" class="ch.docksnet.rgraph.actions.MarkCalleesAction"></action>
+        <action id="RGRAPH.MarkCallers" class="ch.docksnet.rgraph.actions.MarkCallersAction"></action>
+        <action id="RGRAPH.DeleteMarked" class="ch.docksnet.rgraph.actions.DeleteMarkedAction"></action>
+        <action id="RGRAPH.IsolateMarked" class="ch.docksnet.rgraph.actions.IsolateMarkedAction"></action>
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">

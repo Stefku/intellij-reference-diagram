@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method;
+package ch.docksnet.rgraph.fqn;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
@@ -39,11 +39,11 @@ public class FileFQN extends FQN {
         this.fileName = fileName;
     }
 
-    static FileFQN from(PsiJavaFile psiJavaFile) {
+    public static FileFQN from(PsiJavaFile psiJavaFile) {
         return new FileFQN(psiJavaFile.getPackageName(), psiJavaFile.getName(), psiJavaFile);
     }
 
-    static FileFQN resolveHierarchically(PsiElement psiElement) {
+    public static FileFQN resolveHierarchically(PsiElement psiElement) {
         PsiJavaFile psiJavaFile = PsiTreeUtil.getParentOfType(psiElement, PsiJavaFile.class, true);
         if (psiJavaFile == null) {
             return null;
@@ -55,11 +55,11 @@ public class FileFQN extends FQN {
         return from(psiJavaFile);
     }
 
-    boolean samePackage(FileFQN otherFile) {
+    public boolean samePackage(FileFQN otherFile) {
         return this.packageName.equals(otherFile.packageName);
     }
 
-    boolean sameHierarchy(FileFQN otherFile) {
+    public boolean sameHierarchy(FileFQN otherFile) {
         return this.packageName.startsWith(otherFile.packageName);
     }
 

@@ -16,13 +16,12 @@
 
 package ch.docksnet.rgraph;
 
-import ch.docksnet.rgraph.method.ClassFQN;
-import ch.docksnet.rgraph.method.FQN;
-import ch.docksnet.rgraph.method.FieldFQN;
-import ch.docksnet.rgraph.method.FileFQN;
-import ch.docksnet.rgraph.method.MethodFQN;
-import ch.docksnet.rgraph.method.PackageFQN;
-import ch.docksnet.rgraph.method.PsiElementDispatcher;
+import ch.docksnet.rgraph.fqn.ClassFQN;
+import ch.docksnet.rgraph.fqn.FQN;
+import ch.docksnet.rgraph.fqn.FieldFQN;
+import ch.docksnet.rgraph.fqn.FileFQN;
+import ch.docksnet.rgraph.fqn.MethodFQN;
+import ch.docksnet.rgraph.fqn.PackageFQN;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -263,10 +262,10 @@ public class PsiUtils {
         ApplicationManager.getApplication().invokeLater(
                 () -> {
                     ApplicationManager.getApplication().assertIsDispatchThread();
-                    Navigatable n = (Navigatable)psiElement;
+                    Navigatable n = (Navigatable) psiElement;
                     //this is for better cursor position
                     if (psiElement instanceof PsiFile) {
-                        VirtualFile file = ((PsiFile)psiElement).getVirtualFile();
+                        VirtualFile file = ((PsiFile) psiElement).getVirtualFile();
                         if (file == null) return;
                         OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, 0, 0);
                         n = descriptor.setUseCurrentWindow(true);

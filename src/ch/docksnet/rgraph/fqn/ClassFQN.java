@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method;
+package ch.docksnet.rgraph.fqn;
 
-import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
+import com.intellij.psi.PsiClass;
 
 /**
  * @author Stefan Zeller
  */
-public class PackageFQN extends FQN {
+public class ClassFQN extends FQN {
     private final String fqn;
 
-    private PackageFQN(String fqn) {
+    private ClassFQN(String fqn) {
         this.fqn = fqn;
     }
 
-    public static PackageFQN create(String string) {
-        return new PackageFQN(string);
+    public static ClassFQN create(String string) {
+        return new ClassFQN(string);
     }
 
-    public static PackageFQN create(PsiJavaDirectoryImpl psiJavaDirectory) {
-        String className = psiJavaDirectory.getPresentation().getLocationString();
-        return new PackageFQN(className);
+    public static ClassFQN create(PsiClass psiClass) {
+        String className = psiClass.getQualifiedName();
+        return new ClassFQN(className);
     }
 
-    static boolean isPackage(String string) {
+    public static boolean isClassFQN(String string) {
         String[] split = string.split("\\.");
-        if (Character.isLowerCase(split[split.length - 1].charAt(0))) {
+        if (Character.isUpperCase(split[split.length - 1].charAt(0))) {
             return true;
         }
         return false;

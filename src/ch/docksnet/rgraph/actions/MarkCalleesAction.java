@@ -14,36 +14,41 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method.actions;
+package ch.docksnet.rgraph.actions;
 
 import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.diagram.DiagramDataModel;
+import com.intellij.diagram.DiagramNode;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+
+import java.util.List;
 
 /**
  * @author Stefan Zeller
  */
-public class UnmarkAllAction extends DiagramAction {
+public class MarkCalleesAction extends DiagramAction {
 
     @Override
     public void perform(AnActionEvent e) {
+        List<DiagramNode> selectedNodes = getSelectedNodes(e);
+
         DiagramDataModel dataModel = getDataModel(e);
         if (dataModel instanceof MethodReferenceDiagramDataModel) {
-            ((MethodReferenceDiagramDataModel) dataModel).unmarkAllNodes();
+            ((MethodReferenceDiagramDataModel) dataModel).markCallees(selectedNodes);
         }
         getBuilder(e).getPresentationModel().update();
     }
 
     @Override
     public String getActionName() {
-        return "Unmark All";
+        return "Mark Callees";
     }
 
     @Override
     public void update(AnActionEvent e) {
         e.getPresentation().setVisible(true);
-        e.getPresentation().setEnabled(true);
+        ActionHelper.enableIfNodesSelected(e);
         e.getPresentation().setText(getActionName());
         super.update(e);
     }

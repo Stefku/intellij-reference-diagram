@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method.actions;
+package ch.docksnet.rgraph.fqn;
 
-import com.intellij.diagram.DiagramAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
+import java.util.Objects;
 
-/**
- * @author Stefan Zeller
- */
-public class ActionHelper {
+public abstract class FQN {
+    abstract public String getFQN();
 
-    public static void enableIfNodesSelected(AnActionEvent e) {
-        if (!DiagramAction.getSelectedNodes(e).isEmpty()) {
-            e.getPresentation().setEnabled(true);
-        } else {
-            e.getPresentation().setEnabled(false);
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof FQN)) {
+            return false;
         }
+        FQN otherFqn = (FQN) other;
+        return Objects.equals(this.getFQN(), otherFqn.getFQN());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getFQN());
+    }
 }

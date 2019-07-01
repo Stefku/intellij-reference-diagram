@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method;
+package ch.docksnet.rgraph.fqn;
 
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiMethod;

@@ -14,41 +14,36 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method.actions;
-
-import java.util.List;
+package ch.docksnet.rgraph.actions;
 
 import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.diagram.DiagramDataModel;
-import com.intellij.diagram.DiagramNode;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
  * @author Stefan Zeller
  */
-public class MarkCallersAction extends DiagramAction {
+public class DeleteMarkedAction extends DiagramAction {
 
     @Override
     public void perform(AnActionEvent e) {
-        List<DiagramNode> selectedNodes = getSelectedNodes(e);
-
         DiagramDataModel dataModel = getDataModel(e);
         if (dataModel instanceof MethodReferenceDiagramDataModel) {
-            ((MethodReferenceDiagramDataModel) dataModel).markCallers(selectedNodes);
+            ((MethodReferenceDiagramDataModel) dataModel).removeMarkedNodes();
         }
         getBuilder(e).getPresentationModel().update();
     }
 
     @Override
     public String getActionName() {
-        return "Mark Callers";
+        return "Delete Marked";
     }
 
     @Override
     public void update(AnActionEvent e) {
         e.getPresentation().setVisible(true);
-        ActionHelper.enableIfNodesSelected(e);
+        e.getPresentation().setEnabled(true);
         e.getPresentation().setText(getActionName());
         super.update(e);
     }

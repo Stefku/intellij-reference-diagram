@@ -18,7 +18,7 @@ package ch.docksnet.rgraph;
 
 import java.util.Arrays;
 
-import ch.docksnet.rgraph.method.MethodFQN;
+import ch.docksnet.rgraph.fqn.MethodFQN;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

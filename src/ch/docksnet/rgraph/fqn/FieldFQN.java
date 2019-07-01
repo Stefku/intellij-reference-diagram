@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method;
+package ch.docksnet.rgraph.fqn;
+
+import com.intellij.psi.PsiField;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.intellij.psi.PsiField;
 
 /**
  * @author Stefan Zeller

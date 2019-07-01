@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method.actions;
+package ch.docksnet.rgraph.actions;
 
 import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
@@ -24,20 +24,20 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 /**
  * @author Stefan Zeller
  */
-public class DeleteMarkedAction extends DiagramAction {
+public class UnmarkAllAction extends DiagramAction {
 
     @Override
     public void perform(AnActionEvent e) {
         DiagramDataModel dataModel = getDataModel(e);
         if (dataModel instanceof MethodReferenceDiagramDataModel) {
-            ((MethodReferenceDiagramDataModel) dataModel).removeMarkedNodes();
+            ((MethodReferenceDiagramDataModel) dataModel).unmarkAllNodes();
         }
         getBuilder(e).getPresentationModel().update();
     }
 
     @Override
     public String getActionName() {
-        return "Delete Marked";
+        return "Unmark All";
     }
 
     @Override

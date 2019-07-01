@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method.actions;
+package ch.docksnet.rgraph.actions;
 
 import ch.docksnet.rgraph.method.ReferenceNode;
 import com.intellij.diagram.DiagramAction;

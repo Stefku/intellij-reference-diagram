@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph.method;
+package ch.docksnet.rgraph;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import ch.docksnet.rgraph.method.ReferenceNode;
 import ch.docksnet.utils.lcom.LCOMNode;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
@@ -30,6 +27,10 @@ import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Stefan Zeller
