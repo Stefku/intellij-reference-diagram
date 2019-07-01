@@ -119,12 +119,12 @@ public class LCOMConverter {
 
             @Override
             public LCOMNode.Type processPackage(PsiJavaDirectoryImpl aPackage) {
-                throw new IllegalStateException("not implemented");
+                return LCOMNode.Type.Package;
             }
 
             @Override
             public LCOMNode.Type processFile(PsiJavaFile psiElement) {
-                throw new IllegalStateException("not implemented");
+                return LCOMNode.Type.File;
             }
         };
         return elementDispatcher.dispatch(referenceNode.getIdentifyingElement());

@@ -16,7 +16,7 @@
 
 package ch.docksnet.rgraph.actions;
 
-import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
+import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
@@ -41,10 +41,10 @@ public class ShowClusterCountAction extends DiagramAction {
 
     @Override
     public void update(AnActionEvent e) {
-        if (getDataModel(e) instanceof MethodReferenceDiagramDataModel) {
+        if (getDataModel(e) instanceof ReferenceDiagramDataModel) {
             e.getPresentation().setVisible(true);
             e.getPresentation().setEnabled(false);
-            long currentClusterCount = ((MethodReferenceDiagramDataModel) getDataModel(e)).getCurrentClusterCount();
+            long currentClusterCount = ((ReferenceDiagramDataModel) getDataModel(e)).getCurrentClusterCount();
             e.getPresentation().setText("Cluster Count: " + currentClusterCount);
         } else {
             e.getPresentation().setVisible(false);
