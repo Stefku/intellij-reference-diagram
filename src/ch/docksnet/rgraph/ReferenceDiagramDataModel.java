@@ -299,4 +299,10 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
     protected abstract DiagramEdge<PsiElement> toEdge(@NotNull DiagramNode<PsiElement> from,
                                                       @NotNull DiagramNode<PsiElement> to,
                                                       Long value);
+
+    @NotNull
+    @Override
+    public String getNodeName(DiagramNode<PsiElement> diagramNode) {
+        return PsiUtils.getPresentableName(diagramNode.getIdentifyingElement());
+    }
 }

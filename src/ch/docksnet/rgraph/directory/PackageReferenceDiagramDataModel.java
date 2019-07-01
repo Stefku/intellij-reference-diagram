@@ -16,7 +16,6 @@
 
 package ch.docksnet.rgraph.directory;
 
-import ch.docksnet.rgraph.PsiUtils;
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import ch.docksnet.rgraph.ReferenceDiagramProvider;
 import ch.docksnet.rgraph.method.ReferenceEdge;
@@ -58,10 +57,12 @@ public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel 
         }
     }
 
-    @NotNull
     @Override
-    public String getNodeName(DiagramNode<PsiElement> diagramNode) {
-        return PsiUtils.getPresentableName(diagramNode.getIdentifyingElement());
+    public void rebuild(PsiElement element) {
+        super.rebuild(element);
+        clearAll();
+        init((PsiJavaDirectoryImpl) element);
+        refreshDataModel();
     }
 
     protected synchronized void updateDataModel() {
@@ -142,14 +143,6 @@ public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel 
             }
         }
         return incrementableSet;
-    }
-
-    @Override
-    public void rebuild(PsiElement element) {
-        super.rebuild(element);
-        clearAll();
-        init((PsiJavaDirectoryImpl) element);
-        refreshDataModel();
     }
 
 }

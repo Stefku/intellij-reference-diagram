@@ -90,10 +90,12 @@ public class MethodReferenceDiagramDataModel extends ReferenceDiagramDataModel {
         }
     }
 
-    @NotNull
     @Override
-    public String getNodeName(DiagramNode<PsiElement> diagramNode) {
-        return PsiUtils.getPresentableName(diagramNode.getIdentifyingElement());
+    public void rebuild(PsiElement element) {
+        super.rebuild(element);
+        clearAll();
+        init((PsiClass) element);
+        refreshDataModel();
     }
 
     @Nullable
@@ -210,14 +212,6 @@ public class MethodReferenceDiagramDataModel extends ReferenceDiagramDataModel {
             }
         }
         return false;
-    }
-
-    @Override
-    public void rebuild(PsiElement element) {
-        super.rebuild(element);
-        clearAll();
-        init((PsiClass) element);
-        refreshDataModel();
     }
 
     @NotNull
