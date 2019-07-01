@@ -17,13 +17,13 @@
 package ch.docksnet.rgraph.directory;
 
 import ch.docksnet.rgraph.PsiUtils;
+import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import ch.docksnet.rgraph.ReferenceDiagramProvider;
 import ch.docksnet.rgraph.method.FQN;
 import ch.docksnet.rgraph.method.ReferenceEdge;
 import ch.docksnet.rgraph.method.ReferenceNode;
 import ch.docksnet.rgraph.method.SourceTargetPair;
 import ch.docksnet.utils.IncrementableSet;
-import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramProvider;
@@ -36,7 +36,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 import com.intellij.psi.impl.source.tree.CompositePsiElement;
@@ -56,28 +55,22 @@ import java.util.Set;
 
 import static ch.docksnet.rgraph.PsiUtils.getFqn;
 
-public class PackageReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
+public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel {
 
     private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsAddedByUser = new HashMap();
     private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsRemovedByUser = new HashMap();
-    private final Map<PsiElement, DiagramNode<PsiElement>> nodesPool = new HashMap<>();
-    private final SmartPointerManager spManager;
-
-    private final Collection<DiagramNode<PsiElement>> nodes = new HashSet<>();
-    private final Collection<DiagramEdge<PsiElement>> edges = new HashSet<>();
 
     public PackageReferenceDiagramDataModel(Project project, PsiJavaDirectoryImpl directory) {
         super(project, ReferenceDiagramProvider.getInstance());
-        this.spManager = SmartPointerManager.getInstance(getProject());
         init(directory);
     }
 
     private void init(PsiJavaDirectoryImpl directory) {
         for (PsiElement child : directory.getChildren()) {
             if (child instanceof PsiJavaFile) {
-                this.elementsAddedByUser.put(getFqn(child), this.spManager.createSmartPsiElementPointer(child));
+                this.elementsAddedByUser.put(getFqn(child), createSmartPsiElementPointer(child));
             } else if (child instanceof PsiJavaDirectoryImpl) {
-                this.elementsAddedByUser.put(getFqn(child), this.spManager.createSmartPsiElementPointer(child));
+                this.elementsAddedByUser.put(getFqn(child), createSmartPsiElementPointer(child));
             }
         }
     }

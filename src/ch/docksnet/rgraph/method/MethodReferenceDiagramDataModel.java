@@ -18,15 +18,34 @@ package ch.docksnet.rgraph.method;
 
 import ch.docksnet.rgraph.ProjectService;
 import ch.docksnet.rgraph.PsiUtils;
+import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import ch.docksnet.rgraph.ReferenceDiagramProvider;
 import ch.docksnet.utils.IncrementableSet;
-import ch.docksnet.utils.lcom.*;
-import com.intellij.diagram.*;
+import ch.docksnet.utils.lcom.CalleesSubgraphAnalyzer;
+import ch.docksnet.utils.lcom.CallersSubgraphAnalyzer;
+import ch.docksnet.utils.lcom.ClusterAnalyzer;
+import ch.docksnet.utils.lcom.LCOMAnalyzerData;
+import ch.docksnet.utils.lcom.LCOMNode;
+import com.intellij.diagram.DiagramCategory;
+import com.intellij.diagram.DiagramEdge;
+import com.intellij.diagram.DiagramNode;
+import com.intellij.diagram.DiagramProvider;
+import com.intellij.diagram.DiagramRelationshipInfo;
+import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.diagram.presentation.DiagramLineType;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassInitializer;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiReferenceExpression;
+import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.psi.impl.source.tree.CompositePsiElement;
 import com.intellij.psi.search.GlobalSearchScopes;
 import com.intellij.psi.search.LocalSearchScope;
@@ -35,55 +54,55 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
 import static ch.docksnet.rgraph.PsiUtils.getFqn;
 
 /**
  * @author Stefan Zeller
  */
-public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
+public class MethodReferenceDiagramDataModel extends ReferenceDiagramDataModel {
 
     private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsAddedByUser = new HashMap();
     private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsRemovedByUser = new HashMap();
 
-    private final Collection<DiagramNode<PsiElement>> nodes = new HashSet<>();
-    private final Map<PsiElement, DiagramNode<PsiElement>> nodesPool = new HashMap<>();
-    private final Collection<DiagramEdge<PsiElement>> edges = new HashSet<>();
-
-    private final SmartPointerManager spManager;
-    private SmartPsiElementPointer<PsiClass> baseElement;
+    private SmartPsiElementPointer<PsiElement> baseElement;
 
     private long currentClusterCount = 0;
     private OuterReferences outerReferences = OuterReferences.empty();
 
     public MethodReferenceDiagramDataModel(Project project, PsiClass psiClass) {
         super(project, ReferenceDiagramProvider.getInstance());
-        this.spManager = SmartPointerManager.getInstance(getProject());
         init(psiClass);
     }
 
     private void init(PsiClass psiClass) {
-        this.baseElement = psiClass == null ? null : this.spManager.createSmartPsiElementPointer(psiClass);
+        this.baseElement = psiClass == null ? null : createSmartPsiElementPointer(psiClass);
         collectNodes(psiClass);
     }
 
     private void collectNodes(PsiClass psiClass) {
         for (PsiMethod psiMethod : psiClass.getMethods()) {
-            this.elementsAddedByUser.put(getFqn(psiMethod), this.spManager.createSmartPsiElementPointer((PsiElement) psiMethod));
+            this.elementsAddedByUser.put(getFqn(psiMethod), createSmartPsiElementPointer((PsiElement) psiMethod));
         }
 
         for (PsiField psiField : psiClass.getFields()) {
-            this.elementsAddedByUser.put(getFqn(psiField), this.spManager.createSmartPsiElementPointer((PsiElement) psiField));
+            this.elementsAddedByUser.put(getFqn(psiField), createSmartPsiElementPointer((PsiElement) psiField));
         }
 
         for (PsiClassInitializer psiClassInitializer : psiClass.getInitializers()) {
-            this.elementsAddedByUser.put(getFqn(psiClassInitializer), this.spManager.createSmartPsiElementPointer((PsiElement) psiClassInitializer));
+            this.elementsAddedByUser.put(getFqn(psiClassInitializer), createSmartPsiElementPointer((PsiElement) psiClassInitializer));
         }
 
         for (PsiClass innerClass : psiClass.getInnerClasses()) {
-            this.elementsAddedByUser.put(getFqn(innerClass), this.spManager.createSmartPsiElementPointer((PsiElement) innerClass));
+            this.elementsAddedByUser.put(getFqn(innerClass), createSmartPsiElementPointer((PsiElement) innerClass));
         }
     }
 
@@ -140,8 +159,7 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
         } else {
             PsiElement toRemove = (PsiElement) node.getIdentifyingElement();
             this.nodes.remove(node);
-            this.elementsRemovedByUser.put(PsiUtils.getFqn(element), this.spManager.createSmartPsiElementPointer
-                    (toRemove));
+            this.elementsRemovedByUser.put(PsiUtils.getFqn(element), createSmartPsiElementPointer(toRemove));
             this.elementsAddedByUser.remove(PsiUtils.getFqn(element));
             removeAllEdgesFromOrTo(node);
         }
@@ -211,7 +229,7 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
             }
         }
 
-        PsiClass initialElement = getBaseElement();
+        PsiElement initialElement = getBaseElement();
         IncrementableSet<SourceTargetPair> relationships = resolveRelationships(initialElement);
         this.outerReferences = getOuterReferences(initialElement);
         for (Map.Entry<SourceTargetPair, Long> sourceTargetPair : relationships.elements()) {
@@ -224,7 +242,7 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
         }
     }
 
-    private OuterReferences getOuterReferences(PsiClass psiClass) {
+    private OuterReferences getOuterReferences(PsiElement psiClass) {
         OuterReferences outerReferences = new OuterReferences();
         FileFQN ownFile = FileFQN.from((PsiJavaFile) psiClass.getContainingFile());
 
@@ -254,11 +272,11 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
     }
 
     @Nullable
-    private PsiClass getBaseElement() {
+    private PsiElement getBaseElement() {
         if (this.baseElement == null) {
             return null;
         } else {
-            PsiClass element = this.baseElement.getElement();
+            PsiElement element = this.baseElement.getElement();
             if (element != null && element.isValid()) {
                 return element;
             } else {
@@ -268,20 +286,20 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
     }
 
     @NotNull
-    private IncrementableSet<SourceTargetPair> resolveRelationships(PsiClass psiClass) {
+    private IncrementableSet<SourceTargetPair> resolveRelationships(PsiElement psiElement) {
         IncrementableSet<SourceTargetPair> incrementableSet = new IncrementableSet<>();
 
         for (DiagramNode<PsiElement> node : this.nodes) {
             PsiElement callee = node.getIdentifyingElement();
 
             Collection<PsiReference> all = ReferencesSearch.search(callee, new LocalSearchScope
-                    (psiClass)).findAll();
+                    (psiElement)).findAll();
 
             for (PsiReference psiReference : all) {
                 if (!(psiReference instanceof CompositePsiElement)) {
                     continue;
                 }
-                PsiElement caller = PsiUtils.getRootPsiElement(psiClass, (CompositePsiElement) psiReference);
+                PsiElement caller = PsiUtils.getRootPsiElement((PsiClass) psiElement, (CompositePsiElement) psiReference);
 
                 if (caller == null) {
                     continue;
