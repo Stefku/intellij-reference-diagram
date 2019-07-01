@@ -24,7 +24,7 @@ import com.intellij.psi.PsiField;
 /**
  * @author Stefan Zeller
  */
-public class FieldFQN {
+public class FieldFQN extends FQN {
     private final String className;
     private final String fieldName;
     private final String fqn;
@@ -59,6 +59,7 @@ public class FieldFQN {
         return this.fieldName;
     }
 
+    @Override
     public String getFQN() {
         return this.fqn;
     }

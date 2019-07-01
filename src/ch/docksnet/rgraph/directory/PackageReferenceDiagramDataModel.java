@@ -18,6 +18,7 @@ package ch.docksnet.rgraph.directory;
 
 import ch.docksnet.rgraph.PsiUtils;
 import ch.docksnet.rgraph.ReferenceDiagramProvider;
+import ch.docksnet.rgraph.method.FQN;
 import ch.docksnet.rgraph.method.ReferenceEdge;
 import ch.docksnet.rgraph.method.ReferenceNode;
 import ch.docksnet.rgraph.method.SourceTargetPair;
@@ -57,8 +58,8 @@ import static ch.docksnet.rgraph.PsiUtils.getFqn;
 
 public class PackageReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
-    private final Map<String, SmartPsiElementPointer<PsiElement>> elementsAddedByUser = new HashMap();
-    private final Map<String, SmartPsiElementPointer<PsiElement>> elementsRemovedByUser = new HashMap();
+    private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsAddedByUser = new HashMap();
+    private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsRemovedByUser = new HashMap();
     private final Map<PsiElement, DiagramNode<PsiElement>> nodesPool = new HashMap<>();
     private final SmartPointerManager spManager;
 
@@ -74,6 +75,8 @@ public class PackageReferenceDiagramDataModel extends DiagramDataModel<PsiElemen
     private void init(PsiJavaDirectoryImpl directory) {
         for (PsiElement child : directory.getChildren()) {
             if (child instanceof PsiJavaFile) {
+                this.elementsAddedByUser.put(getFqn(child), this.spManager.createSmartPsiElementPointer(child));
+            } else if (child instanceof PsiJavaDirectoryImpl) {
                 this.elementsAddedByUser.put(getFqn(child), this.spManager.createSmartPsiElementPointer(child));
             }
         }
@@ -136,7 +139,7 @@ public class PackageReferenceDiagramDataModel extends DiagramDataModel<PsiElemen
         IncrementableSet<SourceTargetPair> relationships = resolveRelationships();
         for (Map.Entry<SourceTargetPair, Long> sourceTargetPair : relationships.elements()) {
             SourceTargetPair key = sourceTargetPair.getKey();
-            DiagramNode<PsiElement> source = findNode(key.getSource().getContainingFile());
+            DiagramNode<PsiElement> source = findNode(key.getSource());
             DiagramNode<PsiElement> target = findNode(key.getTarget());
             if (source != null && target != null) {
                 this.edges.add(toEdge(source, target, sourceTargetPair.getValue()));
@@ -276,7 +279,7 @@ public class PackageReferenceDiagramDataModel extends DiagramDataModel<PsiElemen
 
         while (ptr.hasNext()) {
             DiagramNode node = (DiagramNode) ptr.next();
-            String fqn = PsiUtils.getFqn((PsiElement) node.getIdentifyingElement());
+            FQN fqn = PsiUtils.getFqn((PsiElement) node.getIdentifyingElement());
             if (fqn != null && fqn.equals(PsiUtils.getFqn(psiElement))) {
                 return node;
             }

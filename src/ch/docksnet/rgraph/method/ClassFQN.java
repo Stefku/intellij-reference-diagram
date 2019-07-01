@@ -21,7 +21,7 @@ import com.intellij.psi.PsiClass;
 /**
  * @author Stefan Zeller
  */
-public class ClassFQN {
+public class ClassFQN extends FQN {
     private final String fqn;
 
     private ClassFQN(String fqn) {

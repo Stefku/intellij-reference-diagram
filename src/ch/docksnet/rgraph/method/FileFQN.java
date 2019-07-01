@@ -22,7 +22,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 
 import java.util.Objects;
 
-public class FileFQN {
+public class FileFQN extends FQN {
     private final String packageName;
     private final String fileName;
     private final PsiJavaFile psiJavaFile;

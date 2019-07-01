@@ -45,8 +45,8 @@ import static ch.docksnet.rgraph.PsiUtils.getFqn;
  */
 public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
-    private final Map<String, SmartPsiElementPointer<PsiElement>> elementsAddedByUser = new HashMap();
-    private final Map<String, SmartPsiElementPointer<PsiElement>> elementsRemovedByUser = new HashMap();
+    private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsAddedByUser = new HashMap();
+    private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsRemovedByUser = new HashMap();
 
     private final Collection<DiagramNode<PsiElement>> nodes = new HashSet<>();
     private final Map<PsiElement, DiagramNode<PsiElement>> nodesPool = new HashMap<>();
@@ -148,7 +148,7 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
     }
 
     private void removeAllEdgesFromOrTo(DiagramNode<PsiElement> node) {
-        String removedNode = PsiUtils.getFqn(node.getIdentifyingElement());
+        FQN removedNode = PsiUtils.getFqn(node.getIdentifyingElement());
         Set<DiagramEdge<PsiElement>> toRemove = new HashSet<>();
         for (DiagramEdge<PsiElement> myEdge : this.edges) {
             if (PsiUtils.getFqn(myEdge.getSource().getIdentifyingElement()).equals(removedNode)) {
@@ -346,7 +346,7 @@ public class MethodReferenceDiagramDataModel extends DiagramDataModel<PsiElement
 
         while (ptr.hasNext()) {
             DiagramNode node = (DiagramNode) ptr.next();
-            String fqn = PsiUtils.getFqn((PsiElement) node.getIdentifyingElement());
+            FQN fqn = PsiUtils.getFqn((PsiElement) node.getIdentifyingElement());
             if (fqn != null && fqn.equals(PsiUtils.getFqn(psiElement))) {
                 return node;
             }

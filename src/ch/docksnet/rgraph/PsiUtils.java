@@ -17,6 +17,7 @@
 package ch.docksnet.rgraph;
 
 import ch.docksnet.rgraph.method.ClassFQN;
+import ch.docksnet.rgraph.method.FQN;
 import ch.docksnet.rgraph.method.FieldFQN;
 import ch.docksnet.rgraph.method.FileFQN;
 import ch.docksnet.rgraph.method.MethodFQN;
@@ -201,52 +202,57 @@ public class PsiUtils {
         return psiElementDispatcher.dispatch(psiElement);
     }
 
-    public static String getFqn(PsiElement psiElement) {
-        PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
+    public static FQN getFqn(PsiElement psiElement) {
+        PsiElementDispatcher<FQN> psiElementDispatcher = new PsiElementDispatcher<FQN>() {
 
             @Override
-            public String processClass(PsiClass psiClass) {
-                return ClassFQN.create(psiClass).getFQN();
+            public FQN processClass(PsiClass psiClass) {
+                return ClassFQN.create(psiClass);
             }
 
             @Override
-            public String processMethod(PsiMethod psiMethod) {
-                return MethodFQN.create(psiMethod).getFQN();
+            public FQN processMethod(PsiMethod psiMethod) {
+                return MethodFQN.create(psiMethod);
             }
 
             @Override
-            public String processField(PsiField psiField) {
-                return FieldFQN.create(psiField).getFQN();
+            public FQN processField(PsiField psiField) {
+                return FieldFQN.create(psiField);
             }
 
             @Override
-            public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
-                return getName(psiClassInitializer);
+            public FQN processClassInitializer(PsiClassInitializer psiClassInitializer) {
+                return new FQN() {
+                    @Override
+                    public String getFQN() {
+                        return getName(psiClassInitializer);
+                    }
+                };
             }
 
             @Override
-            public String processInnerClass(PsiClass innerClass) {
-                return ClassFQN.create(innerClass).getFQN();
+            public FQN processInnerClass(PsiClass innerClass) {
+                return ClassFQN.create(innerClass);
             }
 
             @Override
-            public String processStaticInnerClass(PsiClass staticInnerClass) {
-                return ClassFQN.create(staticInnerClass).getFQN();
+            public FQN processStaticInnerClass(PsiClass staticInnerClass) {
+                return ClassFQN.create(staticInnerClass);
             }
 
             @Override
-            public String processEnum(PsiClass anEnum) {
-                return ClassFQN.create(anEnum).getFQN();
+            public FQN processEnum(PsiClass anEnum) {
+                return ClassFQN.create(anEnum);
             }
 
             @Override
-            public String processPackage(PsiJavaDirectoryImpl aPackage) {
-                return PackageFQN.create(aPackage).getFQN();
+            public FQN processPackage(PsiJavaDirectoryImpl aPackage) {
+                return PackageFQN.create(aPackage);
             }
 
             @Override
-            public String processFile(PsiJavaFile psiElement) {
-                return FileFQN.create(psiElement).getFQN();
+            public FQN processFile(PsiJavaFile psiElement) {
+                return FileFQN.create(psiElement);
             }
         };
 

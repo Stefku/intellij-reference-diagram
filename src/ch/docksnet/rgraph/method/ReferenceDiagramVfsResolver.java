@@ -34,7 +34,7 @@ public class ReferenceDiagramVfsResolver implements DiagramVfsResolver<PsiElemen
 
     @Override
     public String getQualifiedName(PsiElement psiElement) {
-        return PsiUtils.getFqn(psiElement);
+        return PsiUtils.getFqn(psiElement).getFQN();
     }
 
     @Nullable

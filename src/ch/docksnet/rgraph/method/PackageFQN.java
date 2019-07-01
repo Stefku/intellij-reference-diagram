@@ -21,7 +21,7 @@ import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 /**
  * @author Stefan Zeller
  */
-public class PackageFQN {
+public class PackageFQN extends FQN {
     private final String fqn;
 
     private PackageFQN(String fqn) {

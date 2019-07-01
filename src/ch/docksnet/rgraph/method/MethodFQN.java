@@ -16,6 +16,11 @@
 
 package ch.docksnet.rgraph.method;
 
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiParameter;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,15 +28,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * @author Stefan Zeller
  */
-public class MethodFQN {
+public class MethodFQN extends FQN {
     public static final Pattern METHOD_PATTERN = Pattern.compile("(.*)#(.*)\\((.*)\\)");
     private final String className;
     private final String methodName;
