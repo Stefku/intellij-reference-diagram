@@ -16,7 +16,7 @@
 
 package ch.docksnet.rgraph.actions;
 
-import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
+import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import ch.docksnet.rgraph.method.OuterReferences;
 import ch.docksnet.rgraph.toolwindow.ReferenceToolWindow;
 import com.intellij.diagram.DiagramAction;
@@ -47,15 +47,15 @@ public class ShowOuterReferencesAction extends DiagramAction {
 
     @Override
     public String getActionName() {
-        return "show PkgRefs";
+        return "Other References";
     }
 
     @Override
     public void update(AnActionEvent e) {
-        if (getDataModel(e) instanceof MethodReferenceDiagramDataModel) { // TODO outer references for package also
+        if (getDataModel(e) instanceof ReferenceDiagramDataModel) {
             e.getPresentation().setVisible(true);
             e.getPresentation().setEnabled(false);
-            OuterReferences outerReferences = ((MethodReferenceDiagramDataModel) getDataModel(e)).getOuterReferences();
+            OuterReferences outerReferences = ((ReferenceDiagramDataModel) getDataModel(e)).getOuterReferences();
             e.getPresentation().setText("Other References: " + outerReferences.toToolbarString());
         } else {
             e.getPresentation().setVisible(false);

@@ -22,7 +22,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 
 import java.util.Objects;
 
-public class FileFQN extends FQN {
+public class FileFQN extends FQN implements Hierarchically {
     private final String packageName;
     private final String fileName;
     private final PsiJavaFile psiJavaFile;
@@ -55,12 +55,9 @@ public class FileFQN extends FQN {
         return from(psiJavaFile);
     }
 
-    public boolean samePackage(FileFQN otherFile) {
-        return this.packageName.equals(otherFile.packageName);
-    }
-
-    public boolean sameHierarchy(FileFQN otherFile) {
-        return this.packageName.startsWith(otherFile.packageName);
+    @Override
+    public String getHierarchie() {
+        return this.packageName;
     }
 
     @Override

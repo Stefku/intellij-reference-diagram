@@ -16,10 +16,10 @@
 
 package ch.docksnet.rgraph.method;
 
-import ch.docksnet.rgraph.ProjectService;
 import ch.docksnet.rgraph.PsiUtils;
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import ch.docksnet.rgraph.ReferenceDiagramProvider;
+import ch.docksnet.rgraph.fqn.FQN;
 import ch.docksnet.rgraph.fqn.FileFQN;
 import ch.docksnet.utils.IncrementableSet;
 import com.intellij.diagram.DiagramCategory;
@@ -28,7 +28,6 @@ import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.diagram.presentation.DiagramLineType;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
@@ -37,7 +36,6 @@ import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.psi.impl.source.tree.CompositePsiElement;
 import com.intellij.psi.search.GlobalSearchScopes;
@@ -55,8 +53,6 @@ import java.util.Collection;
 public class MethodReferenceDiagramDataModel extends ReferenceDiagramDataModel {
 
     private SmartPsiElementPointer<PsiElement> baseElement;
-
-    private OuterReferences outerReferences = OuterReferences.empty();
 
     public MethodReferenceDiagramDataModel(Project project, PsiClass psiClass) {
         super(project, ReferenceDiagramProvider.getInstance());
@@ -109,65 +105,6 @@ public class MethodReferenceDiagramDataModel extends ReferenceDiagramDataModel {
         return new ReferenceEdge(from, to, relationship);
     }
 
-    @Override
-    public void refresh() {
-        super.refresh();
-        updateToolWindow();
-    }
-
-    private void updateToolWindow() {
-        ServiceManager.getService(getProject(), ProjectService.class)
-                .getSamePackageReferences()
-                .replaceContent(this.outerReferences.getReferencesSamePackage());
-
-        ServiceManager.getService(getProject(), ProjectService.class)
-                .getSameHierarchieReferences()
-                .replaceContent(this.outerReferences.getReferencesSameHierarchy());
-
-        ServiceManager.getService(getProject(), ProjectService.class)
-                .getOtherHierarchieReferences()
-                .replaceContent(this.outerReferences.getReferencesOtherHierarchy());
-    }
-
-    protected synchronized void updateDataModel() {
-        super.updateDataModel();
-        PsiElement initialElement = getBaseElement();
-        this.outerReferences = getOuterReferences(initialElement);
-    }
-
-    private OuterReferences getOuterReferences(PsiElement psiClass) {
-        OuterReferences outerReferences = new OuterReferences();
-        FileFQN ownFile = FileFQN.from((PsiJavaFile) psiClass.getContainingFile());
-
-        for (DiagramNode<PsiElement> node : getNodes()) {
-            PsiElement callee = node.getIdentifyingElement();
-            Collection<PsiReference> all = ReferencesSearch.search(callee, GlobalSearchScopes.projectProductionScope(getProject())).findAll();
-            for (PsiReference psiReference : all) {
-                if (!(psiReference instanceof PsiReferenceExpression)) {
-                    continue;
-                }
-                PsiReferenceExpression referenceExpression = (PsiReferenceExpression) psiReference;
-                FileFQN otherFile = FileFQN.resolveHierarchically(referenceExpression);
-                outerReferences.update(ownFile, otherFile);
-            }
-        }
-        return outerReferences;
-    }
-
-    @Nullable
-    private PsiElement getBaseElement() {
-        if (this.baseElement == null) {
-            return null;
-        } else {
-            PsiElement element = this.baseElement.getElement();
-            if (element != null && element.isValid()) {
-                return element;
-            } else {
-                return null;
-            }
-        }
-    }
-
     @NotNull
     @Override
     protected IncrementableSet<SourceTargetPair> resolveRelationships() {
@@ -196,6 +133,31 @@ public class MethodReferenceDiagramDataModel extends ReferenceDiagramDataModel {
         return incrementableSet;
     }
 
+    @Nullable
+    @Override
+    protected PsiElement getBaseElement() {
+        if (this.baseElement == null) {
+            return null;
+        } else {
+            PsiElement element = this.baseElement.getElement();
+            if (element != null && element.isValid()) {
+                return element;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    @Override
+    protected FQN getBaseForOuterReferences(PsiElement psiElement) {
+        return FileFQN.from((PsiJavaFile) psiElement.getContainingFile());
+    }
+
+    @NotNull
+    @Override
+    protected Collection<PsiReference> resolveOuterReferences(PsiElement callee) {
+        return ReferencesSearch.search(callee, GlobalSearchScopes.projectProductionScope(getProject())).findAll();
+    }
 
     @Override
     protected boolean isAllowedToShow(PsiElement psiElement) {
@@ -264,7 +226,4 @@ public class MethodReferenceDiagramDataModel extends ReferenceDiagramDataModel {
         return r;
     }
 
-    public OuterReferences getOuterReferences() {
-        return this.outerReferences;
-    }
 }

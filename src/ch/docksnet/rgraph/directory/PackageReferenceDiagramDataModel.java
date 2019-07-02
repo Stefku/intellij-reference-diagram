@@ -16,8 +16,10 @@
 
 package ch.docksnet.rgraph.directory;
 
+import ch.docksnet.rgraph.PsiUtils;
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import ch.docksnet.rgraph.ReferenceDiagramProvider;
+import ch.docksnet.rgraph.fqn.FQN;
 import ch.docksnet.rgraph.method.ReferenceEdge;
 import ch.docksnet.rgraph.method.SourceTargetPair;
 import ch.docksnet.utils.IncrementableSet;
@@ -33,17 +35,22 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 import com.intellij.psi.impl.source.tree.CompositePsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.GlobalSearchScopes;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel {
 
+    private final PsiElement baseElement;
+
     public PackageReferenceDiagramDataModel(Project project, PsiJavaDirectoryImpl directory) {
         super(project, ReferenceDiagramProvider.getInstance());
+        this.baseElement = directory;
         init(directory);
     }
 
@@ -67,6 +74,30 @@ public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel 
 
     protected synchronized void updateDataModel() {
         super.updateDataModel();
+    }
+
+    @Override
+    protected PsiElement getBaseElement() {
+        return this.baseElement;
+    }
+
+    @Override
+    protected FQN getBaseForOuterReferences(PsiElement psiElement) {
+        return PsiUtils.getFqn(psiElement);
+    }
+
+    @NotNull
+    @Override
+    protected Collection<PsiReference> resolveOuterReferences(PsiElement psiElement) {
+        Collection<PsiReference> result = new ArrayList<>();
+        if (!(psiElement instanceof PsiJavaFile)) {
+            return result;
+        }
+        PsiClass[] classes = ((PsiJavaFile) psiElement).getClasses();
+        for (PsiClass psiClass : classes) {
+            result.addAll(ReferencesSearch.search(psiClass, GlobalSearchScopes.projectProductionScope(getProject())).findAll());
+        }
+        return result;
     }
 
     @Nullable

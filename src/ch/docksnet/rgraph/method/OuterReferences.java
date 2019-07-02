@@ -18,6 +18,7 @@ package ch.docksnet.rgraph.method;
 
 import ch.docksnet.rgraph.fqn.FileFQN;
 import ch.docksnet.rgraph.fqn.FileFQNReference;
+import ch.docksnet.rgraph.fqn.Hierarchically;
 
 import java.util.List;
 
@@ -34,13 +35,13 @@ public class OuterReferences {
         return new OuterReferences();
     }
 
-    public void update(FileFQN ownFile, FileFQN otherFile) {
-        if (ownFile.equals(otherFile)) {
+    public void update(Hierarchically ownHierarchy, FileFQN otherFile) {
+        if (ownHierarchy.equals(otherFile)) {
             return;
         }
-        if (ownFile.samePackage(otherFile)) {
+        if (ownHierarchy.samePackage(otherFile)) {
             this.samePackage.increment(otherFile);
-        } else if (ownFile.sameHierarchy(otherFile)) {
+        } else if (ownHierarchy.sameHierarchy(otherFile)) {
             this.inHierarchy.increment(otherFile);
         } else {
             this.otherHierarchy.increment(otherFile);

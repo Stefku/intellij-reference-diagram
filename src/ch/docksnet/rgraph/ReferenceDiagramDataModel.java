@@ -17,6 +17,9 @@
 package ch.docksnet.rgraph;
 
 import ch.docksnet.rgraph.fqn.FQN;
+import ch.docksnet.rgraph.fqn.FileFQN;
+import ch.docksnet.rgraph.fqn.Hierarchically;
+import ch.docksnet.rgraph.method.OuterReferences;
 import ch.docksnet.rgraph.method.ReferenceNode;
 import ch.docksnet.rgraph.method.SourceTargetPair;
 import ch.docksnet.utils.IncrementableSet;
@@ -29,10 +32,12 @@ import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramProvider;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import org.jetbrains.annotations.NotNull;
@@ -61,6 +66,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
     private final SmartPointerManager spManager;
 
     private long currentClusterCount = 0;
+    private OuterReferences outerReferences = OuterReferences.empty();
 
     public ReferenceDiagramDataModel(Project project, DiagramProvider<PsiElement> provider) {
         super(project, provider);
@@ -98,6 +104,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
 
     protected void refresh() {
         analyzeLcom4();
+        updateToolWindow();
     }
 
     private Set<PsiElement> getElements() {
@@ -135,6 +142,52 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
                 this.edges.add(toEdge(source, target, sourceTargetPair.getValue()));
             }
         }
+
+        PsiElement initialElement = getBaseElement();
+        this.outerReferences = getOuterReferences(initialElement);
+    }
+
+    abstract protected PsiElement getBaseElement();
+
+    private OuterReferences getOuterReferences(PsiElement psiElement) {
+        OuterReferences outerReferences = new OuterReferences();
+        FQN ownFqn = getBaseForOuterReferences(psiElement);
+        if (!(ownFqn instanceof Hierarchically)) {
+            return outerReferences;
+        }
+        Hierarchically ownHierarchy = (Hierarchically) ownFqn;
+
+        for (DiagramNode<PsiElement> node : getNodes()) {
+            PsiElement callee = node.getIdentifyingElement();
+            Collection<PsiReference> all = resolveOuterReferences(callee);
+            for (PsiReference psiReference : all) {
+                if (!(psiReference instanceof PsiElement)) {
+                    continue;
+                }
+                FileFQN otherFile = FileFQN.resolveHierarchically((PsiElement) psiReference);
+                outerReferences.update(ownHierarchy, otherFile);
+            }
+        }
+        return outerReferences;
+    }
+
+    @NotNull
+    abstract protected Collection<PsiReference> resolveOuterReferences(PsiElement callee);
+
+    protected abstract FQN getBaseForOuterReferences(PsiElement psiElement);
+
+    private void updateToolWindow() {
+        ServiceManager.getService(getProject(), ProjectService.class)
+                .getSamePackageReferences()
+                .replaceContent(this.outerReferences.getReferencesSamePackage());
+
+        ServiceManager.getService(getProject(), ProjectService.class)
+                .getSameHierarchieReferences()
+                .replaceContent(this.outerReferences.getReferencesSameHierarchy());
+
+        ServiceManager.getService(getProject(), ProjectService.class)
+                .getOtherHierarchieReferences()
+                .replaceContent(this.outerReferences.getReferencesOtherHierarchy());
     }
 
     protected void clearAll() {
@@ -364,5 +417,9 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
         CallersSubgraphAnalyzer analyzer = new CallersSubgraphAnalyzer(data);
         List<LCOMNode> result = analyzer.getCallees(lcomRoot);
         return result;
+    }
+
+    public OuterReferences getOuterReferences() {
+        return this.outerReferences;
     }
 }

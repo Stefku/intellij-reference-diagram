@@ -21,7 +21,7 @@ import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 /**
  * @author Stefan Zeller
  */
-public class PackageFQN extends FQN {
+public class PackageFQN extends FQN implements Hierarchically {
     private final String fqn;
 
     private PackageFQN(String fqn) {
@@ -49,4 +49,8 @@ public class PackageFQN extends FQN {
         return this.fqn;
     }
 
+    @Override
+    public String getHierarchie() {
+        return this.fqn;
+    }
 }
