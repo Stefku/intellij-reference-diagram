@@ -92,7 +92,9 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
     public void refreshDataModel() {
         clearAll();
         updateDataModel();
+        refresh();
     }
+
 
     protected void refresh() {
         analyzeLcom4();

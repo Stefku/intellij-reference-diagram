@@ -16,11 +16,11 @@
 
 package ch.docksnet.utils.lcom;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ch.docksnet.rgraph.method.ReferenceNode;
 import ch.docksnet.utils.PreConditionUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Stefan Zeller

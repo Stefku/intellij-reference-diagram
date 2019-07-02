@@ -98,7 +98,8 @@
         <action id="RGRAPH.ShowOuterReferences" class="ch.docksnet.rgraph.actions.ShowClusterCountAction">
             <add-to-group group-id="Graph.DefaultGraphToolbar"/>
         </action>
-        <action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowOuterReferencesAction">
+        <action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowOuterReferencesAction"
+                description="same package/same package hierarchy/other package hierarchy">
             <add-to-group group-id="Graph.DefaultGraphToolbar"/>
         </action>
         <action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.actions.MarkAction"></action>
@@ -116,7 +117,7 @@
                 id="Package References"
                 anchor="bottom"
                 factoryClass="ch.docksnet.rgraph.toolwindow.ReferenceToolWindow"/>
-        <projectService serviceImplementation="ch.docksnet.rgraph.ProjectService" />
+        <projectService serviceImplementation="ch.docksnet.rgraph.ProjectService"/>
     </extensions>
 
 

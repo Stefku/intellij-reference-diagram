@@ -17,7 +17,6 @@
 package ch.docksnet.rgraph.actions;
 
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
-import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramNode;

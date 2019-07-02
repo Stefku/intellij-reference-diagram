@@ -16,7 +16,6 @@
 
 package ch.docksnet.rgraph.actions;
 
-import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
 import ch.docksnet.rgraph.method.OuterReferences;
 import ch.docksnet.rgraph.toolwindow.ReferenceToolWindow;
@@ -57,7 +56,7 @@ public class ShowOuterReferencesAction extends DiagramAction {
             e.getPresentation().setVisible(true);
             e.getPresentation().setEnabled(false);
             OuterReferences outerReferences = ((MethodReferenceDiagramDataModel) getDataModel(e)).getOuterReferences();
-            e.getPresentation().setText("PkgRefs: " + outerReferences.toToolbarString());
+            e.getPresentation().setText("Other References: " + outerReferences.toToolbarString());
         } else {
             e.getPresentation().setVisible(false);
         }
