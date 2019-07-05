@@ -19,13 +19,12 @@ package ch.docksnet.rgraph.toolwindow;
 import ch.docksnet.rgraph.PsiUtils;
 import ch.docksnet.rgraph.method.OuterReferences;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.PsiBundle;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.PsiJavaFileImpl;
-import com.intellij.psi.presentation.java.ClassPresentationUtil;
 import com.intellij.psi.presentation.java.SymbolPresentationUtil;
 import com.intellij.ui.ColoredTreeCellRenderer;
 import com.intellij.ui.SimpleTextAttributes;
@@ -68,10 +67,8 @@ public class TestToolWindow extends JPanel {
                     return;
                 }
                 if (userObject instanceof PsiJavaFileImpl) {
-                    PsiJavaFileImpl psiElement = (PsiJavaFileImpl) userObject;
-                    String contextName = ClassPresentationUtil.getContextName(psiElement, false);
-                    String fileName = psiElement.getContainingFile().getName();
-                    append(contextName != null ? PsiBundle.message("class.context.display", fileName, contextName) : fileName);
+                    VirtualFile virtualFile = ((PsiJavaFileImpl) ((DefaultMutableTreeNode) value).getUserObject()).getVirtualFile();
+                    VirtualFileCellRenderer.render(this, virtualFile);
                 } else if (userObject instanceof String) {
                     append((String) userObject, SimpleTextAttributes.GRAY_ATTRIBUTES);
                 } else {
@@ -136,7 +133,7 @@ public class TestToolWindow extends JPanel {
         ToolWindow finalToolWindow = toolWindow;
         toolWindow.activate(() -> {
             final String text = SymbolPresentationUtil.getSymbolPresentableText(baseElement);
-            final ContentImpl content = new ContentImpl(view, text, true);
+            final ContentImpl content = new ContentImpl(view, "to " + text, true);
             finalToolWindow.getContentManager().addContent(content);
             finalToolWindow.getContentManager().setSelectedContent(content, true);
         });
