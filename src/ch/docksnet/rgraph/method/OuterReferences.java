@@ -19,7 +19,10 @@ package ch.docksnet.rgraph.method;
 import ch.docksnet.rgraph.fqn.FileFQN;
 import ch.docksnet.rgraph.fqn.FileFQNReference;
 import ch.docksnet.rgraph.fqn.Hierarchically;
+import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.List;
 
 /**
@@ -30,9 +33,14 @@ public class OuterReferences {
     private ReferenceCount samePackage = new ReferenceCount();
     private ReferenceCount inHierarchy = new ReferenceCount();
     private ReferenceCount otherHierarchy = new ReferenceCount();
+    private final PsiElement baseElement;
+
+    public OuterReferences(PsiElement baseElement) {
+        this.baseElement = baseElement;
+    }
 
     public static OuterReferences empty() {
-        return new OuterReferences();
+        return new OuterReferences(null);
     }
 
     public void update(Hierarchically ownHierarchy, FileFQN otherFile) {
@@ -63,4 +71,24 @@ public class OuterReferences {
     public String toToolbarString() {
         return "" + this.samePackage.fileCount() + "/" + this.inHierarchy.fileCount() + "/" + this.otherHierarchy.fileCount();
     }
+
+    public DefaultMutableTreeNode asTree() {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+        root.add(createSub("Same Package", this.getReferencesSamePackage()));
+        root.add(createSub("Same Hierarchy", this.getReferencesSameHierarchy()));
+        root.add(createSub("Other Hierarchy", this.getReferencesOtherHierarchy()));
+        return root;
+    }
+
+    @NotNull
+    private DefaultMutableTreeNode createSub(String s, List<FileFQNReference> content) {
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(s);
+        content.forEach(it -> node.add(new DefaultMutableTreeNode(it.getPsiElement())));
+        return node;
+    }
+
+    public PsiElement getBaseElement() {
+        return this.baseElement;
+    }
+
 }

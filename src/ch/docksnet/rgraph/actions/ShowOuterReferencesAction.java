@@ -17,13 +17,12 @@
 package ch.docksnet.rgraph.actions;
 
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
+import ch.docksnet.rgraph.toolwindow.TestToolWindow;
 import ch.docksnet.rgraph.method.OuterReferences;
-import ch.docksnet.rgraph.toolwindow.ReferenceToolWindow;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindowManager;
 
 /**
  * @author Stefan Zeller
@@ -32,11 +31,10 @@ public class ShowOuterReferencesAction extends DiagramAction {
 
     @Override
     public void perform(AnActionEvent e) {
+        OuterReferences outerReferences = ((ReferenceDiagramDataModel) getDataModel(e)).getOuterReferences();
         Project project = e.getProject();
         ApplicationManager.getApplication().invokeLater(
-                () -> ToolWindowManager.getInstance(project).
-                        getToolWindow(ReferenceToolWindow.ID)
-                        .show(null)
+                () -> TestToolWindow.show(project, outerReferences)
         );
     }
 

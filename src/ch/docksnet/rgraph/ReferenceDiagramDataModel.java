@@ -150,7 +150,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
     abstract protected PsiElement getBaseElement();
 
     private OuterReferences getOuterReferences(PsiElement psiElement) {
-        OuterReferences outerReferences = new OuterReferences();
+        OuterReferences outerReferences = new OuterReferences(psiElement);
         FQN ownFqn = getBaseForOuterReferences(psiElement);
         if (!(ownFqn instanceof Hierarchically)) {
             return outerReferences;
