@@ -136,6 +136,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
         IncrementableSet<SourceTargetPair> relationships = resolveRelationships();
         for (Map.Entry<SourceTargetPair, Long> sourceTargetPair : relationships.elements()) {
             SourceTargetPair key = sourceTargetPair.getKey();
+            // TODO do that in resolveRelationships instead
             DiagramNode<PsiElement> sourceNode = findNode(key.getSource());
             DiagramNode<PsiElement> source = sourceNode != null ? sourceNode : createMissingNodeForExistingRelationship(key.getSource());
             DiagramNode<PsiElement> targetNode = findNode(key.getTarget());

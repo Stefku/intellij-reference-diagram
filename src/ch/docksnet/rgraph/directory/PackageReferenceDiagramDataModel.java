@@ -21,6 +21,7 @@ import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import ch.docksnet.rgraph.ReferenceDiagramProvider;
 import ch.docksnet.rgraph.fqn.FQN;
 import ch.docksnet.rgraph.fqn.Hierarchically;
+import ch.docksnet.rgraph.fqn.PackageFQN;
 import ch.docksnet.rgraph.method.ReferenceEdge;
 import ch.docksnet.rgraph.method.SourceTargetPair;
 import ch.docksnet.utils.IncrementableSet;
@@ -170,12 +171,22 @@ public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel 
                         }
 
                         incrementableSet.increment(new SourceTargetPair(caller, callee));
+                        // TODO group all references from subpackage to one node named like the subpackage (also sub of sub)
+//                        if (areInSamePackage(caller, callee)) {
+//                            incrementableSet.increment(new SourceTargetPair(caller, callee));
+//                        }
                     }
 
                 }
             }
         }
         return incrementableSet;
+    }
+
+    private boolean areInSamePackage(PsiElement caller, PsiElement callee) {
+        PackageFQN callerFqn = PackageFQN.create((PsiJavaDirectoryImpl) caller.getContainingFile().getContainingDirectory());
+        PackageFQN calleeFqn = PackageFQN.create((PsiJavaDirectoryImpl) callee.getContainingFile().getContainingDirectory());
+        return callerFqn.samePackage(calleeFqn);
     }
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")
