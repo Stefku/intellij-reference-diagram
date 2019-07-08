@@ -138,7 +138,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
             SourceTargetPair key = sourceTargetPair.getKey();
             DiagramNode<PsiElement> source = findNode(key.getSource());
             DiagramNode<PsiElement> target = findNode(key.getTarget());
-            if (source != null && target != null) {
+            if (source != null && target != null && !source.equals(target)) {
                 this.edges.add(toEdge(source, target, sourceTargetPair.getValue()));
             }
         }
