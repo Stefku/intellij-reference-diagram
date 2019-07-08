@@ -123,7 +123,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
         return result;
     }
 
-    protected void updateDataModel() {
+    private void updateDataModel() {
         DiagramProvider provider = getBuilder().getProvider();
         Set<PsiElement> elements = getElements();
 
@@ -136,8 +136,10 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
         IncrementableSet<SourceTargetPair> relationships = resolveRelationships();
         for (Map.Entry<SourceTargetPair, Long> sourceTargetPair : relationships.elements()) {
             SourceTargetPair key = sourceTargetPair.getKey();
-            DiagramNode<PsiElement> source = findNode(key.getSource());
-            DiagramNode<PsiElement> target = findNode(key.getTarget());
+            DiagramNode<PsiElement> sourceNode = findNode(key.getSource());
+            DiagramNode<PsiElement> source = sourceNode != null ? sourceNode : createMissingNodeForExistingRelationship(key.getSource());
+            DiagramNode<PsiElement> targetNode = findNode(key.getTarget());
+            DiagramNode<PsiElement> target = targetNode != null ? targetNode : createMissingNodeForExistingRelationship(key.getTarget());
             if (source != null && target != null && !source.equals(target)) {
                 this.edges.add(toEdge(source, target, sourceTargetPair.getValue()));
             }
@@ -145,6 +147,10 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
 
         PsiElement initialElement = getBaseElement();
         this.outerReferences = getOuterReferences(initialElement);
+    }
+
+    protected DiagramNode<PsiElement> createMissingNodeForExistingRelationship(PsiElement psiElement) {
+        return null;
     }
 
     abstract protected PsiElement getBaseElement();
@@ -215,10 +221,6 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
         return findNode(element) != null;
     }
 
-    /**
-     * @param psiElement
-     * @return {@code true} if {@code nodes} contains {@code psiElement}.
-     */
     @Nullable
     private DiagramNode<PsiElement> findNode(PsiElement psiElement) {
         Iterator ptr = (new ArrayList(this.nodes)).iterator();
@@ -226,7 +228,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
         while (ptr.hasNext()) {
             DiagramNode node = (DiagramNode) ptr.next();
             FQN fqn = PsiUtils.getFqn((PsiElement) node.getIdentifyingElement());
-            if (fqn != null && fqn.equals(PsiUtils.getFqn(psiElement))) {
+            if (fqn != null && fqn.equals(getFqn(psiElement))) {
                 return node;
             }
         }
@@ -334,7 +336,8 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
     @Nullable
     @Override
     public DiagramNode<PsiElement> addElement(PsiElement psiElement) {
-        return null;
+        addUserElement(psiElement);
+        return new ReferenceNode(ReferenceDiagramDataModel.this.elementsAddedByUser.get(getFqn(psiElement)).getElement(), getProvider());
     }
 
     protected abstract boolean isAllowedToShow(PsiElement element);

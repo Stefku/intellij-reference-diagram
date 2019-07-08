@@ -20,6 +20,7 @@ import ch.docksnet.rgraph.PsiUtils;
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import ch.docksnet.rgraph.ReferenceDiagramProvider;
 import ch.docksnet.rgraph.fqn.FQN;
+import ch.docksnet.rgraph.fqn.Hierarchically;
 import ch.docksnet.rgraph.method.ReferenceEdge;
 import ch.docksnet.rgraph.method.SourceTargetPair;
 import ch.docksnet.utils.IncrementableSet;
@@ -29,6 +30,7 @@ import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiReference;
@@ -43,6 +45,9 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static ch.docksnet.rgraph.PsiUtils.getFqn;
+import static ch.docksnet.rgraph.PsiUtils.getPsiJavaDirectory;
 
 public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel {
 
@@ -70,10 +75,6 @@ public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel 
         clearAll();
         init((PsiJavaDirectoryImpl) element);
         refreshDataModel();
-    }
-
-    protected synchronized void updateDataModel() {
-        super.updateDataModel();
     }
 
     @Override
@@ -112,6 +113,7 @@ public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel 
     @NotNull
     private DiagramRelationshipInfo createEdgeFromNonField(final long count) {
         DiagramRelationshipInfo r;
+        //noinspection MethodDoesntCallSuperMethod
         r = new DiagramRelationshipInfoAdapter(ReferenceEdge.Type.REFERENCE.name()) {
             @Override
             public Shape getStartArrow() {
@@ -176,4 +178,18 @@ public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel 
         return incrementableSet;
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    protected DiagramNode<PsiElement> createMissingNodeForExistingRelationship(PsiElement psiElement) {
+        FQN fqn = getFqn(psiElement);
+        if (fqn instanceof Hierarchically) {
+            Hierarchically hierarchicallySource = (Hierarchically) fqn;
+            if (hierarchicallySource.sameHierarchy((Hierarchically) getFqn(this.baseElement))) {
+                String hierarchie = hierarchicallySource.getHierarchie();
+                PsiDirectory psiJavaDirectory = getPsiJavaDirectory(hierarchie, getProject());
+                return addElement(psiJavaDirectory);
+            }
+        }
+        return null;
+    }
 }
