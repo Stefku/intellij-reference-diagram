@@ -16,14 +16,52 @@
 
 package ch.docksnet.rgraph.fqn;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public interface Hierarchically {
     default boolean samePackage(Hierarchically otherFile) {
         return getHierarchie().equals(otherFile.getHierarchie());
     }
 
     default boolean sameHierarchy(Hierarchically otherFile) {
-        return getHierarchie().startsWith(otherFile.getHierarchie());
+        List<String> packagePathsOtherFile = Hierarchically.getPackagePaths(this);
+        return packagePathsOtherFile.stream().anyMatch(it -> otherFile.getHierarchie().equals(it));
+    }
+
+    static List<String> getPackages(Hierarchically base) {
+        String[] packages = base.getHierarchie().split("\\.");
+        return new ArrayList<>(Arrays.asList(packages));
+    }
+
+    static List<String> getPackagePaths(Hierarchically base) {
+        List<String> result = new ArrayList<>();
+        List<String> packages = getPackages(base);
+        for (int i = 0; i < packages.size() + 1; i++) {
+            List<String> subList = packages.subList(0, i);
+            if (subList.isEmpty()) {
+                continue;
+            }
+            result.add(String.join(".", subList));
+        }
+        return result;
     }
 
     String getHierarchie();
+
+    default String getNextHierarchyTowards(Hierarchically target) {
+        if (!target.sameHierarchy(this)) {
+            throw new IllegalArgumentException("target is not in same hierarchy");
+        }
+        String targetHierarchie = target.getHierarchie();
+        String substring = targetHierarchie.substring(getHierarchie().length() + 1);
+        int indexOfDot = substring.indexOf(".");
+        if (indexOfDot >= 0) {
+            return targetHierarchie.substring(0, getHierarchie().length() + indexOfDot +1);
+        } else {
+            return targetHierarchie;
+        }
+    }
+
 }
