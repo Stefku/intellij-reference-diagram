@@ -20,8 +20,6 @@ import ch.docksnet.rgraph.PsiUtils;
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import ch.docksnet.rgraph.ReferenceDiagramProvider;
 import ch.docksnet.rgraph.fqn.FQN;
-import ch.docksnet.rgraph.fqn.Hierarchically;
-import ch.docksnet.rgraph.fqn.PackageFQN;
 import ch.docksnet.rgraph.method.ReferenceEdge;
 import ch.docksnet.rgraph.method.SourceTargetPair;
 import ch.docksnet.utils.IncrementableSet;
@@ -31,13 +29,10 @@ import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
-import com.intellij.psi.impl.source.tree.CompositePsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.GlobalSearchScopes;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import org.jetbrains.annotations.NotNull;
@@ -47,12 +42,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static ch.docksnet.rgraph.PsiUtils.getFqn;
-import static ch.docksnet.rgraph.PsiUtils.getPsiJavaDirectory;
-
 public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel {
 
     private final PsiElement baseElement;
+    private final References references = new References();
 
     public PackageReferenceDiagramDataModel(Project project, PsiJavaDirectoryImpl directory) {
         super(project, ReferenceDiagramProvider.getInstance());
@@ -61,13 +54,7 @@ public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel 
     }
 
     private void init(PsiJavaDirectoryImpl directory) {
-        for (PsiElement child : directory.getChildren()) {
-            if (child instanceof PsiJavaFile) {
-                addUserElement(child);
-            } else if (child instanceof PsiJavaDirectoryImpl) {
-                addUserElement(child);
-            }
-        }
+        this.references.createNodes(directory).forEach(it -> addUserElement(it));
     }
 
     @Override
@@ -149,58 +136,6 @@ public class PackageReferenceDiagramDataModel extends ReferenceDiagramDataModel 
     @NotNull
     @Override
     protected IncrementableSet<SourceTargetPair> resolveRelationships() {
-        IncrementableSet<SourceTargetPair> incrementableSet = new IncrementableSet<>();
-
-        for (DiagramNode<PsiElement> node : getNodes()) {
-            PsiElement callee = node.getIdentifyingElement();
-
-
-            if (callee instanceof PsiJavaFile) {
-                PsiClass[] classes = ((PsiJavaFile) callee).getClasses();
-                for (PsiClass psiClass : classes) {
-                    Collection<PsiReference> references = ReferencesSearch.search(psiClass, GlobalSearchScope.projectScope(getProject())).findAll();
-
-                    for (PsiReference psiReference : references) {
-                        if (!(psiReference instanceof CompositePsiElement)) {
-                            continue;
-                        }
-                        PsiElement caller = ((CompositePsiElement) psiReference).getContainingFile();
-
-                        if (caller == null) {
-                            continue;
-                        }
-
-                        incrementableSet.increment(new SourceTargetPair(caller, callee));
-                        // TODO group all references from subpackage to one node named like the subpackage (also sub of sub)
-//                        if (areInSamePackage(caller, callee)) {
-//                            incrementableSet.increment(new SourceTargetPair(caller, callee));
-//                        }
-                    }
-
-                }
-            }
-        }
-        return incrementableSet;
-    }
-
-    private boolean areInSamePackage(PsiElement caller, PsiElement callee) {
-        PackageFQN callerFqn = PackageFQN.create((PsiJavaDirectoryImpl) caller.getContainingFile().getContainingDirectory());
-        PackageFQN calleeFqn = PackageFQN.create((PsiJavaDirectoryImpl) callee.getContainingFile().getContainingDirectory());
-        return callerFqn.samePackage(calleeFqn);
-    }
-
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    protected DiagramNode<PsiElement> createMissingNodeForExistingRelationship(PsiElement psiElement) {
-        FQN fqn = getFqn(psiElement);
-        if (fqn instanceof Hierarchically) {
-            Hierarchically hierarchicallySource = (Hierarchically) fqn;
-            if (hierarchicallySource.sameHierarchy((Hierarchically) getFqn(this.baseElement))) {
-                String hierarchie = hierarchicallySource.getHierarchie();
-                PsiDirectory psiJavaDirectory = getPsiJavaDirectory(hierarchie, getProject());
-                return addElement(psiJavaDirectory);
-            }
-        }
-        return null;
+        return this.references.createRelationships(getNodes(), getProject());
     }
 }

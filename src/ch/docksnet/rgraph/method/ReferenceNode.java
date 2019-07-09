@@ -22,6 +22,7 @@ import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import icons.UmlIcons;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -76,4 +77,9 @@ public class ReferenceNode extends PsiDiagramNode<PsiElement> {
         }
     }
 
+    @NotNull
+    @Override
+    public PsiElement getIdentifyingElement() {
+        return super.getIdentifyingElement();
+    }
 }
