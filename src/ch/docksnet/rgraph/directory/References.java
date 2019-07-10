@@ -23,10 +23,7 @@ import ch.docksnet.rgraph.method.SourceTargetPair;
 import ch.docksnet.utils.IncrementableSet;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaFile;
-import com.intellij.psi.PsiReference;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 import com.intellij.psi.impl.source.tree.CompositePsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -64,6 +61,10 @@ public class References {
 
                     for (PsiReference psiReference : references) {
                         if (!(psiReference instanceof CompositePsiElement)) {
+                            continue;
+                        }
+                        if (((CompositePsiElement) psiReference).getParent() instanceof PsiImportStatement) {
+                            // don't count import statements
                             continue;
                         }
                         PsiElement caller = ((CompositePsiElement) psiReference).getContainingFile();
