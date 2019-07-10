@@ -83,7 +83,7 @@ public class OuterReferences {
     @NotNull
     private DefaultMutableTreeNode createSub(String s, List<FileFQNReference> content) {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(s);
-        content.forEach(it -> node.add(new DefaultMutableTreeNode(it.getPsiElement())));
+        content.forEach(it -> node.add(new DefaultMutableTreeNode(it)));
         return node;
     }
 

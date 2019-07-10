@@ -17,14 +17,13 @@
 package ch.docksnet.rgraph.toolwindow;
 
 import ch.docksnet.rgraph.PsiUtils;
+import ch.docksnet.rgraph.fqn.FileFQNReference;
 import ch.docksnet.rgraph.method.OuterReferences;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.PsiJavaFileImpl;
 import com.intellij.psi.presentation.java.SymbolPresentationUtil;
 import com.intellij.ui.ColoredTreeCellRenderer;
 import com.intellij.ui.SimpleTextAttributes;
@@ -61,9 +60,9 @@ public class TestToolWindow extends JPanel {
                 if (userObject == null) {
                     return;
                 }
-                if (userObject instanceof PsiJavaFileImpl) {
-                    VirtualFile virtualFile = ((PsiJavaFileImpl) ((DefaultMutableTreeNode) value).getUserObject()).getVirtualFile();
-                    VirtualFileCellRenderer.render(this, virtualFile, project);
+                if (userObject instanceof FileFQNReference) {
+                    FileFQNReference ref = (FileFQNReference) userObject;
+                    VirtualFileCellRenderer.render(this, ref, project);
                 } else if (userObject instanceof String) {
                     append((String) userObject, SimpleTextAttributes.GRAY_ATTRIBUTES);
                 } else {

@@ -16,6 +16,7 @@
 
 package ch.docksnet.rgraph.toolwindow;
 
+import ch.docksnet.rgraph.fqn.FileFQNReference;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.vfs.VFileProperty;
@@ -37,19 +38,22 @@ import static com.intellij.openapi.util.IconLoader.getTransparentIcon;
 public class VirtualFileCellRenderer {
     private static final Color HIDDEN = SimpleTextAttributes.DARK_TEXT.getFgColor();
 
-    public static void render(SimpleColoredComponent renderer, VirtualFile virtualFile, Project project) {
+    public static void render(SimpleColoredComponent renderer, FileFQNReference ref, Project project) {
+        VirtualFile virtualFile = ref.getPsiElement().getContainingFile().getVirtualFile();
         PsiJavaFile psiFile = (PsiJavaFile) PsiManager.getInstance(project).findFile(virtualFile);
         int style = SimpleTextAttributes.STYLE_PLAIN;
-        Color color = null;
+        Color color = SimpleTextAttributes.LINK_BOLD_ATTRIBUTES.getFgColor();
         Icon icon = getIcon(virtualFile);
         String comment = null;
         if (!virtualFile.isValid()) style |= SimpleTextAttributes.STYLE_STRIKEOUT;
         boolean fileHidden = isFileHidden(virtualFile);
-        if (fileHidden) color = HIDDEN;
+        if (fileHidden) {
+            color = HIDDEN;
+        } ;
         renderer.setIcon(!fileHidden || icon == null ? icon : getTransparentIcon(icon));
         SimpleTextAttributes attributes = new SimpleTextAttributes(style, color);
-        String name = psiFile.getPackageName() + "." + psiFile.getName();
-        if (name != null) renderer.append(name, attributes);
+        renderer.append(psiFile.getPackageName() + "." + psiFile.getName(), attributes);
+        renderer.append(" " + ref.toUsageString(), new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, SimpleTextAttributes.GRAY_ATTRIBUTES.getFgColor()));
         if (comment != null) renderer.append(comment, attributes);
     }
 

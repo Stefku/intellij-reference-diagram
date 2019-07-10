@@ -30,4 +30,16 @@ public class FileFQNReference {
     public PsiElement getPsiElement() {
         return this.fileFQN.getPsiJavaFile();
     }
+
+    public String toUsageString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.referencesCount);
+        sb.append(" ");
+        if (this.referencesCount == 1) {
+            sb.append("usage");
+        } else {
+            sb.append("usages");
+        }
+        return sb.toString();
+    }
 }
