@@ -38,12 +38,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 public class TestToolWindow extends JPanel {
     private static final String TOOL_WINDOW_ID = "References";
@@ -68,7 +63,7 @@ public class TestToolWindow extends JPanel {
                 }
                 if (userObject instanceof PsiJavaFileImpl) {
                     VirtualFile virtualFile = ((PsiJavaFileImpl) ((DefaultMutableTreeNode) value).getUserObject()).getVirtualFile();
-                    VirtualFileCellRenderer.render(this, virtualFile);
+                    VirtualFileCellRenderer.render(this, virtualFile, project);
                 } else if (userObject instanceof String) {
                     append((String) userObject, SimpleTextAttributes.GRAY_ATTRIBUTES);
                 } else {
@@ -81,6 +76,9 @@ public class TestToolWindow extends JPanel {
                 Tree theTree = (Tree) event.getSource();
                 if (event.getClickCount() == 2) {
                     TreePath pathForLocation = theTree.getPathForLocation(event.getPoint().x, event.getPoint().y);
+                    if (pathForLocation == null) {
+                        return;
+                    }
                     Object o = pathForLocation.getLastPathComponent();
                     if (!(o instanceof DefaultMutableTreeNode)) {
                         return;

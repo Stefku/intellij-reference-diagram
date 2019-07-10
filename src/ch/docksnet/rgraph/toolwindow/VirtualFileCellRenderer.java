@@ -16,9 +16,12 @@
 
 package ch.docksnet.rgraph.toolwindow;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.ui.LayeredIcon;
 import com.intellij.ui.SimpleColoredComponent;
 import com.intellij.ui.SimpleTextAttributes;
@@ -34,21 +37,18 @@ import static com.intellij.openapi.util.IconLoader.getTransparentIcon;
 public class VirtualFileCellRenderer {
     private static final Color HIDDEN = SimpleTextAttributes.DARK_TEXT.getFgColor();
 
-    public static void render(SimpleColoredComponent renderer, VirtualFile virtualFile) {
+    public static void render(SimpleColoredComponent renderer, VirtualFile virtualFile, Project project) {
+        PsiJavaFile psiFile = (PsiJavaFile) PsiManager.getInstance(project).findFile(virtualFile);
         int style = SimpleTextAttributes.STYLE_PLAIN;
         Color color = null;
         Icon icon = getIcon(virtualFile);
-        String name = null;
         String comment = null;
-        boolean hidden = false;
-        boolean valid = true;
-        name = virtualFile.getName();
-        hidden = isFileHidden(virtualFile);
-        valid = virtualFile.isValid();
-        if (!valid) style |= SimpleTextAttributes.STYLE_STRIKEOUT;
-        if (hidden) color = HIDDEN;
-        renderer.setIcon(!hidden || icon == null ? icon : getTransparentIcon(icon));
+        if (!virtualFile.isValid()) style |= SimpleTextAttributes.STYLE_STRIKEOUT;
+        boolean fileHidden = isFileHidden(virtualFile);
+        if (fileHidden) color = HIDDEN;
+        renderer.setIcon(!fileHidden || icon == null ? icon : getTransparentIcon(icon));
         SimpleTextAttributes attributes = new SimpleTextAttributes(style, color);
+        String name = psiFile.getPackageName() + "." + psiFile.getName();
         if (name != null) renderer.append(name, attributes);
         if (comment != null) renderer.append(comment, attributes);
     }
