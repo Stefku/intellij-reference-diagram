@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
+package ch.docksnet.rgraph.fqn;
+
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiParameter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,15 +28,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * @author Stefan Zeller
  */
-public class MethodFQN {
+public class MethodFQN extends FQN {
     public static final Pattern METHOD_PATTERN = Pattern.compile("(.*)#(.*)\\((.*)\\)");
     private final String className;
     private final String methodName;
@@ -47,8 +47,8 @@ public class MethodFQN {
 
     @NotNull
     private String createFqn() {
-        final String parameterString = createParameterRepresentation(parameters);
-        return className + "#" + methodName + "(" + parameterString + ")";
+        final String parameterString = createParameterRepresentation(this.parameters);
+        return this.className + "#" + this.methodName + "(" + parameterString + ")";
     }
 
     @NotNull
@@ -107,19 +107,19 @@ public class MethodFQN {
     }
 
     public String getClassName() {
-        return className;
+        return this.className;
     }
 
     public String getMethodName() {
-        return methodName;
+        return this.methodName;
     }
 
     public List<String> getParameters() {
-        return parameters;
+        return this.parameters;
     }
 
     public String getFQN() {
-        return fqn;
+        return this.fqn;
     }
 
     public static class Builder {
@@ -138,7 +138,7 @@ public class MethodFQN {
         }
 
         public MethodFQN create() {
-            return new MethodFQN(className, methodName, Collections.unmodifiableList(parameters));
+            return new MethodFQN(this.className, this.methodName, Collections.unmodifiableList(this.parameters));
         }
 
     }

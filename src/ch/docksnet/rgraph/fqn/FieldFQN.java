@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
+package ch.docksnet.rgraph.fqn;
+
+import com.intellij.psi.PsiField;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.intellij.psi.PsiField;
-
 /**
  * @author Stefan Zeller
  */
-public class FieldFQN {
+public class FieldFQN extends FQN {
     private final String className;
     private final String fieldName;
     private final String fqn;
@@ -36,7 +36,7 @@ public class FieldFQN {
     }
 
     private String createFqn() {
-        return className + "#" + fieldName;
+        return this.className + "#" + this.fieldName;
     }
 
     public static FieldFQN create(String string) {
@@ -52,15 +52,16 @@ public class FieldFQN {
     }
 
     public String getClassName() {
-        return className;
+        return this.className;
     }
 
     public String getFieldName() {
-        return fieldName;
+        return this.fieldName;
     }
 
+    @Override
     public String getFQN() {
-        return fqn;
+        return this.fqn;
     }
 
     public static FieldFQN create(PsiField psiField) {

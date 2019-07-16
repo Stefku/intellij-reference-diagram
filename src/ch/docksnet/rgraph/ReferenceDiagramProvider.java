@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 
 package ch.docksnet.rgraph;
 
-import ch.docksnet.utils.PreConditionUtil;
+import ch.docksnet.rgraph.directory.PackageReferenceDiagramDataModel;
+import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
 import com.intellij.diagram.BaseDiagramProvider;
 import com.intellij.diagram.DiagramColorManager;
+import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramElementManager;
 import com.intellij.diagram.DiagramNodeContentManager;
 import com.intellij.diagram.DiagramPresentationModel;
@@ -29,6 +31,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
 
-    public static final String ID = "ReferenceDiagramProvider";
+    private static final String ID = "ReferenceDiagramProvider";
     private final DiagramElementManager<PsiElement> myElementManager = new ReferenceDiagramElementManager();
     private final DiagramVfsResolver<PsiElement> myVfsResolver = new ReferenceDiagramVfsResolver();
     private final ReferenceDiagramExtras myExtras = new ReferenceDiagramExtras();
@@ -53,36 +56,40 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
 
     @Override
     public DiagramElementManager<PsiElement> getElementManager() {
-        return myElementManager;
+        return this.myElementManager;
     }
 
     @Override
     public DiagramVfsResolver<PsiElement> getVfsResolver() {
-        return myVfsResolver;
+        return this.myVfsResolver;
     }
 
     @Override
     public String getPresentableName() {
-        return "Method Reference Diagram";
+        return "Java Reference Diagram";
     }
 
     @NotNull
     @Override
     public DiagramExtras<PsiElement> getExtras() {
-        return myExtras;
+        return this.myExtras;
     }
 
     @Override
-    public ReferenceDiagramDataModel createDataModel(@NotNull Project project, @Nullable PsiElement
+    public DiagramDataModel createDataModel(@NotNull Project project, @Nullable PsiElement
             psiElement, @Nullable VirtualFile virtualFile, DiagramPresentationModel model) {
-        PreConditionUtil.assertTrue(psiElement instanceof PsiClass, "PsiElement" +
-                ".psiElement must be a PsiClass");
-        return new ReferenceDiagramDataModel(project, (PsiClass) psiElement);
+        if (psiElement instanceof PsiClass) {
+            return new MethodReferenceDiagramDataModel(project, (PsiClass) psiElement);
+        }
+        if (psiElement instanceof PsiJavaDirectoryImpl) {
+            return new PackageReferenceDiagramDataModel(project, (PsiJavaDirectoryImpl) psiElement);
+        }
+        return null;
     }
 
     @Override
     public DiagramColorManager getColorManager() {
-        return myColorManager;
+        return this.myColorManager;
     }
 
     public static ReferenceDiagramProvider getInstance() {
@@ -91,6 +98,6 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
 
     @Override
     public DiagramNodeContentManager getNodeContentManager() {
-        return myUmlCategoryManager;
+        return this.myUmlCategoryManager;
     }
 }

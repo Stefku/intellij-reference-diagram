@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,34 @@
 
 package ch.docksnet.rgraph;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import ch.docksnet.rgraph.fqn.ClassFQN;
+import ch.docksnet.rgraph.fqn.FQN;
+import ch.docksnet.rgraph.fqn.FieldFQN;
+import ch.docksnet.rgraph.fqn.FileFQN;
+import ch.docksnet.rgraph.fqn.MethodFQN;
+import ch.docksnet.rgraph.fqn.PackageFQN;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnonymousClass;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
+import com.intellij.psi.impl.source.tree.CompositePsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Stefan Zeller
@@ -36,20 +51,7 @@ import org.jetbrains.annotations.Nullable;
 public class PsiUtils {
 
     @Nullable
-    public static PsiClass getClassFromHierarchy(PsiElement psiElement) {
-        PsiElement parent = psiElement.getParent();
-        if (parent == null) {
-            return null;
-        }
-        if (parent instanceof PsiClass && !(parent instanceof PsiAnonymousClass)) {
-            return ((PsiClass) parent);
-        } else {
-            return getClassFromHierarchy(parent);
-        }
-    }
-
-    @Nullable
-    public static PsiElement getRootPsiElement(PsiClass psiClass, PsiElement psiElement) {
+    public static PsiElement getRootPsiElement(PsiClass psiClass, CompositePsiElement psiElement) {
         return getRootPsiElementWithStack(psiClass, psiElement, new LinkedList<PsiElement>());
     }
 
@@ -133,7 +135,11 @@ public class PsiUtils {
                 .projectScope(project));
     }
 
-    public static String getName(PsiClassInitializer psiClassInitializer) {
+    public static PsiDirectory getPsiJavaDirectory(String packageFQN, Project project) {
+        return JavaPsiFacade.getInstance(project).findPackage(packageFQN).getDirectories()[0];
+    }
+
+    private static String getName(PsiClassInitializer psiClassInitializer) {
         if (psiClassInitializer.getModifierList().hasModifierProperty("static")) {
             return "[static init]";
         } else {
@@ -180,51 +186,96 @@ public class PsiUtils {
             public String processEnum(PsiClass anEnum) {
                 return anEnum.getName();
             }
+
+            @Override
+            public String processPackage(PsiJavaDirectoryImpl aPackage) {
+                return aPackage.getName();
+            }
+
+            @Override
+            public String processFile(PsiJavaFile aFile) {
+                return aFile.getName();
+            }
         };
 
         return psiElementDispatcher.dispatch(psiElement);
     }
 
-    public static String getFqn(PsiElement psiElement) {
-        PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
+    public static FQN getFqn(PsiElement psiElement) {
+        PsiElementDispatcher<FQN> psiElementDispatcher = new PsiElementDispatcher<FQN>() {
 
             @Override
-            public String processClass(PsiClass psiClass) {
-                return ClassFQN.create(psiClass).getFQN();
+            public FQN processClass(PsiClass psiClass) {
+                return ClassFQN.create(psiClass);
             }
 
             @Override
-            public String processMethod(PsiMethod psiMethod) {
-                return MethodFQN.create(psiMethod).getFQN();
+            public FQN processMethod(PsiMethod psiMethod) {
+                return MethodFQN.create(psiMethod);
             }
 
             @Override
-            public String processField(PsiField psiField) {
-                return FieldFQN.create(psiField).getFQN();
+            public FQN processField(PsiField psiField) {
+                return FieldFQN.create(psiField);
             }
 
             @Override
-            public String processClassInitializer(PsiClassInitializer psiClassInitializer) {
-                return getName(psiClassInitializer);
+            public FQN processClassInitializer(PsiClassInitializer psiClassInitializer) {
+                return new FQN() {
+                    @Override
+                    public String getFQN() {
+                        return getName(psiClassInitializer);
+                    }
+                };
             }
 
             @Override
-            public String processInnerClass(PsiClass innerClass) {
-                return ClassFQN.create(innerClass).getFQN();
+            public FQN processInnerClass(PsiClass innerClass) {
+                return ClassFQN.create(innerClass);
             }
 
             @Override
-            public String processStaticInnerClass(PsiClass staticInnerClass) {
-                return ClassFQN.create(staticInnerClass).getFQN();
+            public FQN processStaticInnerClass(PsiClass staticInnerClass) {
+                return ClassFQN.create(staticInnerClass);
             }
 
             @Override
-            public String processEnum(PsiClass anEnum) {
-                return ClassFQN.create(anEnum).getFQN();
+            public FQN processEnum(PsiClass anEnum) {
+                return ClassFQN.create(anEnum);
+            }
+
+            @Override
+            public FQN processPackage(PsiJavaDirectoryImpl aPackage) {
+                return PackageFQN.create(aPackage);
+            }
+
+            @Override
+            public FQN processFile(PsiJavaFile psiElement) {
+                return FileFQN.create(psiElement);
             }
         };
 
         return psiElementDispatcher.dispatch(psiElement);
+    }
+
+    public static void navigate(PsiElement psiElement, Project project) {
+        ApplicationManager.getApplication().invokeLater(
+                () -> {
+                    ApplicationManager.getApplication().assertIsDispatchThread();
+                    Navigatable n = (Navigatable) psiElement;
+                    //this is for better cursor position
+                    if (psiElement instanceof PsiFile) {
+                        VirtualFile file = ((PsiFile) psiElement).getVirtualFile();
+                        if (file == null) return;
+                        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, 0, 0);
+                        n = descriptor.setUseCurrentWindow(true);
+                    }
+
+                    if (n.canNavigate()) {
+                        n.navigate(true);
+                    }
+                }
+        );
     }
 
 }

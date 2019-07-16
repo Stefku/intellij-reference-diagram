@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,7 @@
 
 package ch.docksnet.rgraph;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import ch.docksnet.rgraph.method.ReferenceNode;
 import ch.docksnet.utils.lcom.LCOMNode;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
@@ -27,7 +24,13 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Stefan Zeller
@@ -43,29 +46,29 @@ public class LCOMConverter {
     public Collection<LCOMNode> convert(Collection<? extends DiagramNode<PsiElement>> nodes, Collection<? extends
             DiagramEdge<PsiElement>> edges) {
         for (DiagramNode<PsiElement> node : nodes) {
-            String fqn = vfsResolver.getQualifiedName(node.getIdentifyingElement());
+            String fqn = this.vfsResolver.getQualifiedName(node.getIdentifyingElement());
             LCOMNode.Type type = resolveType(node);
-            lcomNodeRegistry.put(fqn, new LCOMNode(fqn, type, (ReferenceNode) node));
+            this.lcomNodeRegistry.put(fqn, new LCOMNode(fqn, type, (ReferenceNode) node));
         }
 
         for (DiagramEdge<PsiElement> edge : edges) {
             ReferenceNode source = (ReferenceNode) edge.getSource();
             ReferenceNode target = (ReferenceNode) edge.getTarget();
-            String sourceFqn = vfsResolver.getQualifiedName(source.getIdentifyingElement());
-            String targetFqn = vfsResolver.getQualifiedName(target.getIdentifyingElement());
+            String sourceFqn = this.vfsResolver.getQualifiedName(source.getIdentifyingElement());
+            String targetFqn = this.vfsResolver.getQualifiedName(target.getIdentifyingElement());
 
             if (isSourceOrTargetNotRegistered(sourceFqn, targetFqn)) {
                 continue;
             }
 
-            lcomNodeRegistry.get(sourceFqn).addCallee(lcomNodeRegistry.get(targetFqn));
+            this.lcomNodeRegistry.get(sourceFqn).addCallee(this.lcomNodeRegistry.get(targetFqn));
         }
 
-        return lcomNodeRegistry.values();
+        return this.lcomNodeRegistry.values();
     }
 
     private boolean isSourceOrTargetNotRegistered(String sourceFqn, String targetFqn) {
-        return lcomNodeRegistry.get(sourceFqn) == null || lcomNodeRegistry.get(targetFqn) == null;
+        return this.lcomNodeRegistry.get(sourceFqn) == null || this.lcomNodeRegistry.get(targetFqn) == null;
     }
 
     public LCOMNode.Type resolveType(DiagramNode<PsiElement> referenceNode) {
@@ -112,6 +115,16 @@ public class LCOMConverter {
             @Override
             public LCOMNode.Type processEnum(PsiClass anEnum) {
                 return LCOMNode.Type.Enum;
+            }
+
+            @Override
+            public LCOMNode.Type processPackage(PsiJavaDirectoryImpl aPackage) {
+                return LCOMNode.Type.Package;
+            }
+
+            @Override
+            public LCOMNode.Type processFile(PsiJavaFile psiElement) {
+                return LCOMNode.Type.File;
             }
         };
         return elementDispatcher.dispatch(referenceNode.getIdentifyingElement());

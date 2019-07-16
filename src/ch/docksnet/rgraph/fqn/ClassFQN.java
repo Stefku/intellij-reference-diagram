@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
+package ch.docksnet.rgraph.fqn;
 
 import com.intellij.psi.PsiClass;
 
 /**
  * @author Stefan Zeller
  */
-public class ClassFQN {
+public class ClassFQN extends FQN {
     private final String fqn;
 
     private ClassFQN(String fqn) {
@@ -38,11 +38,15 @@ public class ClassFQN {
     }
 
     public static boolean isClassFQN(String string) {
-        return true;
+        String[] split = string.split("\\.");
+        if (Character.isUpperCase(split[split.length - 1].charAt(0))) {
+            return true;
+        }
+        return false;
     }
 
     public String getFQN() {
-        return fqn;
+        return this.fqn;
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
+package ch.docksnet.rgraph.method;
 
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
@@ -34,13 +34,13 @@ public class SourceTargetPair {
     public
     @NotNull
     PsiElement getSource() {
-        return source;
+        return this.source;
     }
 
     public
     @NotNull
     PsiElement getTarget() {
-        return target;
+        return this.target;
     }
 
     @Override
@@ -54,10 +54,10 @@ public class SourceTargetPair {
 
         final SourceTargetPair that = (SourceTargetPair) o;
 
-        if (!source.equals(that.source)) {
+        if (!this.source.equals(that.source)) {
             return false;
         }
-        if (!target.equals(that.target)) {
+        if (!this.target.equals(that.target)) {
             return false;
         }
 
@@ -66,8 +66,8 @@ public class SourceTargetPair {
 
     @Override
     public int hashCode() {
-        int result = source.hashCode();
-        result = 31 * result + target.hashCode();
+        int result = this.source.hashCode();
+        result = 31 * result + this.target.hashCode();
         return result;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,16 @@
 
 package ch.docksnet.rgraph;
 
-import java.awt.Color;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-
 import ch.docksnet.rgraph.actions.DeleteMarkedAction;
 import ch.docksnet.rgraph.actions.IsolateMarkedAction;
 import ch.docksnet.rgraph.actions.MarkAction;
 import ch.docksnet.rgraph.actions.MarkCalleesAction;
 import ch.docksnet.rgraph.actions.MarkCallersAction;
 import ch.docksnet.rgraph.actions.ShowClusterCountAction;
+import ch.docksnet.rgraph.actions.ShowOuterReferencesAction;
 import ch.docksnet.rgraph.actions.UnmarkAction;
 import ch.docksnet.rgraph.actions.UnmarkAllAction;
+import ch.docksnet.rgraph.method.ReferenceNode;
 import com.intellij.diagram.DiagramBuilder;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.extras.DiagramExtras;
@@ -40,6 +34,12 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Stefan Zeller
@@ -52,7 +52,7 @@ public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
         if (nodes.size() == 1) {
             if (CommonDataKeys.PSI_ELEMENT.is(dataId)) {
                 PsiElement psiElement = nodes.get(0).getIdentifyingElement();
-                assert psiElement != null: "psiElement has no identifying element: " + psiElement;
+                assert psiElement != null : "psiElement has no identifying element: " + psiElement;
                 return psiElement;
             }
         }
@@ -62,6 +62,7 @@ public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
     @Override
     public List<AnAction> getExtraActions() {
         final List<AnAction> result = new ArrayList<>();
+        result.add(new ShowOuterReferencesAction());
         result.add(new ShowClusterCountAction());
         result.add(new MarkAction());
         result.add(new UnmarkAction());

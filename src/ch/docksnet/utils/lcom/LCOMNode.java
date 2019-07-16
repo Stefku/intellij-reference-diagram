@@ -16,11 +16,11 @@
 
 package ch.docksnet.utils.lcom;
 
+import ch.docksnet.rgraph.method.ReferenceNode;
+import ch.docksnet.utils.PreConditionUtil;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import ch.docksnet.rgraph.ReferenceNode;
-import ch.docksnet.utils.PreConditionUtil;
 
 /**
  * @author Stefan Zeller
@@ -102,7 +102,7 @@ public class LCOMNode {
     }
 
     public enum Type {
-        Method, Field, Constant, Constructur, ClassInitializer, Class, InnerClass, StaticInnerClass, Enum
+        Method, Field, Constant, Constructur, ClassInitializer, Class, InnerClass, StaticInnerClass, Enum, File, Package
     }
 
 }

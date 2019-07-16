@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 package ch.docksnet.rgraph;
 
-import java.awt.*;
-
+import ch.docksnet.rgraph.method.ReferenceEdge;
 import com.intellij.diagram.DiagramColorManagerBase;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.ui.JBColor;
+
+import java.awt.*;
 
 /**
  * @author Stefan Zeller

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package ch.docksnet.rgraph;
-
-import javax.swing.*;
+package ch.docksnet.rgraph.method;
 
 import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.PsiDiagramNode;
@@ -24,7 +22,10 @@ import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import icons.UmlIcons;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 /**
  * @author Stefan Zeller
@@ -57,15 +58,15 @@ public class ReferenceNode extends PsiDiagramNode<PsiElement> {
     }
 
     public boolean isMarked() {
-        return marked;
+        return this.marked;
     }
 
     public void setMarked() {
-        marked = true;
+        this.marked = true;
     }
 
     public void unsetMarked() {
-        marked = false;
+        this.marked = false;
     }
 
     public void switchMarked() {
@@ -76,4 +77,9 @@ public class ReferenceNode extends PsiDiagramNode<PsiElement> {
         }
     }
 
+    @NotNull
+    @Override
+    public PsiElement getIdentifyingElement() {
+        return super.getIdentifyingElement();
+    }
 }

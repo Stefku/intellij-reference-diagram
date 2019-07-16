@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,10 @@
 
 package ch.docksnet.rgraph;
 
-import java.util.List;
-
+import ch.docksnet.rgraph.fqn.ClassFQN;
+import ch.docksnet.rgraph.fqn.FieldFQN;
+import ch.docksnet.rgraph.fqn.MethodFQN;
+import ch.docksnet.rgraph.fqn.PackageFQN;
 import com.intellij.diagram.DiagramVfsResolver;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -26,6 +28,8 @@ import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 /**
  * @author Stefan Zeller
  */
@@ -33,7 +37,7 @@ public class ReferenceDiagramVfsResolver implements DiagramVfsResolver<PsiElemen
 
     @Override
     public String getQualifiedName(PsiElement psiElement) {
-        return PsiUtils.getFqn(psiElement);
+        return PsiUtils.getFqn(psiElement).getFQN();
     }
 
     @Nullable
@@ -66,8 +70,10 @@ public class ReferenceDiagramVfsResolver implements DiagramVfsResolver<PsiElemen
 
         } else if (ClassFQN.isClassFQN(fqn)) {
             ClassFQN classFQN = ClassFQN.create(fqn);
-            PsiClass psiClass = PsiUtils.getPsiClass(classFQN.getFQN(), project);
-            return psiClass;
+            return PsiUtils.getPsiClass(classFQN.getFQN(), project);
+        } else if (PackageFQN.isPackage(fqn)) {
+            PackageFQN packageFQN = PackageFQN.create(fqn);
+            return PsiUtils.getPsiJavaDirectory(packageFQN.getFQN(), project);
         }
         throw new IllegalStateException("Cannot processs fqn: " + fqn);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Stefan Zeller
+ * Copyright (C) 2015 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,25 @@
 package ch.docksnet.rgraph.actions;
 
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
+import ch.docksnet.rgraph.toolwindow.TestToolWindow;
+import ch.docksnet.rgraph.method.OuterReferences;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.Project;
 
 /**
  * @author Stefan Zeller
  */
-public class ShowClusterCountAction extends DiagramAction {
+public class ShowOuterReferencesAction extends DiagramAction {
 
     @Override
     public void perform(AnActionEvent e) {
+        OuterReferences outerReferences = ((ReferenceDiagramDataModel) getDataModel(e)).getOuterReferences();
+        Project project = e.getProject();
+        ApplicationManager.getApplication().invokeLater(
+                () -> TestToolWindow.show(project, outerReferences)
+        );
     }
 
     @Override
@@ -36,7 +45,7 @@ public class ShowClusterCountAction extends DiagramAction {
 
     @Override
     public String getActionName() {
-        return "Show Cluster Count";
+        return "Other References";
     }
 
     @Override
@@ -44,8 +53,8 @@ public class ShowClusterCountAction extends DiagramAction {
         if (getDataModel(e) instanceof ReferenceDiagramDataModel) {
             e.getPresentation().setVisible(true);
             e.getPresentation().setEnabled(false);
-            long currentClusterCount = ((ReferenceDiagramDataModel) getDataModel(e)).getCurrentClusterCount();
-            e.getPresentation().setText("Cluster Count: " + currentClusterCount);
+            OuterReferences outerReferences = ((ReferenceDiagramDataModel) getDataModel(e)).getOuterReferences();
+            e.getPresentation().setText("Other References: " + outerReferences.toToolbarString());
         } else {
             e.getPresentation().setVisible(false);
         }

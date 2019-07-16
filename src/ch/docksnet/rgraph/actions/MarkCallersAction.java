@@ -16,13 +16,13 @@
 
 package ch.docksnet.rgraph.actions;
 
-import java.util.List;
-
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+
+import java.util.List;
 
 /**
  * @author Stefan Zeller

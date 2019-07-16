@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.SimpleColoredText;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,9 +32,22 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ReferenceDiagramElementManager extends AbstractDiagramElementManager<PsiElement> {
 
+    /**
+     * Entry point to decide if a diagram can be show for the given DataContext.
+     *
+     * @return null if no diagram can be shown.
+     */
     @Nullable
     @Override
     public PsiElement findInDataContext(DataContext context) {
+
+        if (CommonDataKeys.PSI_ELEMENT.getData(context) instanceof PsiClass) {
+            return CommonDataKeys.PSI_ELEMENT.getData(context);
+        }
+
+        if (CommonDataKeys.PSI_ELEMENT.getData(context) instanceof PsiJavaDirectoryImpl) {
+            return CommonDataKeys.PSI_ELEMENT.getData(context);
+        }
 
         if (CommonDataKeys.PSI_FILE.getData(context) == null) {
             return null;
@@ -49,7 +64,7 @@ public class ReferenceDiagramElementManager extends AbstractDiagramElementManage
             return null;
         }
 
-        PsiClass psiClass = PsiUtils.getClassFromHierarchy(psiElement);
+        PsiClass psiClass = PsiTreeUtil.getParentOfType(psiElement, PsiClass.class, true);
 
         if (psiClass == null) {
             return null;

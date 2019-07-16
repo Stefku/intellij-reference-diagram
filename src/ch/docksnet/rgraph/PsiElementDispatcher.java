@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefan Zeller
+ * Copyright (C) 2019 Stefan Zeller
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 
 /**
  * @author Stefan Zeller
@@ -42,15 +44,25 @@ public abstract class PsiElementDispatcher<T> {
                     }
                 }
             }
-        } else if (psiElement instanceof PsiMethod) {
+        }
+        if (psiElement instanceof PsiMethod) {
             return processMethod((PsiMethod) psiElement);
-        } else if (psiElement instanceof PsiField) {
+        }
+        if (psiElement instanceof PsiField) {
             return processField((PsiField) psiElement);
-        } else if (psiElement instanceof PsiClassInitializer) {
+        }
+        if (psiElement instanceof PsiClassInitializer) {
             return processClassInitializer((PsiClassInitializer) psiElement);
+        }
+        if (psiElement instanceof PsiJavaDirectoryImpl) {
+            return processPackage((PsiJavaDirectoryImpl) psiElement);
+        }
+        if (psiElement instanceof PsiJavaFile) {
+            return processFile((PsiJavaFile) psiElement);
         }
         throw new IllegalArgumentException("Type of PsiElement not supported: " + psiElement);
     }
+
 
     public abstract T processClass(PsiClass psiClass);
 
@@ -66,4 +78,7 @@ public abstract class PsiElementDispatcher<T> {
 
     public abstract T processEnum(PsiClass anEnum);
 
+    public abstract T processPackage(PsiJavaDirectoryImpl aPackage);
+
+    public abstract T processFile(PsiJavaFile psiElement);
 }
