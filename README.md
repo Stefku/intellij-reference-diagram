@@ -31,12 +31,12 @@ Sometimes, cohesive groups are not separeted because they are connected through 
 There's a great chance to see this as single nodes that are highly connected. With removing these nodes from the diagram you can see if there
 were hidden disconnected clusters. Comparing the cluster count before and after the removal helps with this task.
 
-![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/Example_show_cluster_count.png)
+![](https://github.com/stefku/intellij-reference-diagram/raw/master/doc/Example_show_cluster_count.png)
    
 Does static methods and fields play a role in cohesion of a class? Just show or hide them via the toolbar. You can set the default behavior
 in the usual settings dialog of the others diagrams.
 
-![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/settings_default_categories.png)
+![](https://github.com/stefku/intellij-reference-diagram/raw/master/doc/settings_default_categories.png)
 
 ## Isolate subgraphs
 If you are interested in all methods and fields that can be reached by a certain method, then you can select that method and choose actions 
@@ -48,7 +48,7 @@ If you want to see the path between two methods you
 1. Select the source of the desired path and _Mark Callees_ then _Isolate Marked_.
 2. Select the destination of the desired path and _Mark Callers_ then _Isolate Marked_.
  
-![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/show_path_between_nodes.gif)
+![](https://github.com/stefku/intellij-reference-diagram/raw/master/doc/show_path_between_nodes.gif)
 
 ## Other References
 For overview of coupling there is the information of _other references_ on the top right of the diagram.
@@ -71,7 +71,7 @@ This example shows five cohesive clusters in MainClass (source is showed below).
 A blue line indicates a method call, where a green line means that a field is coupled to a method in terms of cohesion.
 The numbers on the edges indicating the number of references.
 
-![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/ExampleDiagram_ch.docksnet.app.MainClass.png)
+![](https://github.com/stefku/intellij-reference-diagram/raw/master/doc/ExampleDiagram_ch.docksnet.app.MainClass.png)
 
 ```java
 public abstract class MainClass {
