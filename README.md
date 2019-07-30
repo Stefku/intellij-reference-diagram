@@ -61,7 +61,7 @@ Where references from same package are kind of local of the package, the referen
 The references from other hierarchy (i.e. from sibling packages) could be a sign of spaghetti.
 
 **Example**
-![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/coupling_through_OtherReferences_tool_window.png)
+![](https://github.com/stefku/intellij-reference-diagram/raw/master/doc/coupling_through_OtherReferences_tool_window.png)
 1. `ReferenceDiagramDataModel` references `OuterReferences`. In terms of package hierarchy `ch.docksnet.rgraph.method` is referenced from `ch.docksnet.rgraph`, which is a kind of wanted dependency direction.
 2. `TestToolWindow` references `OuterReferences`. Here a sibling package ch.docksnet.rgraph.toolwindow references `ch.docksnet.rgraph.method`.
 
