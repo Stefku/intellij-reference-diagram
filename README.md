@@ -1,23 +1,25 @@
 # Java Reference Diagram Plugin
 
-This plugin for IntelliJ IDEA provides a diagram showing a reference graph for methods and fields in java classes.
+This plugin for IntelliJ IDEA Ultimate helps to get an overview of coupling and cohesion in java projects in two different contexts:
+ - References of methods and fields in classes
+ - References between files in packages
 
 This plugin is available in IntelliJ Plugin Registry: [https://plugins.jetbrains.com/plugin/7996](https://plugins.jetbrains.com/plugin/7996).
 
-Open this diagram with having cursor in a class source code and choose action "Show UML Diagram" ⌥⇧⌘U / CTRL-SHIFT-ALT-U.
+# Usage
+With this plugin a new diagram is available embedded in the action "Show UML Diagram" ⌥+⇧+⌘+U / CTRL+SHIFT+ALT+U. When focus
+is on a file or inside a file then the method reference diagram will be opened. If fucus is on a package, then file reference diagram will be
+opened.
 
-## Use Cases
-1. Reference graph for elements in classes
-2. Analyzing structure of classes with respect to dependencies and cohesion
-
-## Features
+# Features
 - Show or hide categories of elements, like fields, methods, constructors, class initializers and their static companions.
-- If the return value of a method is assigned to a field, then this is also threaded like a dependency and is shown in a different line style
+- If the return value of a method is assigned to a field, then this is also threaded like a dependency and is shown in a different line style.
 - As other diagrams, features available like Goto Source (F4), File Structure (Strg+F12) and Search (Ctrl+F), refactorings, Find Usages etc.
-- Nodes can be removed from graph to help analyze cohesive structure of the cluss.  
-- The cluster count is shown in the toolbar. 
+- Nodes can be removed from graph to help analyze cohesive structure of the cluss.
 - Ability to isolate a subgraph based on a node: A subgraph of all it's callers or callees.
-- Show the connection between two nodes
+- Show the connection between two nodes.
+- The cluster count is shown in the toolbar.
+- Overview of other references not shown in graph (see chapter Outer References below).
 
 ## Cohesive clusters
 If you have a suspect class and you want to analyze the cohesivnes of it this diagram helps you to visualize the [lack of cohesion of methods]
@@ -47,6 +49,21 @@ If you want to see the path between two methods you
 2. Select the destination of the desired path and _Mark Callers_ then _Isolate Marked_.
  
 ![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/show_path_between_nodes.gif)
+
+## Other References
+For overview of coupling there is the information of _other references_ on the top right of the diagram.
+There are three numbers show:
+1. Number of references from same package. (= package private)
+2. Number of references from packages in the same hierarchy. (= public api)
+3. Number of references from packages in a other hierarchy. (= spaghetti?)
+These are different kind of references.
+Where references from same package are kind of local of the package, the references from same hierarchy are part of the public api of the package.
+The references from other hierarchy (i.e. from sibling packages) could be a sign of spaghetti.
+
+**Example**
+![](https://raw.githubusercontent.com/stefku/intellij-reference-diagram/develop/doc/coupling_through_OtherReferences_tool_window.png)
+1. `ReferenceDiagramDataModel` references `OuterReferences`. In terms of package hierarchy `ch.docksnet.rgraph.method` is referenced from `ch.docksnet.rgraph`, which is a kind of wanted dependency direction.
+2. `TestToolWindow` references `OuterReferences`. Here a sibling package ch.docksnet.rgraph.toolwindow references `ch.docksnet.rgraph.method`.
 
 ## Example
 

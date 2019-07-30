@@ -17,16 +17,17 @@
 <idea-plugin version="2">
     <id>ch.docksnet.rgraph</id>
     <name>Java Method Reference Diagram</name>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0</version>
     <vendor>Stefan Zeller</vendor>
     <depends>com.intellij.diagram</depends>
     <description><![CDATA[
-		Java Method Reference Diagram<br>
-		This plugins shows a diagram of a java class with the purposes
+		Java Reference Diagram<br>
+		This plugins gives an overview about coupling and cohesion of java files in a package, methods in a class.
 		<ul>
-			<li>A usage graph of methods, fields and class initializer blocks.</li>
-			<li>Visual information about orphaned groups, meaning independent clusters of methods and fields that are candidates for
-				refactoring to separate classes
+			<li>A reference graph of methods, fields and class initializer blocks.</li>
+			<li>A reference graph of files in a package.</li>
+			<li>Visual information about orphaned groups, meaning independent clusters that are candidates for
+				refactoring to separate structures.
 			</li>
 			<li>Analyze structure of callees and callers. I.e.
 				<ul>
@@ -42,7 +43,12 @@
     <change-notes><![CDATA[
 		<ul>
 		    <li>
-				Version 3.0.0: Overview of incoming references to current file.
+				Version 3.0.0
+				<ul>
+				    <li>Class reference diagram can be opened out of project view with a java file or class at focus. (<a href="https://github.com/Stefku/intellij-reference-diagram/issues/61">Issue 61</a>)</li>
+				    <li>New reference graph of java files of a whole package. Choose Show UML Diagram with a package at focus. (<a href="https://github.com/Stefku/intellij-reference-diagram/issues/58">Issue 58</a>)</li>
+				    <li>Overview of references not show in graph from outside with grouping by levels of coupling. See chapter Other References in <a href="https://github.com/Stefku/intellij-reference-diagram/blob/master/README.md">README.md</a>.</li>
+				</ul>
 			</li>
 			<li>
 				Version 2.2.0: IntelliJ 2019.1+ support
