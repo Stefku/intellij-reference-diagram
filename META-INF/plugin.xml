@@ -17,9 +17,10 @@
 <idea-plugin version="2">
     <id>ch.docksnet.rgraph</id>
     <name>Java Method Reference Diagram</name>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <vendor>Stefan Zeller</vendor>
     <depends>com.intellij.diagram</depends>
+    <depends>com.intellij.modules.java</depends>
     <description><![CDATA[
 		Java Reference Diagram<br>
 		This plugins gives an overview about coupling and cohesion of java files in a package, methods in a class.
@@ -42,6 +43,9 @@
 
     <change-notes><![CDATA[
 		<ul>
+		    <li>
+				Version 3.0.1: IntelliJ 2021.1+ support
+			</li>
 		    <li>
 				Version 3.0.0
 				<ul>
@@ -105,7 +109,7 @@
             <add-to-group group-id="Graph.DefaultGraphToolbar"/>
         </action>
         <action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowOuterReferencesAction"
-                description="same package/same package hierarchy/other package hierarchy">
+                description="Same package/same package hierarchy/other package hierarchy">
             <add-to-group group-id="Graph.DefaultGraphToolbar"/>
         </action>
         <action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.actions.MarkAction"></action>
