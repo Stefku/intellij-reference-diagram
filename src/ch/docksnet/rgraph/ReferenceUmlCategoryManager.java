@@ -25,7 +25,7 @@ import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
 import com.intellij.ui.LayeredIcon;
-import icons.UmlIcons;
+import com.intellij.uml.UmlIcons;
 
 /**
  * @author Stefan Zeller

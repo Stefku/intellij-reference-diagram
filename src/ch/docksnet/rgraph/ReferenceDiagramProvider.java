@@ -93,7 +93,7 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
     }
 
     public static ReferenceDiagramProvider getInstance() {
-        return (ReferenceDiagramProvider) DiagramProvider.findByID(ID);
+        return (ReferenceDiagramProvider) DiagramProvider.<PsiElement>findByID(ID);
     }
 
     @Override
