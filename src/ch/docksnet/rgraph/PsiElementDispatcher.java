@@ -29,7 +29,7 @@ import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
  */
 public abstract class PsiElementDispatcher<T> {
 
-    public T dispatch(PsiElement psiElement) {
+    T dispatch(PsiElement psiElement) {
         if (psiElement instanceof PsiClass) {
             if (((PsiClass) psiElement).getContainingClass() == null) {
                 return processClass((PsiClass) psiElement);

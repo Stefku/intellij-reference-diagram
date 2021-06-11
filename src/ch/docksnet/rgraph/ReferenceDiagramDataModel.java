@@ -54,10 +54,11 @@ import java.util.Set;
 
 import static ch.docksnet.rgraph.PsiUtils.getFqn;
 
+@SuppressWarnings("MethodDoesntCallSuperMethod")
 public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElement> {
 
-    private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsAddedByUser = new HashMap();
-    private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsRemovedByUser = new HashMap();
+    private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsAddedByUser = new HashMap<>();
+    private final Map<FQN, SmartPsiElementPointer<PsiElement>> elementsRemovedByUser = new HashMap<>();
 
     private final Collection<DiagramNode<PsiElement>> nodes = new HashSet<>();
     private final Map<PsiElement, DiagramNode<PsiElement>> nodesPool = new HashMap<>();
@@ -102,7 +103,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
     }
 
 
-    protected void refresh() {
+    private void refresh() {
         analyzeLcom4();
         updateToolWindow();
     }
@@ -124,7 +125,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
     }
 
     private void updateDataModel() {
-        DiagramProvider provider = getBuilder().getProvider();
+        DiagramProvider<?> provider = getBuilder().getProvider();
         Set<PsiElement> elements = getElements();
 
         for (PsiElement element : elements) {
@@ -201,7 +202,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
     }
 
     @NotNull
-    private ReferenceNode getReferenceNode(DiagramProvider provider, PsiElement element) {
+    private ReferenceNode getReferenceNode(DiagramProvider<?> provider, PsiElement element) {
         if (this.nodesPool.containsKey(element)) {
             return (ReferenceNode) this.nodesPool.get(element);
         }
@@ -217,10 +218,10 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
 
     @Nullable
     private DiagramNode<PsiElement> findNode(PsiElement psiElement) {
-        Iterator ptr = (new ArrayList(this.nodes)).iterator();
+        Iterator<?> ptr = (new ArrayList<>(this.nodes)).iterator();
 
         while (ptr.hasNext()) {
-            DiagramNode node = (DiagramNode) ptr.next();
+            DiagramNode<PsiElement> node = (DiagramNode<PsiElement>) ptr.next();
             FQN fqn = PsiUtils.getFqn((PsiElement) node.getIdentifyingElement());
             if (fqn != null && fqn.equals(getFqn(psiElement))) {
                 return node;
@@ -288,7 +289,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
     }
 
     private void removeElement(PsiElement element) {
-        DiagramNode node = findNode(element);
+        DiagramNode<PsiElement> node = findNode(element);
         if (node == null) {
             this.elementsAddedByUser.remove(PsiUtils.getFqn(element));
         } else {
@@ -359,6 +360,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
         return PsiUtils.getPresentableName(diagramNode.getIdentifyingElement());
     }
 
+    @SuppressWarnings("rawtypes")
     public void markCallees(List<DiagramNode> roots) {
         LCOMConverter lcomConverter = new LCOMConverter();
         Collection<LCOMNode> lcom4Nodes = lcomConverter.convert(getNodes(), getEdges());
@@ -367,6 +369,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private void markCallees(DiagramNode root, Collection<LCOMNode> lcom4Nodes) {
         LCOMNode lcomRoot = searchRoot(root, lcom4Nodes);
         lcomRoot.getIdentifyingElement().setMarked();
@@ -376,6 +379,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private LCOMNode searchRoot(DiagramNode diagramNode, Collection<LCOMNode> lcom4Nodes) {
         for (LCOMNode lcom4Node : lcom4Nodes) {
             if (lcom4Node.getIdentifyingElement().equals(diagramNode)) {
@@ -392,6 +396,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
         return result;
     }
 
+    @SuppressWarnings("rawtypes")
     public void markCallers(List<DiagramNode> roots) {
         LCOMConverter lcomConverter = new LCOMConverter();
         Collection<LCOMNode> lcom4Nodes = lcomConverter.convert(getNodes(), getEdges());
@@ -400,6 +405,7 @@ public abstract class ReferenceDiagramDataModel extends DiagramDataModel<PsiElem
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private void markCallers(DiagramNode root, Collection<LCOMNode> lcom4Nodes) {
         LCOMNode lcomRoot = searchRoot(root, lcom4Nodes);
         lcomRoot.getIdentifyingElement().setMarked();

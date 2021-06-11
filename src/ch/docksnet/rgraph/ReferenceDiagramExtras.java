@@ -44,6 +44,7 @@ import java.util.List;
 /**
  * @author Stefan Zeller
  */
+@SuppressWarnings("MethodDoesntCallSuperMethod")
 public class ReferenceDiagramExtras extends DiagramExtras<PsiElement> {
 
     @Nullable

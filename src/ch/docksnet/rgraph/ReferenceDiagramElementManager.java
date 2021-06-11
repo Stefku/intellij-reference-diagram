@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Stefan Zeller
  */
+@SuppressWarnings("ALL")
 public class ReferenceDiagramElementManager extends AbstractDiagramElementManager<PsiElement> {
 
     /**

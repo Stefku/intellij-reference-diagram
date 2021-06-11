@@ -130,7 +130,7 @@ public class PsiUtils {
         return false;
     }
 
-    public static PsiClass getPsiClass(String classFQN, Project project) {
+    static PsiClass getPsiClass(String classFQN, Project project) {
         return JavaPsiFacade.getInstance(project).findClass(classFQN, GlobalSearchScope
                 .projectScope(project));
     }
@@ -147,7 +147,7 @@ public class PsiUtils {
         }
     }
 
-    public static String getPresentableName(PsiElement psiElement) {
+    static String getPresentableName(PsiElement psiElement) {
         PsiElementDispatcher<String> psiElementDispatcher = new PsiElementDispatcher<String>() {
 
             @Override

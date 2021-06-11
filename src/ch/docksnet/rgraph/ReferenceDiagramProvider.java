@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Stefan Zeller
  */
+@SuppressWarnings("MethodDoesntCallSuperMethod")
 public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
 
     private static final String ID = "ReferenceDiagramProvider";

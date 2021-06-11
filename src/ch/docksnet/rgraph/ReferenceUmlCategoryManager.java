@@ -30,20 +30,21 @@ import com.intellij.uml.UmlIcons;
 /**
  * @author Stefan Zeller
  */
+@SuppressWarnings("MethodDoesntCallSuperMethod")
 public class ReferenceUmlCategoryManager extends AbstractDiagramNodeContentManager {
-    public static final DiagramCategory STATIC_FIELDS;
-    public static final DiagramCategory FIELDS;
-    public static final DiagramCategory CONSTRUCTORS;
-    public static final DiagramCategory STATIC_METHODS;
-    public static final DiagramCategory METHODS;
-    public static final DiagramCategory STATIC_CLASS_INITIALIZER;
-    public static final DiagramCategory CLASS_INITIALIZER;
-    public static final DiagramCategory INNER_CLASS;
-    public static final DiagramCategory STATIC_INNER_CLASS;
-    public static final DiagramCategory ENUM;
+    private static final DiagramCategory STATIC_FIELDS;
+    private static final DiagramCategory FIELDS;
+    private static final DiagramCategory CONSTRUCTORS;
+    private static final DiagramCategory STATIC_METHODS;
+    private static final DiagramCategory METHODS;
+    private static final DiagramCategory STATIC_CLASS_INITIALIZER;
+    private static final DiagramCategory CLASS_INITIALIZER;
+    private static final DiagramCategory INNER_CLASS;
+    private static final DiagramCategory STATIC_INNER_CLASS;
+    private static final DiagramCategory ENUM;
     private static final DiagramCategory[] CATEGORIES;
 
-    public ReferenceUmlCategoryManager() {
+    ReferenceUmlCategoryManager() {
     }
 
     public DiagramCategory[] getContentCategories() {

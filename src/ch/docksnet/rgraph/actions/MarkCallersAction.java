@@ -27,6 +27,7 @@ import java.util.List;
 /**
  * @author Stefan Zeller
  */
+@SuppressWarnings("rawtypes")
 public class MarkCallersAction extends DiagramAction {
 
     @Override

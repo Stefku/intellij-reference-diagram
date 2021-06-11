@@ -31,9 +31,10 @@ public class MarkCalleesAction extends DiagramAction {
 
     @Override
     public void perform(AnActionEvent e) {
+        //noinspection rawtypes
         List<DiagramNode> selectedNodes = getSelectedNodes(e);
 
-        DiagramDataModel dataModel = getDataModel(e);
+        DiagramDataModel<?> dataModel = getDataModel(e);
         if (dataModel instanceof ReferenceDiagramDataModel) {
             ((ReferenceDiagramDataModel) dataModel).markCallees(selectedNodes);
         }

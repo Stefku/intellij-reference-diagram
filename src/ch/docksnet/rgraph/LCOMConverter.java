@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * @author Stefan Zeller
  */
-public class LCOMConverter {
+class LCOMConverter {
 
     private final ReferenceDiagramVfsResolver vfsResolver = new ReferenceDiagramVfsResolver();
     private final Map<String, LCOMNode> lcomNodeRegistry = new HashMap<>();
@@ -43,7 +43,7 @@ public class LCOMConverter {
     /**
      * Returns nodes representating a directed graph regarding to given {@code nodes} and {@code edges}.
      */
-    public Collection<LCOMNode> convert(Collection<? extends DiagramNode<PsiElement>> nodes, Collection<? extends
+    Collection<LCOMNode> convert(Collection<? extends DiagramNode<PsiElement>> nodes, Collection<? extends
             DiagramEdge<PsiElement>> edges) {
         for (DiagramNode<PsiElement> node : nodes) {
             String fqn = this.vfsResolver.getQualifiedName(node.getIdentifyingElement());
@@ -71,7 +71,7 @@ public class LCOMConverter {
         return this.lcomNodeRegistry.get(sourceFqn) == null || this.lcomNodeRegistry.get(targetFqn) == null;
     }
 
-    public LCOMNode.Type resolveType(DiagramNode<PsiElement> referenceNode) {
+    private LCOMNode.Type resolveType(DiagramNode<PsiElement> referenceNode) {
         PsiElementDispatcher<LCOMNode.Type> elementDispatcher = new PsiElementDispatcher<LCOMNode.Type>() {
 
             @Override

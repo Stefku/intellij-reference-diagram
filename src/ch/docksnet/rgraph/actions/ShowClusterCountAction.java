@@ -18,7 +18,9 @@ package ch.docksnet.rgraph.actions;
 
 import ch.docksnet.rgraph.ReferenceDiagramDataModel;
 import com.intellij.diagram.DiagramAction;
+import com.intellij.diagram.DiagramBuilder;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Stefan Zeller

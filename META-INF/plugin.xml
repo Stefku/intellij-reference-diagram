@@ -17,7 +17,7 @@
 <idea-plugin version="2">
     <id>ch.docksnet.rgraph</id>
     <name>Java Method Reference Diagram</name>
-    <version>3.0.1</version>
+    <version>3.1.0</version>
     <vendor>Stefan Zeller</vendor>
     <depends>com.intellij.diagram</depends>
     <depends>com.intellij.modules.java</depends>
@@ -44,7 +44,10 @@
     <change-notes><![CDATA[
 		<ul>
 		    <li>
-				Version 3.0.1: IntelliJ 2021.1+ support
+				Version 3.1.0: IntelliJ 2021.1+ support
+				<p>
+				    Known Issue: Toolbar is partially not working. See <pre>https://github.com/Stefku/intellij-reference-diagram/issues/72</pre>.
+				</p>
 			</li>
 		    <li>
 				Version 3.0.0
@@ -96,7 +99,7 @@
 		]]>
     </change-notes>
 
-    <idea-version since-build="191"/>
+    <idea-version since-build="211.6085.26"/>
 
     <application-components>
     </application-components>
