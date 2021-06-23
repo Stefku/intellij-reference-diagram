@@ -162,14 +162,12 @@ public class MethodReferenceDiagramDataModel extends ReferenceDiagramDataModel {
     @Override
     protected boolean isAllowedToShow(PsiElement psiElement) {
         if (psiElement != null && psiElement.isValid()) {
-            for (DiagramCategory enabledCategory : getBuilder().getPresentation().getEnabledCategories()) {
-                if (getBuilder().getProvider().getNodeContentManager().isInCategory(psiElement, enabledCategory, getBuilder()
-                        .getPresentation())) {
+            final DiagramNodeContentManager nodeContentManager = getNodeContentManager();
+            for (DiagramCategory enabledCategory : nodeContentManager.getEnabledCategories()) {
+                if (nodeContentManager.isInCategory(psiElement, enabledCategory)) {
                     return true;
                 }
             }
-            // fixme: remove this line. With IntelliJ 2021 getEnabledCategories() is not working properly any more. Always return true.
-            return true;
         }
         return false;
     }
