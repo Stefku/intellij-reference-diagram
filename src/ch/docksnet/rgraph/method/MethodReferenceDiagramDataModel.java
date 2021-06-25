@@ -25,6 +25,7 @@ import ch.docksnet.utils.IncrementableSet;
 import com.intellij.diagram.DiagramCategory;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
+import com.intellij.diagram.DiagramNodeContentManager;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.diagram.presentation.DiagramLineType;
@@ -162,7 +163,7 @@ public class MethodReferenceDiagramDataModel extends ReferenceDiagramDataModel {
     @Override
     protected boolean isAllowedToShow(PsiElement psiElement) {
         if (psiElement != null && psiElement.isValid()) {
-            final DiagramNodeContentManager nodeContentManager = getNodeContentManager();
+            DiagramNodeContentManager nodeContentManager = getNodeContentManager();
             for (DiagramCategory enabledCategory : nodeContentManager.getEnabledCategories()) {
                 if (nodeContentManager.isInCategory(psiElement, enabledCategory)) {
                     return true;

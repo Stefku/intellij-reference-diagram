@@ -19,6 +19,7 @@ package ch.docksnet.rgraph;
 import ch.docksnet.rgraph.directory.PackageReferenceDiagramDataModel;
 import ch.docksnet.rgraph.method.MethodReferenceDiagramDataModel;
 import com.intellij.diagram.BaseDiagramProvider;
+import com.intellij.diagram.DiagramCategory;
 import com.intellij.diagram.DiagramColorManager;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramElementManager;
@@ -108,7 +109,7 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
     }
 
     @Override
-    public DiagramCategory @NotNull [] getAllContentCategories() {
+    public @NotNull DiagramCategory[] getAllContentCategories() {
         return ReferenceUmlCategoryManager.CATEGORIES;
     }
 }
