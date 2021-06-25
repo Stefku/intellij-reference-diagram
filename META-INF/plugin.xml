@@ -109,11 +109,11 @@
 
     <actions>
         <action id="RGRAPH.ShowOuterReferences" class="ch.docksnet.rgraph.actions.ShowClusterCountAction">
-            <add-to-group group-id="Graph.DefaultGraphToolbar"/>
+            <add-to-group group-id="Diagram.DefaultGraphToolbar"/>
         </action>
         <action id="RGRAPH.ShowClusterCount" class="ch.docksnet.rgraph.actions.ShowOuterReferencesAction"
                 description="Same package/same package hierarchy/other package hierarchy">
-            <add-to-group group-id="Graph.DefaultGraphToolbar"/>
+            <add-to-group group-id="Diagram.DefaultGraphToolbar"/>
         </action>
         <action id="RGRAPH.MarkNode" class="ch.docksnet.rgraph.actions.MarkAction"></action>
         <action id="RGRAPH.UnmarkNode" class="ch.docksnet.rgraph.actions.UnmarkAction"></action>

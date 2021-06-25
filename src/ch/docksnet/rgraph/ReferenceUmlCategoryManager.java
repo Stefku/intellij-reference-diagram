@@ -42,7 +42,7 @@ public class ReferenceUmlCategoryManager extends AbstractDiagramNodeContentManag
     private static final DiagramCategory INNER_CLASS;
     private static final DiagramCategory STATIC_INNER_CLASS;
     private static final DiagramCategory ENUM;
-    private static final DiagramCategory[] CATEGORIES;
+    static final DiagramCategory[] CATEGORIES;
 
     ReferenceUmlCategoryManager() {
     }

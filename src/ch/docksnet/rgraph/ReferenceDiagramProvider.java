@@ -101,4 +101,14 @@ public class ReferenceDiagramProvider extends BaseDiagramProvider<PsiElement> {
     public DiagramNodeContentManager getNodeContentManager() {
         return this.myUmlCategoryManager;
     }
+
+    @Override
+    public @NotNull DiagramNodeContentManager createNodeContentManager() {
+        return new ReferenceUmlCategoryManager();
+    }
+
+    @Override
+    public DiagramCategory @NotNull [] getAllContentCategories() {
+        return ReferenceUmlCategoryManager.CATEGORIES;
+    }
 }
