@@ -1,4 +1,4 @@
-# Java Reference Diagram Plugin
+# Java Reference Diagram Plugin for IntelliJ IDEA Ultimate
 
 This plugin for IntelliJ IDEA Ultimate helps to get an overview of coupling and cohesion in java projects in two different contexts:
  - References of methods and fields in classes
